@@ -23,6 +23,3 @@ Thumbs.db
 .idea
 .gradle
 build/
-
-# generated documentation
-doc/

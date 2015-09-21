@@ -95,7 +95,7 @@ public class PushBotAuto extends PushBotTelemetry
         switch (v_state)
         {
         //
-        // Synchronoize the state machine and hardware.
+        // Synchronize the state machine and hardware.
         //
         case 0:
             //
