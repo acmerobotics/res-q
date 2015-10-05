@@ -1,20 +1,25 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package com.qualcomm.ftcrobotcontroller.hardware;
 
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * Created by Admin on 9/21/2015.
  */
-public abstract class TreadHardware extends OpMode {
+public class DriveHardware extends HardwareInterface {
+
     public static final double SENSITIVITY = 1.5;
     private DcMotorController leftCtrl, rightCtrl;
     private DcMotor[] leftMotors = new DcMotor[2], rightMotors = new DcMotor[2];
+    private HardwareMap hardwareMap;
+
     @Override
-    public void init() {
+    public void init(OpMode mode) {
+        hardwareMap = mode.hardwareMap;
         leftCtrl = this.hardwareMap.dcMotorController.get("left");
         rightCtrl = this.hardwareMap.dcMotorController.get("right");
         leftMotors[0] = this.hardwareMap.dcMotor.get("left1");
@@ -28,7 +33,7 @@ public abstract class TreadHardware extends OpMode {
         this.leftMotors[1].setPower(-leftSpeed);
         this.rightMotors[0].setPower(rightSpeed);
         this.rightMotors[1].setPower(rightSpeed);
-        Log.i("Speeds", leftMotors[0].getPower() + "," + leftMotors[1].getPower() + "," + rightMotors[0].getPower() + "," + rightMotors[1].getPower());
+        log("Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());
     }
 
     public double mapMotorSpeed(double speed) {
