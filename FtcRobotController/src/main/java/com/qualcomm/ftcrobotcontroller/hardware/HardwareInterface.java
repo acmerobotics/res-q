@@ -12,7 +12,7 @@ public abstract class HardwareInterface {
 
     public abstract void init(OpMode mode);
 
-    public void loop(long msSinceLastLoop) { }
+    public void loop(long nsSinceLastLoop) { }
 
     public void log(String msg) {
         Log.i(this.getClass().toString(), msg);

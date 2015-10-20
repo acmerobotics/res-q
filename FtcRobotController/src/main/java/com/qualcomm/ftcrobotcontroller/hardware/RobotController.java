@@ -9,11 +9,11 @@ import java.util.HashMap;
  */
 public class RobotController extends OpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
-    private long msLastLoop;
+    private long nsLastLoop;
     @Override
     public void init() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
-        msLastLoop = System.currentTimeMillis();
+        nsLastLoop = System.currentTimeMillis();
     }
 
     public boolean registerHardwareInterface(String name, HardwareInterface hi) {
@@ -38,8 +38,8 @@ public class RobotController extends OpMode {
     @Override
     public void loop() {
         for (String name : hardwareInterfaces.keySet()) {
-            hardwareInterfaces.get(name).loop(System.currentTimeMillis() - msLastLoop);
+            hardwareInterfaces.get(name).loop(System.nanoTime() - nsLastLoop);
         }
-        msLastLoop = System.currentTimeMillis();
+        nsLastLoop = System.nanoTime();
     }
 }
