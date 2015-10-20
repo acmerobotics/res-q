@@ -39,7 +39,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.hardware.Camera;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -49,7 +48,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -62,9 +60,7 @@ import com.qualcomm.ftccommon.FtcRobotControllerService.FtcRobotControllerBinder
 import com.qualcomm.ftccommon.LaunchActivityConstantsList;
 import com.qualcomm.ftccommon.Restarter;
 import com.qualcomm.ftccommon.UpdateUI;
-import com.qualcomm.ftcrobotcontroller.hardware.CameraHardware;
 import com.qualcomm.ftcrobotcontroller.opmodes.FtcOpModeRegister;
-import com.qualcomm.ftcrobotcontroller.opmodes.NewCameraHardware;
 import com.qualcomm.modernrobotics.ModernRoboticsHardwareFactory;
 import com.qualcomm.robotcore.hardware.HardwareFactory;
 import com.qualcomm.robotcore.hardware.configuration.Utility;
@@ -114,27 +110,6 @@ public class FtcRobotControllerActivity extends Activity {
       requestRobotRestart();
     }
 
-  }
-
-  public Camera openCamera() {
-      Camera camera;
-      try {
-          camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT); // open the front-facing camera
-      } catch (Exception e) {
-          camera = null;
-      }
-      return camera;
-  }
-
-  public void startPreview(final Camera camera, final NewCameraHardware cameraHardware, final Camera.PreviewCallback previewCallback) {
-      runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-              cameraHardware.preview = new NewCameraHardware.Preview(FtcRobotControllerActivity.this, camera, previewCallback);
-              FrameLayout previewLayout = (FrameLayout) findViewById(R.id.previewLayout);
-              previewLayout.addView(cameraHardware.preview);
-          }
-      });
   }
 
   protected ServiceConnection connection = new ServiceConnection() {

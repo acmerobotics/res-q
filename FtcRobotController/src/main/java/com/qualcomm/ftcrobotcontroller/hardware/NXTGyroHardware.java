@@ -8,13 +8,18 @@ import com.qualcomm.robotcore.robocol.Telemetry;
 /**
  * Created by Admin on 10/5/2015.
  */
-public class GyroHardware extends HardwareInterface {
+public class NXTGyroHardware extends HardwareInterface {
 
     private HardwareMap hardwareMap;
     private Telemetry telemetry;
     private GyroSensor gyro;
     private double lastReading, orientation, bias = 0;
     public static final IntegrationMode MODE = IntegrationMode.TRAPEZOIDAL;
+
+    public enum IntegrationMode {
+        TRAPEZOIDAL,
+        LEFT
+    }
 
     @Override
     public void init(OpMode mode) {

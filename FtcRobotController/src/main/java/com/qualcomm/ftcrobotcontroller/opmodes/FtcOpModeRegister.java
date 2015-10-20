@@ -98,10 +98,8 @@ public class FtcOpModeRegister implements OpModeRegister {
 //    manager.register("PushBotIrSeek", PushBotIrSeek.class);
 //    manager.register("PushBotSquare", PushBotSquare.class);
 
-    manager.register("TankTread", TankTread.class);
-    manager.register("ArcadeTread", ArcadeTread.class);
-    manager.register("GyroTest", GyroTest.class);
-    manager.register("CameraTest", ColorTestOp.class);
+    manager.register("Tank", TankDrive.class);
+    manager.register("Arcade", ArcadeDrive.class);
 
   }
 }

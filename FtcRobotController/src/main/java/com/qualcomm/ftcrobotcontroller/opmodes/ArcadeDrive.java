@@ -6,7 +6,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.RobotController;
 /**
  * Created by Admin on 9/24/2015.
  */
-public class ArcadeTread extends RobotController {
+public class ArcadeDrive extends RobotController {
 
     private DriveHardware driveHardware;
 

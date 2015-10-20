@@ -6,7 +6,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.RobotController;
 /**
  * Created by Admin on 9/21/2015.
  */
-public class TankTread extends RobotController {
+public class TankDrive extends RobotController {
 
     private DriveHardware driveHardware;
 
