@@ -1,5 +1,8 @@
 package com.qualcomm.ftcrobotcontroller.hardware;
 
+import android.graphics.LinearGradient;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.util.HashMap;
@@ -7,11 +10,13 @@ import java.util.HashMap;
 /**
  * Created by Admin on 10/5/2015.
  */
-public class RobotController extends OpMode {
+
+
+public abstract class RobotController extends LinearOpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
     private long nsLastLoop;
-    @Override
-    public void init() {
+
+    public void begin() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
         nsLastLoop = System.currentTimeMillis();
     }
@@ -35,11 +40,10 @@ public class RobotController extends OpMode {
         }
     }
 
-    @Override
-    public void loop() {
+    public void update() {
         for (String name : hardwareInterfaces.keySet()) {
-            hardwareInterfaces.get(name).loop(System.nanoTime() - nsLastLoop);
+            hardwareInterfaces.get(name).loop(getRuntime());
         }
-        nsLastLoop = System.nanoTime();
+        resetStartTime();
     }
 }

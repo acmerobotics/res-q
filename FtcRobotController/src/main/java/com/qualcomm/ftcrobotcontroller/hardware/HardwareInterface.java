@@ -2,7 +2,6 @@ package com.qualcomm.ftcrobotcontroller.hardware;
 
 import android.util.Log;
 
-import com.qualcomm.ftcrobotcontroller.opmodes.PushBotAuto;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
@@ -12,9 +11,9 @@ public abstract class HardwareInterface {
 
     public abstract void init(OpMode mode);
 
-    public void loop(long nsSinceLastLoop) { }
+    public void loop(double timeSinceLastLoop) { }
 
-    public void log(String msg) {
+    public void logcat(String msg) {
         Log.i(this.getClass().toString(), msg);
     }
 

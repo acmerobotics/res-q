@@ -11,14 +11,22 @@ public class TankDrive extends RobotController {
     private DriveHardware driveHardware;
 
     @Override
-    public void init() {
-        super.init();
+    public void runOpMode() throws InterruptedException {
+        super.begin();
+
         driveHardware = new DriveHardware();
         this.registerHardwareInterface("drive", driveHardware);
-    }
 
-    @Override
-    public void loop() {
-        driveHardware.setMappedMotorSpeeds(gamepad1.left_stick_y, gamepad1.right_stick_y);
+        waitOneFullHardwareCycle();
+
+        waitForStart();
+
+        while(opModeIsActive()) {
+            driveHardware.setMappedMotorSpeeds(gamepad1.left_stick_y, gamepad1.right_stick_y);
+
+            this.update();
+
+            waitOneFullHardwareCycle();
+        }
     }
 }
