@@ -4,6 +4,7 @@ import android.graphics.LinearGradient;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.HashMap;
 
@@ -12,11 +13,11 @@ import java.util.HashMap;
  */
 
 
-public abstract class RobotController extends LinearOpMode {
+public abstract class RobotController extends OpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
     private long nsLastLoop;
 
-    public void begin() {
+    public void init() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
         nsLastLoop = System.currentTimeMillis();
     }
@@ -31,7 +32,7 @@ public abstract class RobotController extends LinearOpMode {
         }
     }
 
-    public boolean unregisterHardwareInterface(String name, HardwareInterface hi) {
+    public boolean deregisterHardwareInterface(String name, HardwareInterface hi) {
         if (hardwareInterfaces.containsKey(name)) {
             hardwareInterfaces.remove(name);
             return true;
@@ -40,10 +41,18 @@ public abstract class RobotController extends LinearOpMode {
         }
     }
 
-    public void update() {
+    public void loop() {
         for (String name : hardwareInterfaces.keySet()) {
             hardwareInterfaces.get(name).loop(getRuntime());
         }
         resetStartTime();
+    }
+
+    public void wait(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (Exception e) {
+            RobotLog.e(e.getClass() + ": " + e.getMessage());
+        }
     }
 }
