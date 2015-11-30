@@ -43,7 +43,7 @@ public class I2cHardware extends HardwareInterface {
 
     @Override
     public void loop(double timeSinceLastLoop) {
-        if (lastReadAddress != -1 && controller.isI2cPortReady(port) && !controller.isI2cPortActionFlagSet(port)) {
+        if (isReading() && controller.isI2cPortReady(port) && !controller.isI2cPortActionFlagSet(port)) {
             controller.readI2cCacheFromController(port);
             Lock readLock = controller.getI2cReadCacheLock(port);
             try {

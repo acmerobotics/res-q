@@ -15,11 +15,8 @@ import java.util.HashMap;
 
 public abstract class RobotController extends OpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
-    private long nsLastLoop;
-
     public void init() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
-        nsLastLoop = System.currentTimeMillis();
     }
 
     public boolean registerHardwareInterface(String name, HardwareInterface hi) {
