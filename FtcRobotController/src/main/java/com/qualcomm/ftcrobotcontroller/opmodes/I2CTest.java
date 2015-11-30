@@ -124,7 +124,7 @@ public class I2cTest extends RobotController {
         controller.setI2cPortActionFlag(I2C_PORT);
         controller.writeI2cCacheToController(I2C_PORT);
 
-        wait(250);
+        Helper.wait(250);
     }
 
     public void readRegister(int address, int length, I2cReadCallback cb) {
@@ -144,7 +144,7 @@ public class I2cTest extends RobotController {
 
     public void waitForReady() {
         while(!controller.isI2cPortReady(I2C_PORT)) {
-            wait(100);
+            Helper.wait(100);
         }
     }
 
