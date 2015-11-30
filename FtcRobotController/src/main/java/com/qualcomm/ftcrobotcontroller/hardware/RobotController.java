@@ -20,9 +20,6 @@ public abstract class RobotController extends OpMode {
     public void init() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
         nsLastLoop = System.currentTimeMillis();
-
-        RobotLog.clearGlobalErrorMsg();
-        RobotLog.d("==============Robot Controller============");
     }
 
     public boolean registerHardwareInterface(String name, HardwareInterface hi) {
