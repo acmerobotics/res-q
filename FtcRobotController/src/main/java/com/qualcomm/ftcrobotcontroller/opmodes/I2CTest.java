@@ -6,12 +6,15 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cController;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 
 /**
  * Created by Ryan on 11/23/2015.
  */
-public class I2CTest extends RobotController {
+public class I2cTest extends RobotController {
+
+    public static final boolean DEBUG = false;
 
     public static final int I2C_PORT = 0;
     public static final int I2C_ADDRESS = 0x28 * 2;
@@ -24,6 +27,33 @@ public class I2CTest extends RobotController {
     public DeviceInterfaceModule dim;
     public I2cController controller;
 
+    public int lastReadAddress = -1;
+    public int lastReadLength = 0;
+    public I2cReadCallback lastReadCallback = null;
+    
+    public long loopTime = 0;
+    public long deltaTime = 0;
+
+    public double lastHeading = 0.0;
+
+    public interface I2cReadCallback {
+        public void onReadFinished(int address, byte[] result, int length);
+    }
+
+    public I2cReadCallback callback = new I2cReadCallback() {
+        @Override
+        public void onReadFinished(int address, byte[] result, int length) {
+            if (address == EUL_DATA_X_ADDRESS) {
+                byte lsb = result[0];
+                byte msb = result[1];
+                int val =  (lsb & 0xff) | ((msb & 0xff) << 8); // the '& 0xff' converts from signed to unsigned byte
+                double heading = ((double) val) / 16.0;
+                lastHeading = heading;
+                RobotLog.d("Heading: " + heading);
+            }
+        }
+    };
+
     public void init() {
         super.init();
 
@@ -31,32 +61,53 @@ public class I2CTest extends RobotController {
         controller = (I2cController) dim;
 
         if (controller != null) {
-            RobotLog.d("Connection Info: " + controller.getConnectionInfo());
+            if (DEBUG) RobotLog.d("Connection Info: " + controller.getConnectionInfo());
         } else {
-            RobotLog.d("Device failed to initialize");
+            if (DEBUG) RobotLog.d("Device failed to initialize");
         }
 
-        writeRegister(OPR_MODE_ADDRESS, OPR_MODE_DATA);
-        writeRegister(UNIT_SEL_ADDRESS, UNIT_SEL_DATA);
-
-        byte lsb, msb;
-        int val;
-        double heading;
-        while (true) {
-            byte[] arr = readRegister(EUL_DATA_X_ADDRESS, 2);
-            lsb = arr[0];
-            msb = arr[1];
-            val =  ((int) lsb) & (((int) msb) << 8);
-            heading = ((double) val) / 16.0;
-            telemetry.addData("Heading", heading);
-            RobotLog.d("Heading: " + heading);
-            //wait(250);
-        }
+        writeRegisterSync(OPR_MODE_ADDRESS, OPR_MODE_DATA);
+        writeRegisterSync(UNIT_SEL_ADDRESS, UNIT_SEL_DATA);
     }
 
-    public void writeRegister(int address, byte b) {
+    @Override
+    public void loop() {
+        super.loop();
+        
+        if (loopTime == 0) {
+            loopTime = System.nanoTime();
+        } else {
+            deltaTime = System.nanoTime() - loopTime;
+            loopTime = System.nanoTime();
+        }
+
+        if (lastReadAddress != -1 && controller.isI2cPortReady(I2C_PORT) && !controller.isI2cPortActionFlagSet(I2C_PORT)) {
+            controller.readI2cCacheFromController(I2C_PORT);
+            Lock readLock = controller.getI2cReadCacheLock(I2C_PORT);
+            try {
+                readLock.lockInterruptibly();
+                byte[] readCache = controller.getI2cReadCache(I2C_PORT);
+                byte[] result = Arrays.copyOfRange(readCache,
+                        I2cController.I2C_BUFFER_START_ADDRESS,
+                        I2cController.I2C_BUFFER_START_ADDRESS + lastReadLength);
+                lastReadCallback.onReadFinished(lastReadAddress, result, lastReadLength);
+                resetRead();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                readLock.unlock();
+            }
+        }
+
+        telemetry.addData("Heading", lastHeading);
+        telemetry.addData("Time", deltaTime / Math.pow(10, 9) + "s");
+
+        if (lastReadAddress == -1) readRegister(EUL_DATA_X_ADDRESS, 2, callback);
+    }
+
+    public void writeRegisterSync(int address, byte b) {
         waitForReady();
-        RobotLog.d("I2C port is ready");
+        if (DEBUG) RobotLog.d("I2C port is ready");
 
         controller.enableI2cWriteMode(I2C_PORT, I2C_ADDRESS, address, 1);
 
@@ -65,7 +116,7 @@ public class I2CTest extends RobotController {
             lock.lock();
             byte[] cache = controller.getI2cWriteCache(I2C_PORT);
             cache[I2cController.I2C_BUFFER_START_ADDRESS] = b;
-            RobotLog.d("Write: " + Helper.byteArrayToString(cache));
+            if (DEBUG) RobotLog.d("Write: " + Helper.byteArrayToString(cache));
         } finally {
             lock.unlock();
         }
@@ -76,41 +127,31 @@ public class I2CTest extends RobotController {
         wait(250);
     }
 
-    public byte[] readRegister(int address, int length) {
+    public void readRegister(int address, int length, I2cReadCallback cb) {
         waitForReady();
 
-        RobotLog.d("I2C port is ready");
+        if (DEBUG) RobotLog.d("I2C port is ready");
 
         controller.enableI2cReadMode(I2C_PORT, I2C_ADDRESS, address, length);
 
         controller.setI2cPortActionFlag(I2C_PORT);
         controller.writeI2cCacheToController(I2C_PORT);
 
-        wait(250);
-
-        controller.readI2cCacheFromController(I2C_PORT);
-
-        wait(1000);
-
-        Lock lock = controller.getI2cReadCacheLock(I2C_PORT);
-        try {
-            lock.lock();
-            byte[] cache = controller.getI2cReadCache(I2C_PORT);
-            RobotLog.d("Read: " + Helper.byteArrayToString(cache));
-            byte[] ret = new byte[length];
-            for (int i = 0; i < length; i++) {
-                ret[i] = cache[I2cController.I2C_BUFFER_START_ADDRESS + i];
-            }
-            return ret;
-        } finally {
-            lock.unlock();
-        }
+        lastReadAddress = address;
+        lastReadLength = length;
+        lastReadCallback = cb;
     }
 
     public void waitForReady() {
-        while (!controller.isI2cPortReady(I2C_PORT)) {
-            wait(250);
+        while(!controller.isI2cPortReady(I2C_PORT)) {
+            wait(100);
         }
+    }
+
+    public void resetRead() {
+        lastReadAddress = -1;
+        lastReadLength = 0;
+        lastReadCallback = null;
     }
 
 }

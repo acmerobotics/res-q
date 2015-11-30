@@ -100,7 +100,7 @@ public class FtcOpModeRegister implements OpModeRegister {
 
     manager.register("Tank", TankDrive.class);
     manager.register("Arcade", ArcadeDrive.class);
-    manager.register("I2CTest", I2CTest.class);
+    manager.register("I2cTest", I2cTest.class);
 
   }
 }
