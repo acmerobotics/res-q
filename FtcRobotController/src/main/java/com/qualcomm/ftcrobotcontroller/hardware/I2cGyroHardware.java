@@ -33,8 +33,7 @@ public class I2cGyroHardware extends I2cHardware {
     };
 
     public I2cGyroHardware() {
-        this.port = 0;
-        this.address = 0x28 * 2;
+
     }
 
     @Override
@@ -50,6 +49,16 @@ public class I2cGyroHardware extends I2cHardware {
         super.loop(timeSinceLastLoop);
 
         if (!isReading()) readRegister(EUL_DATA_X_ADDRESS, 2, callback);
+    }
+
+    @Override
+    public int getI2cPort() {
+        return 0;
+    }
+
+    @Override
+    public int getI2cAddress() {
+        return 0x28 * 2;
     }
 
     public double getHeading() {
