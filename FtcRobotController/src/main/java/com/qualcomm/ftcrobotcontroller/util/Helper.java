@@ -25,4 +25,8 @@ public class Helper {
         }
     }
 
+    public static int assembleWord(byte lsb, byte msb) {
+        return (lsb & 0xff) | ((msb & 0xff) << 8); // the '& 0xff' converts from signed to unsigned byte
+    }
+
 }

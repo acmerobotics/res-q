@@ -22,9 +22,7 @@ public class I2cGyroHardware extends I2cHardware {
         public void onReadFinished(int address, byte[] result, int length) {
             if (Helper.DEBUG) RobotLog.d("Bytes: " + Helper.byteArrayToString(result));
             if (address == EUL_DATA_X_ADDRESS) {
-                byte lsb = result[0];
-                byte msb = result[1];
-                int val =  (lsb & 0xff) | ((msb & 0xff) << 8); // the '& 0xff' converts from signed to unsigned byte
+                int val = Helper.assembleWord(result[0], result[1]);
                 double heading = ((double) val) / 16.0; // 16 bytes = 1 degree
                 lastHeading = heading;
                 if (Helper.DEBUG) RobotLog.d("Heading: " + heading);
