@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.RobotLog;
  */
 public class Helper {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static String byteArrayToString(byte[] arr) {
         String s = "";

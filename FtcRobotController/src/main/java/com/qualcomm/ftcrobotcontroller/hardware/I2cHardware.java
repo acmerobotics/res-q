@@ -53,6 +53,7 @@ public abstract class I2cHardware extends HardwareInterface {
                 byte[] result = Arrays.copyOfRange(readCache,
                         I2cController.I2C_BUFFER_START_ADDRESS,
                         I2cController.I2C_BUFFER_START_ADDRESS + lastReadLength);
+                RobotLog.d("Read: " + Helper.byteArrayToString(readCache));
                 lastReadCallback.onReadFinished(lastReadAddress, result, lastReadLength);
                 resetRead();
             } catch (InterruptedException e) {
@@ -81,25 +82,24 @@ public abstract class I2cHardware extends HardwareInterface {
             lock.lock();
             byte[] cache = controller.getI2cWriteCache(i2cPort);
             cache[I2cController.I2C_BUFFER_START_ADDRESS] = b;
-            if (Helper.DEBUG) RobotLog.d("Write: " + Helper.byteArrayToString(cache));
+            RobotLog.d("Write: " + Helper.byteArrayToString(cache));
         } finally {
             lock.unlock();
         }
 
         controller.setI2cPortActionFlag(i2cPort);
         controller.writeI2cCacheToController(i2cPort);
-
-        Helper.wait(250);
     }
 
     public void readRegister(int address, int length, I2cReadCallback cb) {
+        if (isReading()) return;
+
         waitForReady();
 
         if (Helper.DEBUG) RobotLog.d("I2C port " + i2cPort + " is ready");
 
         controller.enableI2cReadMode(i2cPort, i2cAddress, address, length);
 
-        controller.setI2cPortActionFlag(i2cPort);
         controller.writeI2cCacheToController(i2cPort);
 
         lastReadAddress = address;
@@ -114,7 +114,7 @@ public abstract class I2cHardware extends HardwareInterface {
     }
 
     public void resetRead() {
-        RobotLog.d("Reset read");
+        if (Helper.DEBUG) RobotLog.d("Reset read");
         lastReadAddress = -1;
         lastReadLength = 0;
         lastReadCallback = null;
