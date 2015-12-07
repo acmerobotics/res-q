@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 
 
-public abstract class RobotController extends OpMode {
+public class RobotController extends OpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
     public void init() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
@@ -29,7 +29,7 @@ public abstract class RobotController extends OpMode {
         }
     }
 
-    public boolean deregisterHardwareInterface(String name, HardwareInterface hi) {
+    public boolean deregisterHardwareInterface(String name) {
         if (hardwareInterfaces.containsKey(name)) {
             hardwareInterfaces.remove(name);
             return true;

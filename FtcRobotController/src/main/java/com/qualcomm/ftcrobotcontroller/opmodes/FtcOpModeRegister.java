@@ -103,5 +103,6 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("I2cGyroTest", I2cGyroTest.class);
     manager.register("I2cColorTest", I2cColorTest.class);
     manager.register("NXTUltrasonic", NXTUltrasonicTest.class);
+    manager.register("AutoTurn", AutoTurn.class);
   }
 }
