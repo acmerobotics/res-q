@@ -49,8 +49,8 @@ public class GyroDriveHardware extends DriveHardware {
     public void turnRight(double degrees, TurnCallback cb) {
         callback = cb;
         targetHeading = gyroHardware.getHeading() + degrees;
-        if (targetHeading < 0.0) {
-            targetHeading += 360.0;
+        if (targetHeading > 360.0) {
+            targetHeading -= 360.0;
         }
         setMotorSpeeds(20, -20);
         turning = true;
