@@ -11,14 +11,12 @@ public class LinearRobotController extends LinearOpMode {
     public RobotController robotController;
 
     public LinearRobotController() {
-        super();
-        robotController = new RobotController();
-        robotController.init();
+        robotController = new RobotController(this);
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        robotController.init();
     }
 
     @Override
@@ -27,8 +25,8 @@ public class LinearRobotController extends LinearOpMode {
         super.waitOneFullHardwareCycle();
     }
 
-    public void registerHardwareInterface(String name, HardwareInterface hi) {
-        robotController.registerHardwareInterface(name, hi);
+    public boolean registerHardwareInterface(String name, HardwareInterface hi) {
+        return robotController.registerHardwareInterface(name, hi);
     }
 
     public void deregisterHardwareInterface(String name) {

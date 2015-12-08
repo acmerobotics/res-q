@@ -1,7 +1,10 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.hardware.GyroDriveHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.I2cGyroHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.LinearRobotController;
+import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * Created by Ryan on 12/6/2015.
@@ -9,20 +12,33 @@ import com.qualcomm.ftcrobotcontroller.hardware.LinearRobotController;
 public class AutoTurn extends LinearRobotController {
 
     public GyroDriveHardware gyroDriveHardware;
+    public I2cGyroHardware gyroHardware;
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        gyroDriveHardware = new GyroDriveHardware();
+        gyroHardware = new I2cGyroHardware();
+        registerHardwareInterface("gyro", gyroHardware);
+        gyroDriveHardware = new GyroDriveHardware(gyroHardware);
+        RobotLog.d("Init: " + registerHardwareInterface("gyro_drive", gyroDriveHardware));
 
         waitForStart();
 
-        gyroDriveHardware.turnLeft(90, new GyroDriveHardware.TurnCallback() {
-            @Override
-            public void onTurnFinished() {
+        while(true) {
+            gyroDriveHardware.turnLeftSync(90);
 
-            }
-        });
+            waitMillis(1000);
+
+//            gyroDriveHardware.turnRightSync(90);
+//
+//            waitMillis(1000);
+        }
+
+//        gyroDriveHardware.setMotorSpeeds(0.8, 0.8);
+//
+//        waitMillis(5000);
+//
+//        gyroDriveHardware.stopMotors();
     }
 }

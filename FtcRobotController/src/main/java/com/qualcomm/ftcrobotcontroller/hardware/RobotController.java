@@ -4,6 +4,7 @@ import android.graphics.LinearGradient;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.HashMap;
@@ -15,6 +16,16 @@ import java.util.HashMap;
 
 public class RobotController extends OpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
+    private OpMode opMode;
+
+    public RobotController() {
+        opMode = this;
+    }
+
+    public RobotController(OpMode mode) {
+        opMode = mode;
+    }
+
     public void init() {
         hardwareInterfaces = new HashMap<String, HardwareInterface>();
     }
@@ -24,7 +35,7 @@ public class RobotController extends OpMode {
             return false;
         } else {
             hardwareInterfaces.put(name, hi);
-            hi.init(this);
+            hi.init(opMode);
             return true;
         }
     }

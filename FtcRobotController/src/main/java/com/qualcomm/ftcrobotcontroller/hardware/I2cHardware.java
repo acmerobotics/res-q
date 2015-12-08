@@ -1,6 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.hardware;
 
 import com.qualcomm.ftcrobotcontroller.util.Helper;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cController;
@@ -18,10 +19,13 @@ public abstract class I2cHardware extends HardwareInterface {
 
     public DeviceInterfaceModule dim;
     public I2cController controller;
+    public OpMode opMode;
 
     public int lastReadAddress = -1;
     public int lastReadLength = 0;
     public I2cReadCallback lastReadCallback = null;
+
+    public byte[] temp;
 
     public interface I2cReadCallback {
         public void onReadFinished(int address, byte[] result, int length);
@@ -31,6 +35,8 @@ public abstract class I2cHardware extends HardwareInterface {
     public void init(OpMode mode) {
         i2cPort = getI2cPort();
         i2cAddress = getI2cAddress();
+
+        opMode = mode;
 
         dim = mode.hardwareMap.deviceInterfaceModule.get("dim");
         controller = (I2cController) dim;
@@ -89,6 +95,8 @@ public abstract class I2cHardware extends HardwareInterface {
 
         controller.setI2cPortActionFlag(i2cPort);
         controller.writeI2cCacheToController(i2cPort);
+
+        Helper.wait(250);
     }
 
     public void readRegister(int address, int length, I2cReadCallback cb) {
@@ -105,6 +113,25 @@ public abstract class I2cHardware extends HardwareInterface {
         lastReadAddress = address;
         lastReadLength = length;
         lastReadCallback = cb;
+    }
+
+    public byte[] readRegisterSync(int address, int length) {
+        if (!(opMode instanceof LinearRobotController)) { return null; }
+        temp = null;
+        readRegister(address, length, new I2cReadCallback() {
+            @Override
+            public void onReadFinished(int address, byte[] result, int length) {
+                temp = result;
+            }
+        });
+        while (isReading()) {
+            try {
+                ((LinearRobotController) opMode).waitOneFullHardwareCycle();
+            } catch (InterruptedException e) {
+                RobotLog.e(e.getMessage());
+            }
+        }
+        return temp;
     }
 
     public void waitForReady() {

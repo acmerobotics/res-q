@@ -25,6 +25,9 @@ public class I2cGyroHardware extends I2cHardware {
                 int val = Helper.assembleWord(result[0], result[1]);
                 double heading = ((double) val) / 16.0; // 16 bytes = 1 degree
                 lastHeading = heading;
+                if (lastHeading > 180) {
+                    lastHeading = lastHeading - 360;
+                }
                 if (Helper.DEBUG) RobotLog.d("Heading: " + heading);
             }
         }

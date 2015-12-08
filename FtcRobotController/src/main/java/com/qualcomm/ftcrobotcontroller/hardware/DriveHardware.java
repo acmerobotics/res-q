@@ -29,10 +29,10 @@ public class DriveHardware extends HardwareInterface {
     }
 
     public void setMotorSpeeds(double leftSpeed, double rightSpeed) {
-        this.leftMotors[0].setPower(-leftSpeed);
-        this.leftMotors[1].setPower(-leftSpeed);
-        this.rightMotors[0].setPower(rightSpeed);
-        this.rightMotors[1].setPower(rightSpeed);
+        this.leftMotors[0].setPower(leftSpeed);
+        this.leftMotors[1].setPower(leftSpeed);
+        this.rightMotors[0].setPower(-rightSpeed);
+        this.rightMotors[1].setPower(-rightSpeed);
         logcat("Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());
     }
 
@@ -43,5 +43,9 @@ public class DriveHardware extends HardwareInterface {
 
     public void setMappedMotorSpeeds(double leftSpeed, double rightSpeed) {
         setMotorSpeeds(mapMotorSpeed(leftSpeed), mapMotorSpeed(rightSpeed));
+    }
+
+    public void stopMotors() {
+        setMotorSpeeds(0, 0);
     }
 }
