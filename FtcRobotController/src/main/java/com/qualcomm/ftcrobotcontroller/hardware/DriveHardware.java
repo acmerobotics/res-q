@@ -13,9 +13,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class DriveHardware extends HardwareInterface {
 
     public static final double SENSITIVITY = 1.5;
+    public static final double RAMP_TIME = 0.125;
     private DcMotorController leftCtrl, rightCtrl;
     private DcMotor[] leftMotors = new DcMotor[2], rightMotors = new DcMotor[2];
     private HardwareMap hardwareMap;
+    private double actualLeft, actualRight, targetLeft, targetRight;
+    private double leftRate, rightRate;
 
     @Override
     public void init(OpMode mode) {
@@ -28,11 +31,25 @@ public class DriveHardware extends HardwareInterface {
         rightMotors[1] = this.hardwareMap.dcMotor.get("right2");
     }
 
+    @Override
+    public void loop(double timeSinceLastLoop) {
+        if ((leftRate > 0 && actualLeft < targetLeft) || (leftRate < 0 && actualLeft > targetLeft)) {
+            actualLeft += leftRate * timeSinceLastLoop;
+        }
+        if ((rightRate > 0 && actualRight < targetRight) || (rightRate < 0 && actualRight > targetRight)) {
+            actualRight += rightRate * timeSinceLastLoop;
+        }
+        this.leftMotors[0].setPower(actualLeft);
+        this.leftMotors[1].setPower(actualLeft);
+        this.rightMotors[0].setPower(-actualRight);
+        this.rightMotors[1].setPower(-actualRight);
+    }
+
     public void setMotorSpeeds(double leftSpeed, double rightSpeed) {
-        this.leftMotors[0].setPower(leftSpeed);
-        this.leftMotors[1].setPower(leftSpeed);
-        this.rightMotors[0].setPower(-rightSpeed);
-        this.rightMotors[1].setPower(-rightSpeed);
+        targetLeft = leftSpeed;
+        targetRight = rightSpeed;
+        leftRate = (targetLeft - actualLeft) / RAMP_TIME;
+        rightRate = (targetRight - actualRight) / RAMP_TIME;
         logcat("Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());
     }
 

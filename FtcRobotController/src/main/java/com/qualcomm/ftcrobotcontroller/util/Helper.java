@@ -29,4 +29,8 @@ public class Helper {
         return (lsb & 0xff) | ((msb & 0xff) << 8); // the '& 0xff' converts from signed to unsigned byte
     }
 
+    public static boolean compareDouble(double a, double b) {
+        return Math.abs(a - b) < Math.pow(10, 6);
+    }
+
 }
