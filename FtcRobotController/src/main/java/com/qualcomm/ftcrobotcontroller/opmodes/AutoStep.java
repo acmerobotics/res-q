@@ -24,7 +24,10 @@ public class AutoStep extends LinearRobotController {
 
         while (true) {
             position++;
+<<<<<<< HEAD
             stepHardware.setPosition(position);
+=======
+>>>>>>> fffca1b671e73c07efa40dfe13d1743c93c6839e
             telemetry.addData("Position", position);
             waitMillis(10);
         }
