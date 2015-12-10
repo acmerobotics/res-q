@@ -1,5 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.ftcrobotcontroller.hardware.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.GyroDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.I2cGyroHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.LinearRobotController;
@@ -13,6 +14,7 @@ public class AutoTurn extends LinearRobotController {
 
     public GyroDriveHardware gyroDriveHardware;
     public I2cGyroHardware gyroHardware;
+    public DriveHardware driveHardware;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -20,7 +22,9 @@ public class AutoTurn extends LinearRobotController {
 
         gyroHardware = new I2cGyroHardware();
         registerHardwareInterface("gyro", gyroHardware);
-        gyroDriveHardware = new GyroDriveHardware(gyroHardware);
+        driveHardware = new DriveHardware();
+        registerHardwareInterface("drive", driveHardware);
+        gyroDriveHardware = new GyroDriveHardware(driveHardware, gyroHardware);
         RobotLog.d("Init: " + registerHardwareInterface("gyro_drive", gyroDriveHardware));
 
         waitForStart();
