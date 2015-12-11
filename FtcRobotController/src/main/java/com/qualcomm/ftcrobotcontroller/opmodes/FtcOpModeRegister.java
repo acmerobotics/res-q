@@ -31,7 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.ftcrobotcontroller.hardware.UltrasonicHardware;
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.ArcadeDrive;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TankDrive;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.UltrasonicTest;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -40,72 +46,29 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  */
 public class FtcOpModeRegister implements OpModeRegister {
 
-  /**
-   * The Op Mode Manager will call this method when it wants a list of all
-   * available op modes. Add your op mode to the list to enable it.
-   *
-   * @param manager op mode manager
-   */
-  public void register(OpModeManager manager) {
-
-    /*
-     * register your op modes here.
-     * The first parameter is the name of the op mode
-     * The second parameter is the op mode class property
+    /**
+     * The Op Mode Manager will call this method when it wants a list of all
+     * available op modes. Add your op mode to the list to enable it.
      *
-     * If two or more op modes are registered with the same name, the app will display an error.
+     * @param manager op mode manager
      */
+    public void register(OpModeManager manager) {
+        /*
+         * register your op modes here.
+         * The first parameter is the name of the op mode
+         * The second parameter is the op mode class property
+         *
+         * If two or more op modes are registered with the same name, the app will display an error.
+         */
 
-
-    /*
-     * The following op modes are example op modes provided by QualComm.
-     * Uncomment the lines to make the op modes available to the driver station.
-     */
-    //manager.register("LinearK9TeleOp", LinearK9TeleOp.class);
-    //manager.register("LinearIrExample", LinearIrExample.class);
-    //manager.register("IrSeekerOp", IrSeekerOp.class);
-    //manager.register("CompassCalibration", CompassCalibration.class);
-    //manager.register("NxtTeleOp", NxtTeleOp.class);
-
-    /*
-     * The NullOp op mode
-     */
-    manager.register("NullOp", NullOp.class);
-
-
-    /*
-     * The following example op modes are designed to work with a K9-style robot.
-     *  - K9TeleOp is a simple driver controlled program.
-     *  - K9IrSeeker uses a legacy IR seeker V2 sensor to follow a beacon.
-     *  - K9Line uses a legacy LEGO NXT light sensor to follow a white line.
-     */
-
-//    manager.register("K9TeleOp", K9TeleOp.class);
-//    manager.register("K9IrSeeker", K9IrSeeker.class);
-//    manager.register("K9Line", K9Line.class);
-
-    /*
-     * The following example op modes are designed to work with a pushbot-style robot.
-     *  - PushBotManual is a driver controled (tank drive) op mode.
-     *  - PushBotAuto uses the event driven (non linear) OpMode class for autonomous operation.
-     *  - PushBotDriveTouch uses the LinearOpMode class and shows how to autonomously drive if a button is not pressed.
-     *  - PushBotIrSeek uses the LinearOpMode class and shows how to track an IR beacon.
-     *  - PushBotSquare uses the LinearOpMOde class and shows how to drive in a square pattern autonomously.
-     */
-
-//    manager.register("PushBotManual", PushBotManual.class);
-//    manager.register("PushBotAuto", PushBotAuto.class);
-//    manager.register("PushBotDriveTouch", PushBotDriveTouch.class);
-//    manager.register("PushBotIrSeek", PushBotIrSeek.class);
-//    manager.register("PushBotSquare", PushBotSquare.class);
-
-    manager.register("Tank", TankDrive.class);
-    manager.register("Arcade", ArcadeDrive.class);
-    manager.register("I2cGyroTest", I2cGyroTest.class);
-    manager.register("I2cColorTest", I2cColorTest.class);
-    manager.register("Ultrasonic", UltrasonicTest.class);
-    manager.register("AutoTurn", AutoTurn.class);
-    manager.register("AutoStep", AutoStep.class);
-    manager.register("AutoStep2", AutoStep2.class);
-  }
+        manager.register("TankDrive", TankDrive.class);
+        manager.register("ArcadeDrive", ArcadeDrive.class);
+        manager.register("I2cGyroTest", I2cGyroTest.class);
+        manager.register("I2cColorTest", I2cColorTest.class);
+        manager.register("Ultrasonic", UltrasonicTest.class);
+        manager.register("GyroTurnTest", GyroTurnTest.class);
+        manager.register("FullAuto", FullAuto.class);
+        manager.register("AutoStep", AutoStep.class);
+        manager.register("AutoStep2", AutoStep2.class);
+    }
 }

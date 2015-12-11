@@ -1,10 +1,8 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.ftcrobotcontroller.hardware.DcMotorStepHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.LinearRobotController;
+import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * Created by Admin on 12/10/2015.

@@ -1,20 +1,20 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 
 /**
  * Created by Admin on 12/10/2015.
  */
 public class UltrasonicTest extends LinearRobotController {
 
-    private UltrasonicHardware us;
+    private UltrasonicPairHardware us;
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        us = new UltrasonicHardware();
+        us = new UltrasonicPairHardware();
         registerHardwareInterface("us", us);
 
         waitForStart();

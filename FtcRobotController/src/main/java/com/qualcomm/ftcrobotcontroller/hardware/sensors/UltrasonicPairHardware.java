@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 /**
  * Created by Ryan on 12/9/2015.
  */
-public class UltrasonicHardware extends HardwareInterface {
+public class UltrasonicPairHardware extends HardwareInterface {
 
     public static final double WIDTH = 29.5;
 
     private UltrasonicSensor us1, us2;
     private double last1, last2;
 
-    public UltrasonicHardware() {
+    public UltrasonicPairHardware() {
     }
 
     @Override
@@ -37,6 +37,7 @@ public class UltrasonicHardware extends HardwareInterface {
         }
     }
 
+    @Deprecated
     public double getOffsetAngle() {
         double theta = Math.atan(0.5 * WIDTH / getDistance());
         return last1 > last2 ? theta : -theta;

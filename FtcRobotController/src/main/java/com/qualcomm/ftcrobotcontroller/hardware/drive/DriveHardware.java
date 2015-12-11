@@ -3,7 +3,6 @@ package com.qualcomm.ftcrobotcontroller.hardware.drive;
 import android.util.Log;
 
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
-import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
