@@ -1,14 +1,19 @@
 package com.qualcomm.ftcrobotcontroller.hardware;
 
+import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * Created by Ryan on 12/9/2015.
  */
 public class DcMotorStepHardware extends HardwareInterface {
 
-    public static final double K_P = 0.0, K_I = 0.0, K_D = 0.0;
+    public static final double K_P = 0.000001, K_I = 0.0, K_D = 0.0;
+
+    private OpMode mode;
 
     private DcMotor motor;
     private int targetPosition;
@@ -23,6 +28,7 @@ public class DcMotorStepHardware extends HardwareInterface {
 
     @Override
     public void init(OpMode mode) {
+        this.mode = mode;
         targetPosition = motor.getCurrentPosition();
     }
 
@@ -30,10 +36,14 @@ public class DcMotorStepHardware extends HardwareInterface {
     public void loop(double timeSinceLastLoop) {
         super.loop(timeSinceLastLoop);
         // PID
-        double error = targetPosition = motor.getCurrentPosition();
+        double error = targetPosition - motor.getCurrentPosition();
         integral += error * timeSinceLastLoop;
         double derivative = (error - prev) / timeSinceLastLoop;
-        motor.setPower(error * K_P + integral * K_I + derivative * K_D);
+        double power = error * K_P + integral * K_I + derivative * K_D;
+        mode.telemetry.addData("Error", error);
+        mode.telemetry.addData("Power", power);
+        mode.telemetry.addData("Position", motor.getCurrentPosition());
+        motor.setPower(Range.clip(power, -1, 1));
     }
 
     public void setPosition(int position) {

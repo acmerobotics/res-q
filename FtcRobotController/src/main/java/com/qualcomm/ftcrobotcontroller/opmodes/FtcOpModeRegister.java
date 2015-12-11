@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.ftcrobotcontroller.hardware.UltrasonicHardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -102,7 +103,9 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("Arcade", ArcadeDrive.class);
     manager.register("I2cGyroTest", I2cGyroTest.class);
     manager.register("I2cColorTest", I2cColorTest.class);
-    manager.register("NXTUltrasonic", NXTUltrasonicTest.class);
+    manager.register("Ultrasonic", UltrasonicTest.class);
     manager.register("AutoTurn", AutoTurn.class);
+    manager.register("AutoStep", AutoStep.class);
+    manager.register("AutoStep2", AutoStep2.class);
   }
 }

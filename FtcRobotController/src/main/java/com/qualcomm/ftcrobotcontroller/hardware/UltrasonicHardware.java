@@ -6,16 +6,14 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 /**
  * Created by Ryan on 12/9/2015.
  */
-public class UltrasonicDriveHardware extends HardwareInterface {
+public class UltrasonicHardware extends HardwareInterface {
 
-    public static final double WIDTH = 23.0;
+    public static final double WIDTH = 29.5;
 
-    private DriveHardware driveHardware;
     private UltrasonicSensor us1, us2;
     private double last1, last2;
 
-    public UltrasonicDriveHardware(DriveHardware driveHardware) {
-        this.driveHardware = driveHardware;
+    public UltrasonicHardware() {
     }
 
     @Override
@@ -28,16 +26,22 @@ public class UltrasonicDriveHardware extends HardwareInterface {
     public void loop(double timeSinceLastLoop) {
         super.loop(timeSinceLastLoop);
 
-        last1 = us1.getUltrasonicLevel();
-        last2 = us2.getUltrasonicLevel();
+        double new1 = us1.getUltrasonicLevel();
+        double new2 = us2.getUltrasonicLevel();
+        if (new1 != 0) {
+            last1 = new1;
+        }
+        if (new2 != 0) {
+            last2 = new2;
+        }
     }
 
     public double getOffsetAngle() {
-        double theta = Math.atan2(0.5 * WIDTH, (last1 + last2) / 2);
+        double theta = Math.atan(0.5 * WIDTH / getDistance());
         return last1 > last2 ? theta : -theta;
     }
 
-    public double getReading() {
+    public double getDistance() {
         return (last1 + last2) / 2;
     }
 }
