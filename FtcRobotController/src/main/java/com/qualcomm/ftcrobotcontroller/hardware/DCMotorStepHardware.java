@@ -1,10 +1,8 @@
 package com.qualcomm.ftcrobotcontroller.hardware;
 
-import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * Created by Ryan on 12/9/2015.

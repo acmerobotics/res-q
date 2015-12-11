@@ -1,6 +1,5 @@
 package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
-import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -20,7 +19,7 @@ public class I2cGyroHardware extends I2cHardware {
     public I2cReadCallback callback = new I2cReadCallback() {
         @Override
         public void onReadFinished(int address, byte[] result, int length) {
-            if (Helper.DEBUG) RobotLog.d("Bytes: " + I2cHardware.byteArrayToString(result));
+            RobotLog.d("Bytes: " + I2cHardware.byteArrayToString(result));
             if (address == EUL_DATA_X_ADDRESS) {
                 int val = I2cHardware.assembleWord(result[0], result[1]);
                 double heading = ((double) val) / 16.0; // 16 bytes = 1 degree
@@ -28,7 +27,7 @@ public class I2cGyroHardware extends I2cHardware {
                 if (lastHeading > 180) {
                     lastHeading = lastHeading - 360;
                 }
-                if (Helper.DEBUG) RobotLog.d("Heading: " + heading);
+                RobotLog.d("Heading: " + heading);
             }
         }
     };

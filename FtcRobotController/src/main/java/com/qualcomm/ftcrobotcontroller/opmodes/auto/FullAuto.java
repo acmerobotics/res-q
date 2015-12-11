@@ -1,13 +1,12 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
-import com.qualcomm.ftcrobotcontroller.control.RobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.GyroDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PusherHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cRGBHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 
 /**
@@ -21,7 +20,7 @@ public class FullAuto extends LinearRobotController {
     private GyroDriveHardware gyroDriveHardware;
     private I2cGyroHardware gyroHardware;
     private UltrasonicPairHardware usHardware;
-    private I2cRGBHardware colorHardware;
+    private I2cColorHardware colorHardware;
     private PusherHardware pusherHardware;
     private ArmHardware armHardware;
 
@@ -31,7 +30,7 @@ public class FullAuto extends LinearRobotController {
         gyroHardware = new I2cGyroHardware();
         gyroDriveHardware = new GyroDriveHardware(driveHardware, gyroHardware);
         usHardware = new UltrasonicPairHardware();
-        colorHardware = new I2cRGBHardware();
+        colorHardware = new I2cColorHardware();
         pusherHardware = new PusherHardware();
         armHardware = new ArmHardware();
 
@@ -69,12 +68,14 @@ public class FullAuto extends LinearRobotController {
         }
         driveHardware.stopMotors();
 
-        I2cRGBHardware.RGB color = colorHardware.getPredominantColor();
+        I2cColorHardware.Color color;
+        do {
+            color = colorHardware.getPredominantColor();
+        } while (color != I2cColorHardware.Color.BLUE && color != I2cColorHardware.Color.RED);
 
         if (color.toString() == getAllianceColor().toString()) {
             // right side
             pusherHardware.pushRight();
-
         } else {
             // left side
             pusherHardware.pushLeft();

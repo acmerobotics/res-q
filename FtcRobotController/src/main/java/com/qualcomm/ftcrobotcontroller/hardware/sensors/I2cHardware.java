@@ -2,7 +2,6 @@ package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
-import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cController;
@@ -55,9 +54,9 @@ public abstract class I2cHardware extends HardwareInterface {
         controller = (I2cController) dim;
 
         if (controller != null) {
-            if (Helper.DEBUG) RobotLog.d("Connection Info: " + controller.getConnectionInfo());
+            RobotLog.d("Connection Info: " + controller.getConnectionInfo());
         } else {
-            if (Helper.DEBUG) RobotLog.d("Device failed to initialize");
+            RobotLog.d("Device failed to initialize");
         }
     }
 
@@ -92,7 +91,7 @@ public abstract class I2cHardware extends HardwareInterface {
 
     public void writeRegisterSync(int address, byte b) {
         waitForReady();
-        if (Helper.DEBUG) RobotLog.d("I2C port " + i2cPort + " is ready");
+        RobotLog.d("I2C port " + i2cPort + " is ready");
 
         controller.enableI2cWriteMode(i2cPort, i2cAddress, address, 1);
 
@@ -121,7 +120,7 @@ public abstract class I2cHardware extends HardwareInterface {
 
         waitForReady();
 
-        if (Helper.DEBUG) RobotLog.d("I2C port " + i2cPort + " is ready");
+        RobotLog.d("I2C port " + i2cPort + " is ready");
 
         controller.enableI2cReadMode(i2cPort, i2cAddress, address, length);
 
@@ -162,7 +161,7 @@ public abstract class I2cHardware extends HardwareInterface {
     }
 
     public void resetRead() {
-        if (Helper.DEBUG) RobotLog.d("Reset read");
+        RobotLog.d("Reset read");
         lastReadAddress = -1;
         lastReadLength = 0;
         lastReadCallback = null;

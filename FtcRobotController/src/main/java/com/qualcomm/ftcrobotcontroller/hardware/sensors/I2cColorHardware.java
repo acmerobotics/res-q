@@ -1,12 +1,11 @@
 package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
-import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
  * Created by Admin on 11/30/2015.
  */
-public class I2cRGBHardware extends I2cHardware {
+public class I2cColorHardware extends I2cHardware {
 
     public static final int RGBC_TIME_ADDRESS = 0x01;
     public static final byte RGBC_TIME_DATA = (byte) 0xff; // set the integration
@@ -25,7 +24,7 @@ public class I2cRGBHardware extends I2cHardware {
     private double green = 0.0;
     private double blue = 0.0;
 
-    public enum RGB {
+    public enum Color {
         RED, GREEN, BLUE, NONE
     }
 
@@ -93,14 +92,14 @@ public class I2cRGBHardware extends I2cHardware {
         return blue;
     }
 
-    public RGB getPredominantColor() {
+    public Color getPredominantColor() {
         if (red > green && red > blue) {
-            return RGB.RED;
+            return Color.RED;
         } else if (blue > green && blue > red) {
-            return RGB.BLUE;
+            return Color.BLUE;
         } else if (green > blue && green > red) {
-            return RGB.GREEN;
+            return Color.GREEN;
         }
-        return RGB.NONE;
+        return Color.NONE;
     }
 }
