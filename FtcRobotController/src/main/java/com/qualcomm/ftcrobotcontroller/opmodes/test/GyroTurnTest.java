@@ -1,16 +1,15 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.qualcomm.ftcrobotcontroller.hardware.DriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.GyroDriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.I2cGyroHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.LinearRobotController;
-import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.drive.GyroDriveHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
+import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * Created by Ryan on 12/6/2015.
  */
-public class AutoTurn extends LinearRobotController {
+public class GyroTurnTest extends LinearRobotController {
 
     public GyroDriveHardware gyroDriveHardware;
     public I2cGyroHardware gyroHardware;

@@ -1,7 +1,8 @@
-package com.qualcomm.ftcrobotcontroller.hardware;
+package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
+import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.ftcrobotcontroller.util.Helper;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cController;
@@ -29,6 +30,18 @@ public abstract class I2cHardware extends HardwareInterface {
 
     public interface I2cReadCallback {
         public void onReadFinished(int address, byte[] result, int length);
+    }
+
+    public static String byteArrayToString(byte[] arr) {
+        String s = "";
+        for (int i = 0; i < arr.length; i++) {
+            s += String.format("%02x ", arr[i]);
+        }
+        return s;
+    }
+
+    public static int assembleWord(byte lsb, byte msb) {
+        return (lsb & 0xff) | ((msb & 0xff) << 8); // the '& 0xff' converts from signed to unsigned byte
     }
 
     @Override
@@ -59,7 +72,7 @@ public abstract class I2cHardware extends HardwareInterface {
                 byte[] result = Arrays.copyOfRange(readCache,
                         I2cController.I2C_BUFFER_START_ADDRESS,
                         I2cController.I2C_BUFFER_START_ADDRESS + lastReadLength);
-                RobotLog.d("Read: " + Helper.byteArrayToString(readCache));
+                RobotLog.d("Read: " + I2cHardware.byteArrayToString(readCache));
                 lastReadCallback.onReadFinished(lastReadAddress, result, lastReadLength);
                 resetRead();
             } catch (InterruptedException e) {
@@ -88,7 +101,7 @@ public abstract class I2cHardware extends HardwareInterface {
             lock.lock();
             byte[] cache = controller.getI2cWriteCache(i2cPort);
             cache[I2cController.I2C_BUFFER_START_ADDRESS] = b;
-            RobotLog.d("Write: " + Helper.byteArrayToString(cache));
+            RobotLog.d("Write: " + I2cHardware.byteArrayToString(cache));
         } finally {
             lock.unlock();
         }
@@ -96,7 +109,11 @@ public abstract class I2cHardware extends HardwareInterface {
         controller.setI2cPortActionFlag(i2cPort);
         controller.writeI2cCacheToController(i2cPort);
 
-        Helper.wait(250);
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            RobotLog.e(e.getMessage());
+        }
     }
 
     public void readRegister(int address, int length, I2cReadCallback cb) {
@@ -136,7 +153,11 @@ public abstract class I2cHardware extends HardwareInterface {
 
     public void waitForReady() {
         while(!controller.isI2cPortReady(i2cPort)) {
-            Helper.wait(100);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                RobotLog.e(e.getMessage());
+            }
         }
     }
 

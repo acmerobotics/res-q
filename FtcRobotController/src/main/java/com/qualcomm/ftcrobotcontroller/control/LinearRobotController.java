@@ -1,5 +1,6 @@
-package com.qualcomm.ftcrobotcontroller.hardware;
+package com.qualcomm.ftcrobotcontroller.control;
 
+import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -42,5 +43,17 @@ public class LinearRobotController extends LinearOpMode {
                 RobotLog.d(e.getMessage());
             }
         }
+    }
+
+    public void promptAllianceColor() {
+        robotController.promptAllianceColor();
+    }
+
+    public boolean isAllianceColorSet() {
+        return robotController.isAllianceColorSet();
+    }
+
+    public RobotController.AllianceColor getAllianceColor() {
+        return robotController.getAllianceColor();
     }
 }

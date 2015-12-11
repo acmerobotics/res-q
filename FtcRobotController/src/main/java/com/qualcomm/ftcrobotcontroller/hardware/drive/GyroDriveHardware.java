@@ -1,7 +1,9 @@
-package com.qualcomm.ftcrobotcontroller.hardware;
+package com.qualcomm.ftcrobotcontroller.hardware.drive;
 
+import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.RobotLog;
 
 /**

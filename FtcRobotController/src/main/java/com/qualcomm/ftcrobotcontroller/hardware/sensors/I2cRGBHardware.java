@@ -1,11 +1,7 @@
-package com.qualcomm.ftcrobotcontroller.hardware;
+package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
 import com.qualcomm.ftcrobotcontroller.util.Helper;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.I2cController;
-import com.qualcomm.robotcore.util.RobotLog;
-
-import java.util.concurrent.locks.Lock;
 
 /**
  * Created by Admin on 11/30/2015.
@@ -36,10 +32,10 @@ public class I2cRGBHardware extends I2cHardware {
     public I2cReadCallback callback = new I2cReadCallback() {
         @Override
         public void onReadFinished(int address, byte[] latestData, int length) {
-            clear = (double) Helper.assembleWord(latestData[0], latestData[1]);
-            red = (double) Helper.assembleWord(latestData[2], latestData[3]);
-            green = (double) Helper.assembleWord(latestData[4], latestData[5]);
-            blue = (double) Helper.assembleWord(latestData[6], latestData[7]);
+            clear = (double) assembleWord(latestData[0], latestData[1]);
+            red = (double) assembleWord(latestData[2], latestData[3]);
+            green = (double) assembleWord(latestData[4], latestData[5]);
+            blue = (double) assembleWord(latestData[6], latestData[7]);
         }
     };
 

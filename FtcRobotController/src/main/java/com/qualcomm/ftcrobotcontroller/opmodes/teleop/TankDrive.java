@@ -1,7 +1,7 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package com.qualcomm.ftcrobotcontroller.opmodes.teleop;
 
-import com.qualcomm.ftcrobotcontroller.hardware.DriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.RobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
+import com.qualcomm.ftcrobotcontroller.control.RobotController;
 
 /**
  * Created by Admin on 9/21/2015.

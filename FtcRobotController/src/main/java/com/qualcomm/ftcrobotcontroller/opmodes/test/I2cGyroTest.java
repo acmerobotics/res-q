@@ -1,7 +1,7 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.qualcomm.ftcrobotcontroller.hardware.I2cGyroHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.RobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
+import com.qualcomm.ftcrobotcontroller.control.RobotController;
 
 /**
  * Created by Ryan on 11/29/2015.

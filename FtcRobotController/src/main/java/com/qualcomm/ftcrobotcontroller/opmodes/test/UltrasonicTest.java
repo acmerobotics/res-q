@@ -1,8 +1,7 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.qualcomm.ftcrobotcontroller.hardware.LinearRobotController;
-import com.qualcomm.ftcrobotcontroller.hardware.UltrasonicHardware;
-import com.qualcomm.robotcore.hardware.UltrasonicSensor;
+import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicHardware;
 
 /**
  * Created by Admin on 12/10/2015.

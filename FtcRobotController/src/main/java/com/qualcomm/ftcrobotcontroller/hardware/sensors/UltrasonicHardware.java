@@ -1,5 +1,6 @@
-package com.qualcomm.ftcrobotcontroller.hardware;
+package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
+import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 
