@@ -35,7 +35,7 @@ public class ArcadeDrive extends RobotController {
             leftSpeed -= leftRight;
         }
         
-        driveHardware.setMappedMotorSpeeds(leftSpeed, rightSpeed)
+        driveHardware.setMappedMotorSpeeds(leftSpeed, rightSpeed);
 
         super.loop();
     }

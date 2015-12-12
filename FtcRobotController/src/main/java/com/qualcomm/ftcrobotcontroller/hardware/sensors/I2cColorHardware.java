@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 public class I2cColorHardware extends I2cHardware {
 
     public static final int RGBC_TIME_ADDRESS = 0x01;
-    public static final byte RGBC_TIME_DATA = (byte) 0xff; // set the integration
+    public static final byte RGBC_TIME_DATA = (byte) 0xb0; // set the integration
     public static final int ENABLE_ADDRESS = 0x00;
     public static final byte ENABLE_DATA_PON = (byte) 0x01;
     public static final byte ENABLE_DATA_AEN = (byte) 0x03;

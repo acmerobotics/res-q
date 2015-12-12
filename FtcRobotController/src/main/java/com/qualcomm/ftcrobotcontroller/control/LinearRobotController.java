@@ -11,6 +11,14 @@ public class LinearRobotController extends LinearOpMode {
 
     public RobotController robotController;
 
+    private AllianceColor color = AllianceColor.UNSET;
+
+    public enum AllianceColor {
+        BLUE,
+        RED,
+        UNSET
+    }
+
     public LinearRobotController() {
         robotController = new RobotController(this);
     }
@@ -22,6 +30,7 @@ public class LinearRobotController extends LinearOpMode {
 
     @Override
     public void waitOneFullHardwareCycle() throws InterruptedException {
+        if (isAllianceColorSet()) telemetry.addData("Alliance Color", getAllianceColor().toString());
         robotController.loop();
         super.waitOneFullHardwareCycle();
     }
@@ -46,14 +55,31 @@ public class LinearRobotController extends LinearOpMode {
     }
 
     public void promptAllianceColor() {
-        robotController.promptAllianceColor();
+        while (true) {
+            telemetry.addData("Alliance Color", "Press [X] for blue or [B] for red");
+            if (gamepad1.x) {
+                // blue
+                this.color = AllianceColor.BLUE;
+                break;
+            } else if (gamepad1.b) {
+                // red
+                this.color = AllianceColor.RED;
+                break;
+            }
+            try {
+                waitOneFullHardwareCycle();
+            } catch (InterruptedException e) {
+                RobotLog.e(e.getMessage());
+            }
+        }
+        telemetry.clearData();
+    }
+
+    public AllianceColor getAllianceColor() {
+        return color;
     }
 
     public boolean isAllianceColorSet() {
-        return robotController.isAllianceColorSet();
-    }
-
-    public RobotController.AllianceColor getAllianceColor() {
-        return robotController.getAllianceColor();
+        return !color.equals(AllianceColor.UNSET);
     }
 }

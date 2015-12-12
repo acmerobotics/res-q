@@ -4,7 +4,7 @@ import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.GyroDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PusherHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
@@ -14,24 +14,26 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
  */
 public class FullAuto extends LinearRobotController {
 
-    public static double LENGTH1 = 50.0, LENGTH2 = 20.0, LENGTH3 = 4.0;
+    public static double LENGTH1 = 91.44, LENGTH2 = 86.21, LENGTH3 = 4.0;
 
     private DriveHardware driveHardware;
     private GyroDriveHardware gyroDriveHardware;
     private I2cGyroHardware gyroHardware;
     private UltrasonicPairHardware usHardware;
     private I2cColorHardware colorHardware;
-    private PusherHardware pusherHardware;
+    private PuncherHardware puncherHardware;
     private ArmHardware armHardware;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        super.runOpMode();
+
         driveHardware = new DriveHardware();
         gyroHardware = new I2cGyroHardware();
         gyroDriveHardware = new GyroDriveHardware(driveHardware, gyroHardware);
         usHardware = new UltrasonicPairHardware();
         colorHardware = new I2cColorHardware();
-        pusherHardware = new PusherHardware();
+        puncherHardware = new PuncherHardware();
         armHardware = new ArmHardware();
 
         registerHardwareInterface("drive", driveHardware);
@@ -39,34 +41,40 @@ public class FullAuto extends LinearRobotController {
         registerHardwareInterface("gyro_drive", gyroDriveHardware);
         registerHardwareInterface("us", usHardware);
         registerHardwareInterface("color", colorHardware);
-        registerHardwareInterface("pusher", pusherHardware);
+        registerHardwareInterface("pusher", puncherHardware);
         registerHardwareInterface("arm", armHardware);
 
         promptAllianceColor();
 
         waitForStart();
 
-        driveHardware.setMotorSpeeds(-0.5, -0.5);
+        driveHardware.setMotorSpeeds(-0.2, -0.2);
+        waitOneFullHardwareCycle();
         while (usHardware.getDistance() < LENGTH1) {
             waitOneFullHardwareCycle();
         }
         driveHardware.stopMotors();
+        waitOneFullHardwareCycle();
 
         gyroDriveHardware.turnLeftSync(135.0);
 
-        driveHardware.setMotorSpeeds(0.5, 0.5);
+        driveHardware.setMotorSpeeds(0.2, 0.2);
+        waitOneFullHardwareCycle();
         while (usHardware.getDistance() >  LENGTH2) {
             waitOneFullHardwareCycle();
         }
         driveHardware.stopMotors();
+        waitOneFullHardwareCycle();
 
         gyroDriveHardware.turnRightSync(45.0);
 
         driveHardware.setMotorSpeeds(0.2, 0.2);
-        while (usHardware.getDistance() < 4) {
+        waitOneFullHardwareCycle();
+        while (usHardware.getDistance() < LENGTH3) {
             waitOneFullHardwareCycle();
         }
         driveHardware.stopMotors();
+        waitOneFullHardwareCycle();
 
         I2cColorHardware.Color color;
         do {
@@ -75,10 +83,10 @@ public class FullAuto extends LinearRobotController {
 
         if (color.toString() == getAllianceColor().toString()) {
             // right side
-            pusherHardware.pushRight();
+            puncherHardware.punchRight();
         } else {
             // left side
-            pusherHardware.pushLeft();
+            puncherHardware.punchLeft();
         }
 
         armHardware.dump();

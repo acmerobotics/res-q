@@ -20,14 +20,6 @@ public class RobotController extends OpMode {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
     private OpMode opMode;
 
-    private AllianceColor color = AllianceColor.UNSET;
-
-    public enum AllianceColor {
-        BLUE,
-        RED,
-        UNSET
-    }
-
     public RobotController() {
         opMode = this;
     }
@@ -60,33 +52,9 @@ public class RobotController extends OpMode {
     }
 
     public void loop() {
-        if (isAllianceColorSet()) telemetry.addData("Alliance Color", getAllianceColor());
         for (String name : hardwareInterfaces.keySet()) {
             hardwareInterfaces.get(name).loop(getRuntime());
         }
         resetStartTime();
-    }
-
-    public void promptAllianceColor() {
-        while (true) {
-            telemetry.addData("Alliance Color", "Press [X] for blue or [B] for red");
-            if (gamepad1.x) {
-                // blue
-                this.color = AllianceColor.BLUE;
-                break;
-            } else if (gamepad1.b) {
-                // red
-                this.color = AllianceColor.RED;
-                break;
-            }
-        }
-    }
-
-    public AllianceColor getAllianceColor() {
-        return color;
-    }
-
-    public boolean isAllianceColorSet() {
-        return !color.equals(AllianceColor.UNSET);
     }
 }

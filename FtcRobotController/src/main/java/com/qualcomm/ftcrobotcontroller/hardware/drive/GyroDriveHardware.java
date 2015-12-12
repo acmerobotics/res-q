@@ -45,6 +45,7 @@ public class GyroDriveHardware extends HardwareInterface {
     @Override
     public void loop(double timeSinceLastLoop) {
         gyroHardware.loop(timeSinceLastLoop);
+        opMode.telemetry.addData("TurnState", turnState.toString());
         if (
             (turnState.equals(TurnState.LEFT) && getNormalizedHeading() <= targetHeading) ||
             (turnState.equals(TurnState.RIGHT) && getNormalizedHeading() >= targetHeading)
@@ -85,8 +86,7 @@ public class GyroDriveHardware extends HardwareInterface {
     }
 
     public void turnRightSync(double degrees) {
-        if (!(opMode instanceof LinearRobotController)) { return;
-        }
+        if (!(opMode instanceof LinearRobotController)) { return; }
         turnRight(degrees, null);
         while (isTurning()) {
             try {

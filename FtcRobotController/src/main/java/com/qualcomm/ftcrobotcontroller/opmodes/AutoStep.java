@@ -3,13 +3,14 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by Admin on 12/10/2015.
  */
 public class AutoStep extends LinearRobotController {
 
-    private DcMotor motor;
+    public DcMotor motor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,24 +18,26 @@ public class AutoStep extends LinearRobotController {
 
         motor = hardwareMap.dcMotor.get("step");
 
+        int target = 550;
+        int offset = motor.getCurrentPosition();
+
         waitForStart();
 
-        motor.setDirection(DcMotor.Direction.FORWARD);
-        motor.setMode(DcMotorController.RunMode.RESET_ENCODERS);
-        waitOneFullHardwareCycle();
-        motor.setMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        /// michelle
-        motor.setTargetPosition(100);
+        double error;
+        while (opModeIsActive()) {
+            error = target - (motor.getCurrentPosition() - offset);
+            motor.setPower(Range.clip(error * 0.0025, -1, 1));
+            telemetry.addData("Pos", motor.getCurrentPosition() - offset);
+            if (gamepad1.a) {
+                target += 1;
+            }
+            if (gamepad1.b) {
+                target -= 1;
+            }
 
-        motor.setMode(DcMotorController.RunMode.RUN_TO_POSITION);
-       // motor.setPower(0.5);
-        waitOneFullHardwareCycle();
-        while (motor.isBusy()) {
-           // RobotLog.d("motor is Busy!!!");
-            telemetry.addData("Pos", motor.getCurrentPosition());
-            telemetry.addData("Power", motor.getPower());
             waitOneFullHardwareCycle();
         }
-        motor.setPower(0);
+
+
     }
 }

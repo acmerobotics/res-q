@@ -34,9 +34,12 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.ArcadeDrive;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TankDrive;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.ArmEncoderTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.PuncherTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.UltrasonicTest;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
@@ -65,10 +68,12 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("ArcadeDrive", ArcadeDrive.class);
         manager.register("I2cGyroTest", I2cGyroTest.class);
         manager.register("I2cColorTest", I2cColorTest.class);
-        manager.register("Ultrasonic", UltrasonicTest.class);
-        manager.register("GyroTurnTest", GyroTurnTest.class);
+        //manager.register("Ultrasonic", UltrasonicTest.class);
+        //manager.register("GyroTurnTest", GyroTurnTest.class);
         manager.register("FullAuto", FullAuto.class);
-        manager.register("AutoStep", AutoStep.class);
-        manager.register("AutoStep2", AutoStep2.class);
+        manager.register("ArmEncoderTest", ArmEncoderTest.class);
+        //manager.register("AutoStep", AutoStep.class);
+        manager.register("PuncherTest", PuncherTest.class);
+        manager.register("TeleOp", TeleOp.class);
     }
 }
