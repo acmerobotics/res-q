@@ -1,11 +1,8 @@
 package com.qualcomm.ftcrobotcontroller.hardware.drive;
 
-import android.util.Log;
-
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
@@ -15,9 +12,8 @@ import com.qualcomm.robotcore.util.Range;
 public class DriveHardware extends HardwareInterface {
 
     public static final double SENSITIVITY = 1.5;
-    public static final double RAMP_TIME = 0.05;
+    //public static final double RAMP_TIME = 0.05;
     public static final double MAX_SPEED = 0.9;
-    private DcMotorController leftCtrl, rightCtrl;
     private DcMotor[] leftMotors = new DcMotor[2], rightMotors = new DcMotor[2];
     private HardwareMap hardwareMap;
     private OpMode opMode;
@@ -28,8 +24,6 @@ public class DriveHardware extends HardwareInterface {
     public void init(OpMode mode) {
         opMode = mode;
         hardwareMap = mode.hardwareMap;
-        leftCtrl = this.hardwareMap.dcMotorController.get("left");
-        rightCtrl = this.hardwareMap.dcMotorController.get("right");
         leftMotors[0] = this.hardwareMap.dcMotor.get("left1");
         leftMotors[1] = this.hardwareMap.dcMotor.get("left2");
         rightMotors[0] = this.hardwareMap.dcMotor.get("right1");
@@ -44,10 +38,10 @@ public class DriveHardware extends HardwareInterface {
 //        if ((rightRate > 0 && actualRight < targetRight) || (rightRate < 0 && actualRight > targetRight)) {
 //            actualRight += rightRate * timeSinceLastLoop;
 //        }
-        this.leftMotors[0].setPower(actualLeft);
-        this.leftMotors[1].setPower(actualLeft);
-        this.rightMotors[0].setPower(actualRight);
-        this.rightMotors[1].setPower(actualRight);
+//        this.leftMotors[0].setPower(actualLeft);
+//        this.leftMotors[1].setPower(actualLeft);
+//        this.rightMotors[0].setPower(actualRight);
+//        this.rightMotors[1].setPower(actualRight);
         opMode.telemetry.addData("Left", actualLeft);
         opMode.telemetry.addData("Right", actualRight);
     }
@@ -59,9 +53,13 @@ public class DriveHardware extends HardwareInterface {
 //        targetRight = rightSpeed;
 //        leftRate = (targetLeft - actualLeft) / RAMP_TIME;
 //        rightRate = (targetRight - actualRight) / RAMP_TIME;
-        actualLeft = -leftSpeed;
-        actualRight = rightSpeed;
-        logcat("Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());
+//        actualLeft = -leftSpeed;
+//        actualRight = rightSpeed;
+        this.leftMotors[0].setPower(-leftSpeed);
+        this.leftMotors[1].setPower(-leftSpeed);
+        this.rightMotors[0].setPower(rightSpeed);
+        this.rightMotors[1].setPower(rightSpeed);
+        opMode.telemetry.addData("Motors", "Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());
     }
 
     public double mapMotorSpeed(double speed) {

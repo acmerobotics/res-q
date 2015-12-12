@@ -31,6 +31,7 @@ public class FullAuto extends LinearRobotController {
         driveHardware = new DriveHardware();
         gyroHardware = new I2cGyroHardware();
         gyroDriveHardware = new GyroDriveHardware(driveHardware, gyroHardware);
+
         usHardware = new UltrasonicPairHardware();
         colorHardware = new I2cColorHardware();
         puncherHardware = new PuncherHardware();
@@ -48,40 +49,35 @@ public class FullAuto extends LinearRobotController {
 
         waitForStart();
 
-        driveHardware.setMotorSpeeds(-0.2, -0.2);
-        waitOneFullHardwareCycle();
-        while (usHardware.getDistance() < LENGTH1) {
+        do {
+            driveHardware.setMotorSpeeds(-0.2, -0.2);
             waitOneFullHardwareCycle();
-        }
+        } while (usHardware.getDistance() < LENGTH1);
         driveHardware.stopMotors();
-        waitOneFullHardwareCycle();
 
         gyroDriveHardware.turnLeftSync(135.0);
 
-        driveHardware.setMotorSpeeds(0.2, 0.2);
-        waitOneFullHardwareCycle();
-        while (usHardware.getDistance() >  LENGTH2) {
+
+        do {
+            driveHardware.setMotorSpeeds(0.2, 0.2);
             waitOneFullHardwareCycle();
-        }
+        } while (usHardware.getDistance() > LENGTH2);
         driveHardware.stopMotors();
-        waitOneFullHardwareCycle();
 
         gyroDriveHardware.turnRightSync(45.0);
 
-        driveHardware.setMotorSpeeds(0.2, 0.2);
-        waitOneFullHardwareCycle();
-        while (usHardware.getDistance() < LENGTH3) {
+        do {
+            driveHardware.setMotorSpeeds(0.2, 0.2);
             waitOneFullHardwareCycle();
-        }
+        } while (usHardware.getDistance() < LENGTH3);
         driveHardware.stopMotors();
-        waitOneFullHardwareCycle();
 
         I2cColorHardware.Color color;
         do {
             color = colorHardware.getPredominantColor();
         } while (color != I2cColorHardware.Color.BLUE && color != I2cColorHardware.Color.RED);
 
-        if (color.toString() == getAllianceColor().toString()) {
+        if (color.toString().equals(getAllianceColor().toString())) {
             // right side
             puncherHardware.punchRight();
         } else {
