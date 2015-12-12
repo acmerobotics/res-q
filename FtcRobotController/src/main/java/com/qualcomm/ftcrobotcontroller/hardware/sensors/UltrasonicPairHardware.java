@@ -46,4 +46,8 @@ public class UltrasonicPairHardware extends HardwareInterface {
     public double getDistance() {
         return (last1 + last2) / 2;
     }
+
+    public double getDifference() {
+        return last1 - last2;
+    }
 }

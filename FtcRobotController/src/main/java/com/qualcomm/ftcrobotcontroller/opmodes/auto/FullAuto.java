@@ -66,10 +66,19 @@ public class FullAuto extends LinearRobotController {
 
         gyroDriveHardware.turnRightSync(45.0);
 
+        // experimental
+        double diff;
+        do {
+            diff = usHardware.getDifference();
+            driveHardware.setMotorSpeeds(diff * 0.05, diff * 0.05);
+            waitOneFullHardwareCycle();
+        } while (Math.abs(diff) > 2.0);
+        // end experimental
+
         do {
             driveHardware.setMotorSpeeds(0.2, 0.2);
             waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() < LENGTH3);
+        } while (usHardware.getDistance() > LENGTH3);
         driveHardware.stopMotors();
 
         I2cColorHardware.Color color;
