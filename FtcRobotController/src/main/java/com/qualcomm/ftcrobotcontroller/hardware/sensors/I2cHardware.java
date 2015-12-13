@@ -140,7 +140,7 @@ public abstract class I2cHardware extends HardwareInterface {
                 temp = result;
             }
         });
-        while (isReading()) {
+        while (temp == null) {
             try {
                 ((LinearRobotController) opMode).waitOneFullHardwareCycle();
             } catch (InterruptedException e) {

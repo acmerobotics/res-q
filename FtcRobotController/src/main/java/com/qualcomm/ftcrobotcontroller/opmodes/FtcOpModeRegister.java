@@ -31,11 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.BlockAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.ArcadeDrive;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TankDrive;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.ArmEncoderTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.BucketTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
@@ -69,11 +71,13 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("I2cGyroTest", I2cGyroTest.class);
         manager.register("I2cColorTest", I2cColorTest.class);
         //manager.register("Ultrasonic", UltrasonicTest.class);
-        //manager.register("GyroTurnTest", GyroTurnTest.class);
+        manager.register("GyroTurnTest", GyroTurnTest.class);
         manager.register("FullAuto", FullAuto.class);
         manager.register("ArmEncoderTest", ArmEncoderTest.class);
         //manager.register("AutoArmTest", AutoArmTest.class);
         manager.register("PuncherTest", PuncherTest.class);
         manager.register("TeleOp", TeleOp.class);
+        manager.register("BucketTest", BucketTest.class);
+        manager.register("BlockAuto", BlockAuto.class);
     }
 }

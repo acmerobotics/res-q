@@ -3,6 +3,7 @@ package com.qualcomm.ftcrobotcontroller.hardware.mechanisms;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -11,8 +12,10 @@ import com.qualcomm.robotcore.util.Range;
 public class ArmHardware extends HardwareInterface {
 
     private DcMotor motor;
+    private Servo bucket;
     private int target, offset;
-    private ArmMode mode;
+    private ArmMode armMode;
+    private BucketMode bucketMode;
     private double lastError = 0.0;
 
     public enum ArmMode {
@@ -20,16 +23,24 @@ public class ArmHardware extends HardwareInterface {
         RUN_TO_POSITION
     }
 
+    public enum BucketMode {
+        FORWARD,
+        REVERSE,
+        STOPPED
+    }
+
     @Override
     public void init(OpMode mode) {
         motor = mode.hardwareMap.dcMotor.get("step");
         offset = motor.getCurrentPosition();
-        this.mode = ArmMode.NORMAL;
+        this.armMode = ArmMode.NORMAL;
+        bucket = mode.hardwareMap.servo.get("bucket");
+        setBucketMode(BucketMode.STOPPED);
     }
 
     @Override
     public void loop(double timeSinceLastLoop) {
-        if (mode == ArmMode.RUN_TO_POSITION) {
+        if (armMode == ArmMode.RUN_TO_POSITION) {
             double error = target - motor.getCurrentPosition();
             motor.setPower(Range.clip(error * 0.0025, -1, 1));
         }
@@ -39,22 +50,33 @@ public class ArmHardware extends HardwareInterface {
         return Math.abs(lastError) > 5;
     }
 
-    public void setMode(ArmMode newMode) {
-        this.mode = newMode;
+    public void setArmMode(ArmMode newMode) {
+        this.armMode = newMode;
     }
 
     public void setArmPosition(int target) {
-        if (!mode.equals(ArmMode.RUN_TO_POSITION)) return;
+        if (!armMode.equals(ArmMode.RUN_TO_POSITION)) return;
         this.target = target + offset;
     }
 
     public void setArmPower(double val) {
-        if (!mode.equals(ArmMode.NORMAL)) return;
+        if (!armMode.equals(ArmMode.NORMAL)) return;
         motor.setPower(Range.clip(val, -0.5, 0.5));
     }
 
-    public void setBucketPosition() {
-
+    public void setBucketMode(BucketMode mode) {
+        bucketMode = mode;
+        switch(mode) {
+            case STOPPED:
+                bucket.setPosition(0.5);
+                break;
+            case FORWARD:
+                bucket.setPosition(1);
+                break;
+            case REVERSE:
+                bucket.setPosition(0);
+                break;
+        }
     }
 
     public void dump() {

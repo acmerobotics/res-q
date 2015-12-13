@@ -72,6 +72,13 @@ public class LinearRobotController extends LinearOpMode {
                 RobotLog.e(e.getMessage());
             }
         }
+        while (!opModeIsActive()) {
+            try {
+                waitOneFullHardwareCycle();
+            } catch (InterruptedException e) {
+                RobotLog.e(e.getMessage());
+            }
+        }
         telemetry.clearData();
     }
 

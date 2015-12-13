@@ -42,8 +42,6 @@ public class DriveHardware extends HardwareInterface {
 //        this.leftMotors[1].setPower(actualLeft);
 //        this.rightMotors[0].setPower(actualRight);
 //        this.rightMotors[1].setPower(actualRight);
-        opMode.telemetry.addData("Left", actualLeft);
-        opMode.telemetry.addData("Right", actualRight);
     }
 
     public void setMotorSpeeds(double leftSpeed, double rightSpeed) {

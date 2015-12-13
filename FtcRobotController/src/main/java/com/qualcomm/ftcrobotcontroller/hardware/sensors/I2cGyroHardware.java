@@ -15,6 +15,7 @@ public class I2cGyroHardware extends I2cHardware {
     public static final int EUL_DATA_X_ADDRESS = 0x1a;
 
     private double lastHeading = 0.0;
+    private double offset = 0;
 
     public I2cReadCallback callback = new I2cReadCallback() {
         @Override
@@ -23,7 +24,7 @@ public class I2cGyroHardware extends I2cHardware {
             if (address == EUL_DATA_X_ADDRESS) {
                 int val = I2cHardware.assembleWord(result[0], result[1]);
                 double heading = ((double) val) / 16.0; // 16 bytes = 1 degree
-                lastHeading = heading;
+                lastHeading = heading;// - offset;
                 if (lastHeading > 180) {
                     lastHeading = lastHeading - 360;
                 }
@@ -42,6 +43,8 @@ public class I2cGyroHardware extends I2cHardware {
 
         writeRegisterSync(OPR_MODE_ADDRESS, OPR_MODE_DATA);
         writeRegisterSync(UNIT_SEL_ADDRESS, UNIT_SEL_DATA);
+//        byte[] offsetBytes = readRegisterSync(EUL_DATA_X_ADDRESS, 2);
+//        offset = ((double) assembleWord(offsetBytes[0], offsetBytes[1])) / 16.0;
     }
 
     @Override
@@ -49,6 +52,8 @@ public class I2cGyroHardware extends I2cHardware {
         super.loop(timeSinceLastLoop);
 
         if (!isReading()) readRegister(EUL_DATA_X_ADDRESS, 2, callback);
+
+        opMode.telemetry.addData("Heading", getHeading());
     }
 
     @Override
@@ -63,5 +68,18 @@ public class I2cGyroHardware extends I2cHardware {
 
     public double getHeading() {
         return lastHeading;
+    }
+
+    public double getNormalizedHeading() {
+        double raw = getHeading();
+        raw -= offset;
+        if (Math.abs(raw) > 180) {
+            raw = 180 - raw;
+        }
+        return raw;
+    }
+
+    public void resetHeading() {
+        offset = lastHeading;
     }
 }

@@ -2,6 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes.teleop;
 
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.HitterHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
 
 /**
  * Created by Admin on 12/11/2015.
@@ -22,12 +23,34 @@ public class TeleOp extends ArcadeDrive {
 
         registerHardwareInterface("arm", armHardware);
         registerHardwareInterface("hitter", hitterHardware);
+        registerHardwareInterface("puncher", new PuncherHardware());
     }
 
     @Override
     public void loop() {
-        armHardware.setArmPower(0.5 * gamepad2.left_stick_x);
-        armHardware.setBucketPosition();
+//        if (gamepad1.dpad_up) {
+//            armHardware.setArmPower(0.75);
+//        } else if (gamepad1.dpad_down) {
+//            armHardware.setArmPower(-0.75);
+//        } else {
+//            armHardware.setArmPower(0);
+//        }
+//
+        if (gamepad2.x) {
+            armHardware.setBucketMode(ArmHardware.BucketMode.REVERSE);
+        } else if (gamepad2.b) {
+            armHardware.setBucketMode(ArmHardware.BucketMode.FORWARD);
+        } else {
+            armHardware.setBucketMode(ArmHardware.BucketMode.STOPPED);
+        }
+
+        double armThrottle = gamepad2.left_stick_y;
+
+        if (Math.abs(armThrottle) > 0.05) {
+            armHardware.setArmPower(armThrottle * 0.75);
+        } else {
+            armHardware.setArmPower(0);
+        }
 
         if (gamepad1.left_bumper) {
             if (!leftBumper) {

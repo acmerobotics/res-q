@@ -41,12 +41,12 @@ public class HitterHardware extends HardwareInterface {
 
     public void extendRight() {
         rightExtended = true;
-        right.setPosition(MAX);
+        right.setPosition(1 - MAX);
     }
 
     public void retractRight() {
         rightExtended = false;
-        right.setPosition(MIN);
+        right.setPosition(1 - MIN);
     }
 
     public void toggleRight() {

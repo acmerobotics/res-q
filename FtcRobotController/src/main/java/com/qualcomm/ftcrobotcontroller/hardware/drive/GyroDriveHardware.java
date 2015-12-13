@@ -18,8 +18,6 @@ public class GyroDriveHardware extends HardwareInterface {
     private double targetHeading;
     private TurnCallback callback;
 
-    private double setPoint = 0;
-
     private OpMode opMode;
 
     public enum TurnState {
@@ -47,8 +45,8 @@ public class GyroDriveHardware extends HardwareInterface {
         gyroHardware.loop(timeSinceLastLoop);
         opMode.telemetry.addData("TurnState", turnState.toString());
         if (
-            (turnState.equals(TurnState.LEFT) && getNormalizedHeading() <= targetHeading) ||
-            (turnState.equals(TurnState.RIGHT) && getNormalizedHeading() >= targetHeading)
+            (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() >= targetHeading) ||
+            (turnState.equals(TurnState.RIGHT) && gyroHardware.getNormalizedHeading() <= targetHeading)
             ) {
             driveHardware.stopMotors();
             turnState = TurnState.NOT_TURNING;
@@ -59,17 +57,17 @@ public class GyroDriveHardware extends HardwareInterface {
 
     public void turnLeft(double degrees, TurnCallback cb) {
         callback = cb;
-        resetHeading();
+        gyroHardware.resetHeading();
         targetHeading = -degrees;
-        driveHardware.setMotorSpeeds(-.15, .15);
+        driveHardware.setMotorSpeeds(-.6, .6);
         turnState = TurnState.LEFT;
     }
 
     public void turnRight(double degrees, TurnCallback cb) {
         callback = cb;
-        resetHeading();
+        gyroHardware.resetHeading();
         targetHeading = degrees;
-        driveHardware.setMotorSpeeds(.15, -.15);
+        driveHardware.setMotorSpeeds(.6, -.6);
         turnState = TurnState.RIGHT;
     }
 
@@ -100,18 +98,4 @@ public class GyroDriveHardware extends HardwareInterface {
     public boolean isTurning() {
         return !turnState.equals(TurnState.NOT_TURNING);
     }
-
-    public double getNormalizedHeading() {
-        double raw = gyroHardware.getHeading();
-        raw -= setPoint;
-        if (Math.abs(raw) > 180) {
-            raw = 180 - raw;
-        }
-        return raw;
-    }
-
-    public void resetHeading() {
-        setPoint = gyroHardware.getHeading();
-    }
-
 }

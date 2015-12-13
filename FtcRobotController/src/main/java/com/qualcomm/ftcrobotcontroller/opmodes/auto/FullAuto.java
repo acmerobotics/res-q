@@ -52,19 +52,11 @@ public class FullAuto extends LinearRobotController {
         do {
             driveHardware.setMotorSpeeds(-0.2, -0.2);
             waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() < LENGTH1);
-        driveHardware.stopMotors();
-
-        gyroDriveHardware.turnLeftSync(135.0);
-
-
-        do {
-            driveHardware.setMotorSpeeds(0.2, 0.2);
-            waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > LENGTH2);
         driveHardware.stopMotors();
 
-        gyroDriveHardware.turnRightSync(45.0);
+        if (getAllianceColor() == AllianceColor.BLUE) gyroDriveHardware.turnLeftSync(135);
+        else gyroDriveHardware.turnRightSync(135);
 
         // experimental
         double diff;
@@ -93,7 +85,5 @@ public class FullAuto extends LinearRobotController {
             // left side
             puncherHardware.punchLeft();
         }
-
-        armHardware.dump();
     }
 }

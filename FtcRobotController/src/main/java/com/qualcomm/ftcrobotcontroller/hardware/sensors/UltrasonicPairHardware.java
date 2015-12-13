@@ -14,11 +14,14 @@ public class UltrasonicPairHardware extends HardwareInterface {
     private UltrasonicSensor us1, us2;
     private double last1, last2;
 
+    private OpMode opMode;
+
     public UltrasonicPairHardware() {
     }
 
     @Override
     public void init(OpMode mode) {
+        this.opMode = mode;
         us1 = mode.hardwareMap.ultrasonicSensor.get("us1");
         us2 = mode.hardwareMap.ultrasonicSensor.get("us2");
     }
@@ -35,6 +38,9 @@ public class UltrasonicPairHardware extends HardwareInterface {
         if (new2 != 0) {
             last2 = new2;
         }
+
+        opMode.telemetry.addData("Diff", getDifference());
+        opMode.telemetry.addData("Distance", getDistance());
     }
 
     @Deprecated

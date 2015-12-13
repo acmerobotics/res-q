@@ -11,11 +11,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class PuncherHardware extends HardwareInterface {
 
     private Servo p1, p2;
-    private LinearRobotController controller;
+    private OpMode controller;
 
     @Override
     public void init(OpMode mode) {
-        controller = ((LinearRobotController) mode);
+        controller = mode;
         p1 = mode.hardwareMap.servo.get("leftpuncher");
         p2 = mode.hardwareMap.servo.get("rightpuncher");
         p1.setDirection(Servo.Direction.REVERSE);
@@ -31,13 +31,13 @@ public class PuncherHardware extends HardwareInterface {
 
     public void punchLeft() {
         p1.setPosition(1);
-        controller.waitMillis(1500);
+        ((LinearRobotController) controller).waitMillis(1500);
         p1.setPosition(0);
     }
 
     public void punchRight() {
-        p2.setPosition(0);
-        controller.waitMillis(1500);
         p2.setPosition(1);
+        ((LinearRobotController) controller).waitMillis(1500);
+        p2.setPosition(0);
     }
 }
