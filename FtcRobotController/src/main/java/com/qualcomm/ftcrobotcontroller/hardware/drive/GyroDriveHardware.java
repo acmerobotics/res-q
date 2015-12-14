@@ -45,8 +45,8 @@ public class GyroDriveHardware extends HardwareInterface {
         gyroHardware.loop(timeSinceLastLoop);
         opMode.telemetry.addData("TurnState", turnState.toString());
         if (
-            (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() >= targetHeading) ||
-            (turnState.equals(TurnState.RIGHT) && gyroHardware.getNormalizedHeading() <= targetHeading)
+            (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() <= targetHeading) ||
+            (turnState.equals(TurnState.RIGHT) && gyroHardware.getNormalizedHeading() >= targetHeading)
             ) {
             driveHardware.stopMotors();
             turnState = TurnState.NOT_TURNING;
