@@ -4,6 +4,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -17,8 +18,8 @@ public class DriveHardware extends HardwareInterface {
     private DcMotor[] leftMotors = new DcMotor[2], rightMotors = new DcMotor[2];
     private HardwareMap hardwareMap;
     private OpMode opMode;
-    private double actualLeft, actualRight, targetLeft, targetRight;
-    private double leftRate, rightRate;
+//    private double actualLeft, actualRight, targetLeft, targetRight;
+//    private double leftRate, rightRate;
 
     @Override
     public void init(OpMode mode) {
@@ -53,8 +54,10 @@ public class DriveHardware extends HardwareInterface {
 //        rightRate = (targetRight - actualRight) / RAMP_TIME;
 //        actualLeft = -leftSpeed;
 //        actualRight = rightSpeed;
-        this.leftMotors[0].setPower(-leftSpeed);
-        this.leftMotors[1].setPower(-leftSpeed);
+        this.rightMotors[0].setDirection(DcMotor.Direction.REVERSE);
+        this.rightMotors[1].setDirection(DcMotor.Direction.REVERSE);
+        this.leftMotors[0].setPower(leftSpeed);
+        this.leftMotors[1].setPower(leftSpeed);
         this.rightMotors[0].setPower(rightSpeed);
         this.rightMotors[1].setPower(rightSpeed);
         opMode.telemetry.addData("Motors", "Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());

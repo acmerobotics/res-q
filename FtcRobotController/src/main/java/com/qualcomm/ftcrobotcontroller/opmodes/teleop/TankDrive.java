@@ -20,7 +20,7 @@ public class TankDrive extends RobotController {
 
     @Override
     public void loop() {
-        driveHardware.setMappedMotorSpeeds(gamepad1.left_stick_y, gamepad1.right_stick_y);
+        driveHardware.setMappedMotorSpeeds(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
 
         super.loop();
     }

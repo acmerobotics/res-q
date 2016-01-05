@@ -20,8 +20,8 @@ public class ArcadeDrive extends RobotController {
 
     @Override
     public void loop() {
-        double leftRight = gamepad1.right_stick_x;
-        double forwardBack = gamepad1.left_stick_y;
+        double leftRight = -gamepad1.right_stick_x;
+        double forwardBack = -gamepad1.left_stick_y;
         
         double rightSpeed = 0;
         double leftSpeed = 0;

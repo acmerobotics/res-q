@@ -82,6 +82,11 @@ public class LinearRobotController extends LinearOpMode {
         telemetry.clearData();
     }
 
+    @Override
+    public double getRuntime() {
+        return robotController.getRuntime();
+    }
+
     public AllianceColor getAllianceColor() {
         return color;
     }

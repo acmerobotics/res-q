@@ -14,7 +14,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
  */
 public class FullAuto extends LinearRobotController {
 
-    public static double LENGTH1 = 91.44, LENGTH2 = 86.21, LENGTH3 = 4.0;
+    public static double LENGTH1 = 91.44, LENGTH2 = 86.21, LENGTH3 = 6.0;
 
     private DriveHardware driveHardware;
     private GyroDriveHardware gyroDriveHardware;
@@ -50,25 +50,26 @@ public class FullAuto extends LinearRobotController {
         waitForStart();
 
         do {
-            driveHardware.setMotorSpeeds(-0.2, -0.2);
+            driveHardware.setMotorSpeeds(0.2, 0.2);
             waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > LENGTH2);
         driveHardware.stopMotors();
 
-        if (getAllianceColor() == AllianceColor.BLUE) gyroDriveHardware.turnLeftSync(135);
-        else gyroDriveHardware.turnRightSync(135);
+        gyroDriveHardware.turnRightSync(45);
 
         // experimental
-        double diff;
+        double diff, speed;
         do {
+            telemetry.addData("Status", "Lining Up");
             diff = usHardware.getDifference();
-            driveHardware.setMotorSpeeds(diff * 0.05, diff * 0.05);
+            speed = diff * 0.025;
+            driveHardware.setMotorSpeeds(-speed, speed);
             waitOneFullHardwareCycle();
         } while (Math.abs(diff) > 2.0);
         // end experimental
 
         do {
-            driveHardware.setMotorSpeeds(0.2, 0.2);
+            driveHardware.setMotorSpeeds(0.15, 0.15);
             waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > LENGTH3);
         driveHardware.stopMotors();
