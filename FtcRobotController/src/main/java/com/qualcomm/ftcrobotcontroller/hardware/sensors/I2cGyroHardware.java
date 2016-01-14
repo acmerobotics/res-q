@@ -52,8 +52,6 @@ public class I2cGyroHardware extends I2cHardware {
         super.loop(timeSinceLastLoop);
 
         if (!isReading()) readRegister(EUL_DATA_X_ADDRESS, 2, callback);
-
-        opMode.telemetry.addData("Heading", getNormalizedHeading());
     }
 
     @Override

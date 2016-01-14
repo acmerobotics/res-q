@@ -70,14 +70,14 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("ArcadeDrive", ArcadeDrive.class);
         manager.register("I2cGyroTest", I2cGyroTest.class);
         manager.register("I2cColorTest", I2cColorTest.class);
-        //manager.register("Ultrasonic", UltrasonicTest.class);
+        manager.register("Ultrasonic", UltrasonicTest.class);
         manager.register("GyroTurnTest", GyroTurnTest.class);
         manager.register("FullAuto", FullAuto.class);
         manager.register("ArmEncoderTest", ArmEncoderTest.class);
         //manager.register("AutoArmTest", AutoArmTest.class);
         manager.register("PuncherTest", PuncherTest.class);
         manager.register("TeleOp", TeleOp.class);
-        manager.register("BucketTest", BucketTest.class);
-        manager.register("BlockAuto", BlockAuto.class);
+        //manager.register("BucketTest", BucketTest.class);
+       // manager.register("BlockAuto", BlockAuto.class);
     }
 }

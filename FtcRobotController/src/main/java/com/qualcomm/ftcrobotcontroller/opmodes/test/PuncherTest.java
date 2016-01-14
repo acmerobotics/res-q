@@ -16,8 +16,6 @@ public class PuncherTest extends LinearRobotController {
         puncherHardware = new PuncherHardware();
         registerHardwareInterface("punch", puncherHardware);
 
-        promptAllianceColor();
-
         waitForStart();
 
         while (opModeIsActive()) {

@@ -41,9 +41,13 @@ public class ArmHardware extends HardwareInterface {
     @Override
     public void loop(double timeSinceLastLoop) {
         if (armMode == ArmMode.RUN_TO_POSITION) {
-            double error = target - motor.getCurrentPosition();
+            double error = target - getPosition();
             motor.setPower(Range.clip(error * 0.0025, -1, 1));
         }
+    }
+
+    public double getPosition() {
+        return motor.getCurrentPosition() - offset;
     }
 
     public boolean isBusy() {
@@ -56,12 +60,12 @@ public class ArmHardware extends HardwareInterface {
 
     public void setArmPosition(int target) {
         if (!armMode.equals(ArmMode.RUN_TO_POSITION)) return;
-        this.target = target + offset;
+        this.target = target;
     }
 
     public void setArmPower(double val) {
         if (!armMode.equals(ArmMode.NORMAL)) return;
-        motor.setPower(Range.clip(val, -0.5, 0.5));
+        motor.setPower(Range.clip(val, -1, 1));
     }
 
     public void setBucketMode(BucketMode mode) {
@@ -77,9 +81,5 @@ public class ArmHardware extends HardwareInterface {
                 bucket.setPosition(0);
                 break;
         }
-    }
-
-    public void dump() {
-
     }
 }

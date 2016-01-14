@@ -1,6 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 
@@ -9,27 +10,30 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  */
 public class ArmEncoderTest extends LinearRobotController {
 
-    private DcMotor motor;
+    private ArmHardware armHardware;
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        motor = hardwareMap.dcMotor.get("step");
-
-        double offset = motor.getCurrentPosition();
+        armHardware = new ArmHardware();
+        registerHardwareInterface("arm", armHardware);
 
         waitForStart();
 
+        double goal = 0.0;
+
+        armHardware.setArmMode(ArmHardware.ArmMode.RUN_TO_POSITION);
+
         while (opModeIsActive()) {
             if (gamepad1.a) {
-                motor.setPower(0.2);
+                goal += 10.0;
             } else if (gamepad1.b) {
-                motor.setPower(-0.2);
-            } else {
-                motor.setPower(0);
+                goal -= 10.0;
             }
-            telemetry.addData("Reading", motor.getCurrentPosition() - offset);
+
+            armHardware.setArmPosition((int) Math.round(goal));
+            telemetry.addData("Position", armHardware.getPosition());
             waitOneFullHardwareCycle();
         }
     }
