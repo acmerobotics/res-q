@@ -31,13 +31,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.BlockAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
-import com.qualcomm.ftcrobotcontroller.opmodes.teleop.ArcadeDrive;
-import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TankDrive;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.ArmEncoderTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.BucketTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.AutoArmTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
@@ -50,6 +47,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  * Register Op Modes
  */
 public class FtcOpModeRegister implements OpModeRegister {
+
+    public static final boolean TEST = true;
 
     /**
      * The Op Mode Manager will call this method when it wants a list of all
@@ -66,18 +65,20 @@ public class FtcOpModeRegister implements OpModeRegister {
          * If two or more op modes are registered with the same name, the app will display an error.
          */
 
-        manager.register("TankDrive", TankDrive.class);
-        manager.register("ArcadeDrive", ArcadeDrive.class);
-        manager.register("I2cGyroTest", I2cGyroTest.class);
-        manager.register("I2cColorTest", I2cColorTest.class);
-        manager.register("Ultrasonic", UltrasonicTest.class);
-        manager.register("GyroTurnTest", GyroTurnTest.class);
-        manager.register("FullAuto", FullAuto.class);
-        manager.register("ArmEncoderTest", ArmEncoderTest.class);
-        //manager.register("AutoArmTest", AutoArmTest.class);
-        manager.register("PuncherTest", PuncherTest.class);
+//        manager.register("TankDrive", TankDrive.class);
+//        manager.register("ArcadeDrive", ArcadeDrive.class);
+
+        if (TEST) {
+            manager.register("FlipperTest", FlipperTest.class);
+            manager.register("I2cGyroTest", I2cGyroTest.class);
+            manager.register("I2cColorTest", I2cColorTest.class);
+            manager.register("UltrasonicTest", UltrasonicTest.class);
+            manager.register("GyroTurnTest", GyroTurnTest.class);
+            manager.register("AutoArmTest", AutoArmTest.class);
+            manager.register("PuncherTest", PuncherTest.class);
+        }
         manager.register("TeleOp", TeleOp.class);
-        //manager.register("BucketTest", BucketTest.class);
+        manager.register("FullAuto", FullAuto.class);
        // manager.register("BlockAuto", BlockAuto.class);
     }
 }

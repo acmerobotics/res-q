@@ -11,39 +11,54 @@ import com.qualcomm.robotcore.util.Range;
  */
 public class ArmHardware extends HardwareInterface {
 
+    public static final double SERVO_UP = 1;
+    public static final double SERVO_DOWN = 0;
+
     private DcMotor motor;
     private Servo bucket;
     private int target, offset;
     private ArmMode armMode;
-    private BucketMode bucketMode;
-    private double lastError = 0.0;
+    private double lastError = Double.POSITIVE_INFINITY;
+    private OpMode mode;
 
     public enum ArmMode {
         NORMAL,
         RUN_TO_POSITION
     }
 
-    public enum BucketMode {
-        FORWARD,
-        REVERSE,
-        STOPPED
-    }
-
     @Override
     public void init(OpMode mode) {
+        this.mode = mode;
         motor = mode.hardwareMap.dcMotor.get("step");
+        motor.setDirection(DcMotor.Direction.REVERSE);
         offset = motor.getCurrentPosition();
         this.armMode = ArmMode.NORMAL;
         bucket = mode.hardwareMap.servo.get("bucket");
-        setBucketMode(BucketMode.STOPPED);
+        setBucketPosition(SERVO_UP);
     }
 
     @Override
     public void loop(double timeSinceLastLoop) {
+        mode.telemetry.addData("Arm Position", this.getPosition());
+        mode.telemetry.addData("Error", lastError);
+        mode.telemetry.addData("Target", target);
         if (armMode == ArmMode.RUN_TO_POSITION) {
             double error = target - getPosition();
-            motor.setPower(Range.clip(error * 0.0025, -1, 1));
+            lastError = error;
+            motor.setPower(Range.clip(error * 0.0025, -0.25, 0.25));
         }
+    }
+
+    public ArmMode getArmMode() {
+        return armMode;
+    }
+
+    public void moveToFront() {
+        this.setArmPosition(13800);
+    }
+
+    public void moveToBack() {
+        this.setArmPosition(0);
     }
 
     public double getPosition() {
@@ -51,7 +66,7 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public boolean isBusy() {
-        return Math.abs(lastError) > 5;
+        return Math.abs(lastError) > 10;
     }
 
     public void setArmMode(ArmMode newMode) {
@@ -59,27 +74,16 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public void setArmPosition(int target) {
-        if (!armMode.equals(ArmMode.RUN_TO_POSITION)) return;
+        setArmMode(ArmMode.RUN_TO_POSITION);
         this.target = target;
     }
 
     public void setArmPower(double val) {
-        if (!armMode.equals(ArmMode.NORMAL)) return;
+        setArmMode(ArmMode.NORMAL);
         motor.setPower(Range.clip(val, -1, 1));
     }
 
-    public void setBucketMode(BucketMode mode) {
-        bucketMode = mode;
-        switch(mode) {
-            case STOPPED:
-                bucket.setPosition(0.5);
-                break;
-            case FORWARD:
-                bucket.setPosition(1);
-                break;
-            case REVERSE:
-                bucket.setPosition(0);
-                break;
-        }
+    public void setBucketPosition(double i) {
+        bucket.setPosition(i);
     }
 }

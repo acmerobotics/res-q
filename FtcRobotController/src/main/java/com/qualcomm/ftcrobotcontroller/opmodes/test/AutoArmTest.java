@@ -19,14 +19,11 @@ public class AutoArmTest extends LinearRobotController {
 
         waitForStart();
 
-        double error;
-        while (opModeIsActive()) {
-            armHardware.setArmPosition(500);
-            waitMillis(2500);
-            armHardware.setArmPosition(0);
-            waitMillis(2500);
+        while(armHardware.isBusy()) {
+            //armHardware.moveToFloor();
+            telemetry.addData("Pos", armHardware.getPosition());
+            waitOneFullHardwareCycle();
         }
-
 
     }
 }
