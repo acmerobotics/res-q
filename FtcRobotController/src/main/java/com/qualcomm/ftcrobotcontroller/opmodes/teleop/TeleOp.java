@@ -9,12 +9,12 @@ import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
  */
 public class TeleOp extends ArcadeDrive {
 
-    private ArmHardware armHardware;
-    private FlipperHardware flipperHardware;
+    protected ArmHardware armHardware;
+    protected FlipperHardware flipperHardware;
 
-    private double servoPosition = 0;
+    protected double servoPosition = ArmHardware.SERVO_UP;
 
-    private boolean rightBumper = false;
+    protected boolean rightBumper = false;
 
     @Override
     public void init() {
@@ -41,7 +41,7 @@ public class TeleOp extends ArcadeDrive {
         }
 
         // arm joystick
-        double armThrottle = gamepad2.left_stick_y;
+        double armThrottle = -gamepad2.left_stick_y;
         if (Math.abs(armThrottle) > 0.05) {
             armHardware.setArmPower(armThrottle * 0.75);
         } else if (armHardware.getArmMode() == ArmHardware.ArmMode.NORMAL) {
@@ -57,16 +57,15 @@ public class TeleOp extends ArcadeDrive {
         }
 
         // servo joystick
-//        double servoThrottle = gamepad2.right_stick_y;
-//        telemetry.addData("Servo", servoPosition);
-//        if (Math.abs(servoThrottle) > 0.1) {
-//            servoPosition += servoThrottle * 0.1;
-//        }
-//        if (servoPosition < ArmHardware.SERVO_UP) {
-//            servoPosition = ArmHardware.SERVO_UP;
-//        } else if (servoPosition > ArmHardware.SERVO_DOWN) {
-//            servoPosition = ArmHardware.SERVO_DOWN;
-//        }
+        double servoThrottle = gamepad2.right_stick_y;
+        if (Math.abs(servoThrottle) > 0.05) {
+            servoPosition += servoThrottle * 0.015;
+        }
+        if (servoPosition > ArmHardware.SERVO_UP) {
+            servoPosition = ArmHardware.SERVO_UP;
+        } else if (servoPosition < ArmHardware.SERVO_DOWN) {
+            servoPosition = ArmHardware.SERVO_DOWN;
+        }
 
         // servo buttons
         if (gamepad2.x) {
@@ -78,6 +77,11 @@ public class TeleOp extends ArcadeDrive {
 
         // actually set the servos
         armHardware.setBucketPosition(servoPosition);
+
+        // reset encoders
+        if (gamepad2.right_bumper && gamepad2.left_bumper) {
+            armHardware.resetEncoders();
+        }
 
         super.loop();
     }

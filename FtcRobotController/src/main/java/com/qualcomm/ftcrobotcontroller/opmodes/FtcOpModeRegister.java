@@ -33,7 +33,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.AutoArmTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
@@ -74,10 +74,10 @@ public class FtcOpModeRegister implements OpModeRegister {
             manager.register("I2cColorTest", I2cColorTest.class);
             manager.register("UltrasonicTest", UltrasonicTest.class);
             manager.register("GyroTurnTest", GyroTurnTest.class);
-            manager.register("AutoArmTest", AutoArmTest.class);
             manager.register("PuncherTest", PuncherTest.class);
         }
         manager.register("TeleOp", TeleOp.class);
+        manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("FullAuto", FullAuto.class);
        // manager.register("BlockAuto", BlockAuto.class);
     }

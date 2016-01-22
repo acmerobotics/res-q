@@ -53,7 +53,9 @@ public class RobotController extends OpMode {
 
     public void loop() {
         for (String name : hardwareInterfaces.keySet()) {
-            hardwareInterfaces.get(name).loop(getRuntime());
+            HardwareInterface hi = hardwareInterfaces.get(name);
+            hi.loop(getRuntime());
+            opMode.telemetry.addData(name, hi.getStatusString());
         }
         resetStartTime();
     }

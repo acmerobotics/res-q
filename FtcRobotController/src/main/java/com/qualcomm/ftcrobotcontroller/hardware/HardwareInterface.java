@@ -13,6 +13,8 @@ public abstract class HardwareInterface {
 
     public void loop(double timeSinceLastLoop) { }
 
+    public String getStatusString() { return "unimplemented"; }
+
     public void logcat(String msg) {
         Log.i(this.getClass().toString(), msg);
     }

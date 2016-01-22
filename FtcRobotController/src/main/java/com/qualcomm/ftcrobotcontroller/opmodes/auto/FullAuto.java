@@ -4,6 +4,7 @@ import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.GyroDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.FlipperHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
@@ -26,6 +27,7 @@ public class FullAuto extends LinearRobotController {
     private I2cColorHardware colorHardware;
     private PuncherHardware puncherHardware;
     private ArmHardware armHardware;
+    private FlipperHardware flipperHardware;
 
     public static double cm(double in) {
         return in * 2.54;
@@ -43,6 +45,7 @@ public class FullAuto extends LinearRobotController {
         colorHardware = new I2cColorHardware();
         puncherHardware = new PuncherHardware();
         armHardware = new ArmHardware();
+        flipperHardware = new FlipperHardware();
 
         registerHardwareInterface("drive", driveHardware);
         registerHardwareInterface("gyro", gyroHardware);
@@ -51,6 +54,7 @@ public class FullAuto extends LinearRobotController {
         registerHardwareInterface("color", colorHardware);
         registerHardwareInterface("pusher", puncherHardware);
         registerHardwareInterface("arm", armHardware);
+        registerHardwareInterface("flipper", flipperHardware);
 
         promptAllianceColor();
 
@@ -100,5 +104,7 @@ public class FullAuto extends LinearRobotController {
             // left side
             puncherHardware.punchLeft();
         }
+
+        flipperHardware.dump();
     }
 }

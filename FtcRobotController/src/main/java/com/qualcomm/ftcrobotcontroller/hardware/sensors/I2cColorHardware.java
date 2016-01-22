@@ -67,6 +67,11 @@ public class I2cColorHardware extends I2cHardware {
     }
 
     @Override
+    public String getStatusString() {
+        return "color: " + getPredominantColor().toString();
+    }
+
+    @Override
     public void writeRegisterSync(int address, byte b) {
         super.writeRegisterSync(address | COMMAND_BIT, b);
     }

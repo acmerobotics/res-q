@@ -13,6 +13,10 @@ public class ArmHardware extends HardwareInterface {
 
     public static final double SERVO_UP = 1;
     public static final double SERVO_DOWN = 0;
+    public static final int MOTOR_MAX = 13500;
+    public static final int MOTOR_MIN = 0;
+
+    private boolean constrained;
 
     private DcMotor motor;
     private Servo bucket;
@@ -24,6 +28,14 @@ public class ArmHardware extends HardwareInterface {
     public enum ArmMode {
         NORMAL,
         RUN_TO_POSITION
+    }
+
+    public void ArmHardware() {
+        this.constrained = true;
+    }
+
+    public void ArmHardware(boolean r) {
+        this.constrained = r;
     }
 
     @Override
@@ -39,14 +51,30 @@ public class ArmHardware extends HardwareInterface {
 
     @Override
     public void loop(double timeSinceLastLoop) {
-        mode.telemetry.addData("Arm Position", this.getPosition());
-        mode.telemetry.addData("Error", lastError);
-        mode.telemetry.addData("Target", target);
         if (armMode == ArmMode.RUN_TO_POSITION) {
             double error = target - getPosition();
             lastError = error;
-            motor.setPower(Range.clip(error * 0.0025, -0.25, 0.25));
+            motor.setPower(Range.clip(error * 0.0025, -0.5, 0.5));
+        } else if (constrained) {
+            if (getPosition() > MOTOR_MAX) {
+                setArmPosition(MOTOR_MAX);
+            } else {
+                setArmPosition(MOTOR_MIN);
+            }
         }
+    }
+
+    @Override
+    public String getStatusString() {
+        return "position: " + this.getPosition() + "  error: " + Double.toString(lastError).toLowerCase() + "  target: " + target + "  servo: " + bucket.getPosition();
+    }
+
+    public boolean isConstrained() {
+        return constrained;
+    }
+
+    public void setConstrained(boolean a) {
+        constrained = a;
     }
 
     public ArmMode getArmMode() {
@@ -54,11 +82,11 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public void moveToFront() {
-        this.setArmPosition(13800);
+        this.setArmPosition(MOTOR_MAX);
     }
 
     public void moveToBack() {
-        this.setArmPosition(0);
+        this.setArmPosition(MOTOR_MIN);
     }
 
     public double getPosition() {
@@ -75,12 +103,21 @@ public class ArmHardware extends HardwareInterface {
 
     public void setArmPosition(int target) {
         setArmMode(ArmMode.RUN_TO_POSITION);
+        if (target > MOTOR_MAX) {
+            target = MOTOR_MAX;
+        } else if (target < MOTOR_MIN) {
+            target = MOTOR_MIN;
+        }
         this.target = target;
     }
 
     public void setArmPower(double val) {
         setArmMode(ArmMode.NORMAL);
         motor.setPower(Range.clip(val, -1, 1));
+    }
+
+    public void resetEncoders() {
+        offset = motor.getCurrentPosition();
     }
 
     public void setBucketPosition(double i) {

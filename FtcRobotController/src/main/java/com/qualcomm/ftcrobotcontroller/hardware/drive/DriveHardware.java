@@ -45,6 +45,11 @@ public class DriveHardware extends HardwareInterface {
 //        this.rightMotors[1].setPower(actualRight);
     }
 
+    @Override
+    public String getStatusString() {
+        return "left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "  right: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower();
+    }
+
     public void setMotorSpeeds(double leftSpeed, double rightSpeed) {
         leftSpeed = Range.clip(leftSpeed, -1, 1);
         rightSpeed = Range.clip(rightSpeed, -1, 1);
@@ -60,7 +65,6 @@ public class DriveHardware extends HardwareInterface {
         this.leftMotors[1].setPower(leftSpeed);
         this.rightMotors[0].setPower(rightSpeed);
         this.rightMotors[1].setPower(rightSpeed);
-        opMode.telemetry.addData("Motors", "Left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "\tRight: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower());
     }
 
     public double mapMotorSpeed(double speed) {

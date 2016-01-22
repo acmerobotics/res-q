@@ -21,7 +21,6 @@ public class I2cGyroTest extends RobotController {
     @Override
     public void loop() {
         super.loop();
-        telemetry.addData("Heading", gyroHardware.getHeading());
     }
 
 }

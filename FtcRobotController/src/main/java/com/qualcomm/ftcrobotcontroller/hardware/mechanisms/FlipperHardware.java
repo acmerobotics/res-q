@@ -21,6 +21,11 @@ public class FlipperHardware extends HardwareInterface {
         this.retract();
     }
 
+    @Override
+    public String getStatusString() {
+        return "toggled: " + toggled;
+    }
+
     public void dump() {
         this.extend();
         ((LinearRobotController) opMode).waitMillis(1500);

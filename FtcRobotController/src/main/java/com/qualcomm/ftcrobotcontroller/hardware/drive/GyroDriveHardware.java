@@ -42,7 +42,6 @@ public class GyroDriveHardware extends HardwareInterface {
 
     @Override
     public void loop(double timeSinceLastLoop) {
-        opMode.telemetry.addData("TurnState", this.turnState.toString());
         gyroHardware.loop(timeSinceLastLoop);
         if (
             (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() <= targetHeading) ||
@@ -53,6 +52,11 @@ public class GyroDriveHardware extends HardwareInterface {
             if (callback != null) callback.onTurnFinished();
             callback = null;
         }
+    }
+
+    @Override
+    public String getStatusString() {
+        return this.getStatusString() + "  turn state: " + this.turnState.toString();
     }
 
     public void turnLeft(double degrees, TurnCallback cb) {

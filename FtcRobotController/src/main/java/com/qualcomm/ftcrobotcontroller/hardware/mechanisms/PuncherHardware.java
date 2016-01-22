@@ -29,6 +29,11 @@ public class PuncherHardware extends HardwareInterface {
         super.loop(timeSinceLastLoop);
     }
 
+    @Override
+    public String getStatusString() {
+        return "left: " + p1.getPosition() + "  right: " + p2.getPosition();
+    }
+
     public void punchLeft() {
         p1.setPosition(1);
         ((LinearRobotController) controller).waitMillis(1500);

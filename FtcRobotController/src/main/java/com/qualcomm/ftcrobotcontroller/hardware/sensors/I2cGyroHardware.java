@@ -55,6 +55,11 @@ public class I2cGyroHardware extends I2cHardware {
     }
 
     @Override
+    public String getStatusString() {
+        return "heading: " + getNormalizedHeading();
+    }
+
+    @Override
     public int getI2cPort() {
         return 0;
     }

@@ -38,9 +38,11 @@ public class UltrasonicPairHardware extends HardwareInterface {
         if (new2 != 0) {
             last2 = new2;
         }
+    }
 
-        opMode.telemetry.addData("Diff", getDifference());
-        opMode.telemetry.addData("Distance", getDistance());
+    @Override
+    public String getStatusString() {
+        return "diff: " + getDifference() + "  distance: " + getDistance();
     }
 
     @Deprecated

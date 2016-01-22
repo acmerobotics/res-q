@@ -21,7 +21,6 @@ public class I2cColorTest extends RobotController {
     @Override
     public void loop() {
         super.loop();
-        telemetry.addData("PredominantColor", rgbHardware.getPredominantColor().toString());
     }
 
 }
