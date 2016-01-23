@@ -2,11 +2,11 @@ package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.drive.GyroDriveHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.FlipperHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 
@@ -21,8 +21,8 @@ public class FullAuto extends LinearRobotController {
                          LENGTH_FROM_STATION = cm(10.0);
 
     private DriveHardware driveHardware;
-    private GyroDriveHardware gyroDriveHardware;
-    private I2cGyroHardware gyroHardware;
+    private SmartDriveHardware smartDriveHardware;
+    private I2cIMUHardware gyroHardware;
     private UltrasonicPairHardware usHardware;
     private I2cColorHardware colorHardware;
     private PuncherHardware puncherHardware;
@@ -38,8 +38,8 @@ public class FullAuto extends LinearRobotController {
         super.runOpMode();
 
         driveHardware = new DriveHardware();
-        gyroHardware = new I2cGyroHardware();
-        gyroDriveHardware = new GyroDriveHardware(driveHardware, gyroHardware);
+        gyroHardware = new I2cIMUHardware();
+        smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);
 
         usHardware = new UltrasonicPairHardware();
         colorHardware = new I2cColorHardware();
@@ -49,7 +49,7 @@ public class FullAuto extends LinearRobotController {
 
         registerHardwareInterface("drive", driveHardware);
         registerHardwareInterface("gyro", gyroHardware);
-        registerHardwareInterface("gyro_drive", gyroDriveHardware);
+        registerHardwareInterface("gyro_drive", smartDriveHardware);
         registerHardwareInterface("us", usHardware);
         registerHardwareInterface("color", colorHardware);
         registerHardwareInterface("pusher", puncherHardware);
@@ -66,7 +66,7 @@ public class FullAuto extends LinearRobotController {
         }
         driveHardware.stopMotors();
 
-        gyroDriveHardware.turnLeftSync(135);
+        smartDriveHardware.turnLeftSync(135);
 
         while (usHardware.getDistance() > LENGTH_TO_END) {
             driveHardware.setMotorSpeeds(0.15, 0.15);
@@ -74,7 +74,7 @@ public class FullAuto extends LinearRobotController {
         }
         driveHardware.stopMotors();
 
-        gyroDriveHardware.turnRightSync(45);
+        smartDriveHardware.turnRightSync(45);
 
         // experimental
         double diff, speed;

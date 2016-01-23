@@ -36,7 +36,7 @@ public class LinearRobotController extends LinearOpMode {
 
     @Override
     public void waitOneFullHardwareCycle() throws InterruptedException {
-        if (isAllianceColorSet()) telemetry.addData("Alliance Color", getAllianceColor().toString());
+        if (isAllianceColorSet()) telemetry.addData("alliance color", getAllianceColor().toString().toLowerCase());
         robotController.loop();
         super.waitOneFullHardwareCycle();
     }
@@ -52,6 +52,7 @@ public class LinearRobotController extends LinearOpMode {
     public void waitMillis(long ms) {
         long targetTime = System.currentTimeMillis() + ms;
         while (System.currentTimeMillis() < targetTime) {
+            telemetry.addData("wait", Double.toString(Math.round((double) (targetTime - System.currentTimeMillis()))) + "ms until next action");
             try {
                 waitOneFullHardwareCycle();
             } catch (InterruptedException e) {
@@ -62,7 +63,7 @@ public class LinearRobotController extends LinearOpMode {
 
     public void promptAllianceColor() {
         while (true) {
-            telemetry.addData("Alliance Color", "Press [X] for blue or [B] for red");
+            telemetry.addData("alliance color", "press [X] for blue or [B] for red");
             if (gamepad1.x) {
                 // blue
                 this.color = AllianceColor.BLUE;

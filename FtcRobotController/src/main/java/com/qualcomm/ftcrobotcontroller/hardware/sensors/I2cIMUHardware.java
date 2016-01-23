@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 /**
  * Created by Ryan on 11/29/2015.
  */
-public class I2cGyroHardware extends I2cHardware {
+public class I2cIMUHardware extends I2cHardware {
 
     public static final int OPR_MODE_ADDRESS = 0x3d;
     public static final byte OPR_MODE_DATA = 8;
@@ -14,26 +14,27 @@ public class I2cGyroHardware extends I2cHardware {
     public static final byte UNIT_SEL_DATA = 0;
     public static final int EUL_DATA_X_ADDRESS = 0x1a;
 
-    private double lastHeading = 0.0;
+    private double rawHeading = 0.0;
     private double offset = 0;
 
     public I2cReadCallback callback = new I2cReadCallback() {
         @Override
         public void onReadFinished(int address, byte[] result, int length) {
-            RobotLog.d("Bytes: " + I2cHardware.byteArrayToString(result));
             if (address == EUL_DATA_X_ADDRESS) {
                 int val = I2cHardware.assembleWord(result[0], result[1]);
                 double heading = ((double) val) / 16.0; // 16 bytes = 1 degree
-                lastHeading = heading;// - offset;
-                if (lastHeading > 180) {
-                    lastHeading = lastHeading - 360;
-                }
-                RobotLog.d("Heading: " + heading);
+                rawHeading = heading;
+//                if (offset == 0) {
+//                    offset = rawHeading;
+//                }
+//                if (rawHeading > 360) {
+//                    rawHeading = rawHeading - 360;
+//                }
             }
         }
     };
 
-    public I2cGyroHardware() {
+    public I2cIMUHardware() {
 
     }
 
@@ -56,7 +57,7 @@ public class I2cGyroHardware extends I2cHardware {
 
     @Override
     public String getStatusString() {
-        return "heading: " + getNormalizedHeading();
+        return "heading: " + getNormalizedHeading() + "  raw: " + getRawHeading() + "  offset: " + getOffset() + "  " + super.getStatusString();
     }
 
     @Override
@@ -69,20 +70,25 @@ public class I2cGyroHardware extends I2cHardware {
         return 0x28 * 2;
     }
 
+    public double getOffset() {
+        return offset;
+    }
+
+    public double getRawHeading() {
+        return rawHeading;
+    }
+
     public double getHeading() {
-        return lastHeading;
+        return rawHeading - offset;
     }
 
     public double getNormalizedHeading() {
-        double raw = getHeading();
-        raw -= offset;
-        if (Math.abs(raw) > 180) {
-            raw = 180 - raw;
-        }
-        return raw;
+        double heading = getHeading();
+        int semi = (int) Math.floor(heading / 180) % 2;
+        return 0;
     }
 
     public void resetHeading() {
-        offset = lastHeading;
+        offset = rawHeading;
     }
 }

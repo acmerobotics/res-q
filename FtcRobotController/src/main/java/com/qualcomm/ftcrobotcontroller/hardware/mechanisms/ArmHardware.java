@@ -47,6 +47,7 @@ public class ArmHardware extends HardwareInterface {
         this.armMode = ArmMode.NORMAL;
         bucket = mode.hardwareMap.servo.get("bucket");
         setBucketPosition(SERVO_UP);
+        setConstrained(true);
     }
 
     @Override
@@ -55,18 +56,19 @@ public class ArmHardware extends HardwareInterface {
             double error = target - getPosition();
             lastError = error;
             motor.setPower(Range.clip(error * 0.0025, -0.5, 0.5));
-        } else if (constrained) {
+        }
+        if (constrained) {
             if (getPosition() > MOTOR_MAX) {
-                setArmPosition(MOTOR_MAX);
-            } else {
-                setArmPosition(MOTOR_MIN);
+                motor.setPower(0);
+            } else if (getPosition() < MOTOR_MIN) {
+                motor.setPower(0);
             }
         }
     }
 
     @Override
     public String getStatusString() {
-        return "position: " + this.getPosition() + "  error: " + Double.toString(lastError).toLowerCase() + "  target: " + target + "  servo: " + bucket.getPosition();
+        return "constrained: " + constrained + "  position: " + this.getPosition() + "  error: " + Double.toString(lastError).toLowerCase() + "  target: " + target + "  servo: " + bucket.getPosition();
     }
 
     public boolean isConstrained() {

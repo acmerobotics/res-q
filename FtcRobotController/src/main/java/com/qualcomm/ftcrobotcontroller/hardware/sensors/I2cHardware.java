@@ -52,12 +52,6 @@ public abstract class I2cHardware extends HardwareInterface {
 
         dim = mode.hardwareMap.deviceInterfaceModule.get("dim");
         controller = (I2cController) dim;
-
-        if (controller != null) {
-            RobotLog.d("Connection Info: " + controller.getConnectionInfo());
-        } else {
-            RobotLog.d("Device failed to initialize");
-        }
     }
 
     @Override
@@ -71,7 +65,6 @@ public abstract class I2cHardware extends HardwareInterface {
                 byte[] result = Arrays.copyOfRange(readCache,
                         I2cController.I2C_BUFFER_START_ADDRESS,
                         I2cController.I2C_BUFFER_START_ADDRESS + lastReadLength);
-                RobotLog.d("Read: " + I2cHardware.byteArrayToString(readCache));
                 lastReadCallback.onReadFinished(lastReadAddress, result, lastReadLength);
                 resetRead();
             } catch (InterruptedException e) {
@@ -80,6 +73,12 @@ public abstract class I2cHardware extends HardwareInterface {
                 readLock.unlock();
             }
         }
+    }
+
+    @Override
+    public String getStatusString() {
+        return "";
+        //return "name: " + controller.getDeviceName() + "  port: " + i2cPort + "  address: " + Integer.toHexString(i2cAddress) + "  info: " + controller.getConnectionInfo();
     }
 
     public abstract int getI2cPort();
@@ -91,7 +90,6 @@ public abstract class I2cHardware extends HardwareInterface {
 
     public void writeRegisterSync(int address, byte b) {
         waitForReady();
-        RobotLog.d("I2C port " + i2cPort + " is ready");
 
         controller.enableI2cWriteMode(i2cPort, i2cAddress, address, 1);
 
@@ -100,7 +98,6 @@ public abstract class I2cHardware extends HardwareInterface {
             lock.lock();
             byte[] cache = controller.getI2cWriteCache(i2cPort);
             cache[I2cController.I2C_BUFFER_START_ADDRESS] = b;
-            RobotLog.d("Write: " + I2cHardware.byteArrayToString(cache));
         } finally {
             lock.unlock();
         }
@@ -119,8 +116,6 @@ public abstract class I2cHardware extends HardwareInterface {
         if (isReading()) return;
 
         waitForReady();
-
-        RobotLog.d("I2C port " + i2cPort + " is ready");
 
         controller.enableI2cReadMode(i2cPort, i2cAddress, address, length);
 
@@ -161,7 +156,6 @@ public abstract class I2cHardware extends HardwareInterface {
     }
 
     public void resetRead() {
-        RobotLog.d("Reset read");
         lastReadAddress = -1;
         lastReadLength = 0;
         lastReadCallback = null;

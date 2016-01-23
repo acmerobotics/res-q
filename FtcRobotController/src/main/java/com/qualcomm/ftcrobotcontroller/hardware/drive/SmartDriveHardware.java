@@ -2,17 +2,19 @@ package com.qualcomm.ftcrobotcontroller.hardware.drive;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
 /**
  * Created by Admin on 12/3/.1515.
  */
-public class GyroDriveHardware extends HardwareInterface {
+public class SmartDriveHardware extends HardwareInterface {
+    
+    public static final double TURN_SPEED = 0.9;
 
     public DriveHardware driveHardware;
-    public I2cGyroHardware gyroHardware;
+    public I2cIMUHardware gyroHardware;
 
     private TurnState turnState = TurnState.NOT_TURNING;
     private double targetHeading;
@@ -30,7 +32,7 @@ public class GyroDriveHardware extends HardwareInterface {
         public void onTurnFinished();
     }
 
-    public GyroDriveHardware(DriveHardware driveHardware, I2cGyroHardware gyroHardware) {
+    public SmartDriveHardware(DriveHardware driveHardware, I2cIMUHardware gyroHardware) {
         this.driveHardware = driveHardware;
         this.gyroHardware = gyroHardware;
     }
@@ -44,8 +46,8 @@ public class GyroDriveHardware extends HardwareInterface {
     public void loop(double timeSinceLastLoop) {
         gyroHardware.loop(timeSinceLastLoop);
         if (
-            (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() <= targetHeading) ||
-            (turnState.equals(TurnState.RIGHT) && gyroHardware.getNormalizedHeading() >= targetHeading)
+            (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() >= targetHeading) ||
+            (turnState.equals(TurnState.RIGHT) && gyroHardware.getNormalizedHeading() <= targetHeading)
             ) {
             driveHardware.stopMotors();
             turnState = TurnState.NOT_TURNING;
@@ -56,14 +58,14 @@ public class GyroDriveHardware extends HardwareInterface {
 
     @Override
     public String getStatusString() {
-        return this.getStatusString() + "  turn state: " + this.turnState.toString();
+        return "turn state: " + this.turnState.toString();
     }
 
     public void turnLeft(double degrees, TurnCallback cb) {
         callback = cb;
         gyroHardware.resetHeading();
         targetHeading = -degrees;
-        driveHardware.setMotorSpeeds(-.6, .6);
+        driveHardware.setMotorSpeeds(-TURN_SPEED, TURN_SPEED);
         turnState = TurnState.LEFT;
     }
 
@@ -71,7 +73,7 @@ public class GyroDriveHardware extends HardwareInterface {
         callback = cb;
         gyroHardware.resetHeading();
         targetHeading = degrees;
-        driveHardware.setMotorSpeeds(.6, -.6);
+        driveHardware.setMotorSpeeds(TURN_SPEED, -TURN_SPEED);
         turnState = TurnState.RIGHT;
     }
 
@@ -88,7 +90,8 @@ public class GyroDriveHardware extends HardwareInterface {
     }
 
     public void turnRightSync(double degrees) {
-        if (!(opMode instanceof LinearRobotController)) { return; }
+        if (!(opMode instanceof LinearRobotController)) { return;
+        }
         turnRight(degrees, null);
         while (isTurning()) {
             try {
@@ -97,6 +100,10 @@ public class GyroDriveHardware extends HardwareInterface {
                 RobotLog.e(e.getMessage());
             }
         }
+    }
+
+    public void reset() {
+        gyroHardware.resetHeading();
     }
 
     public boolean isTurning() {

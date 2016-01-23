@@ -2,8 +2,8 @@ package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.drive.GyroDriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cGyroHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 
 /**
@@ -11,9 +11,9 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
  */
 public class BlockAuto extends LinearRobotController {
 
-    private GyroDriveHardware gyroDriveHardware;
+    private SmartDriveHardware smartDriveHardware;
     private DriveHardware driveHardware;
-    private I2cGyroHardware gyroHardware;
+    private I2cIMUHardware gyroHardware;
     private UltrasonicPairHardware usHardware;
 
     @Override
@@ -21,13 +21,13 @@ public class BlockAuto extends LinearRobotController {
         super.runOpMode();
 
         driveHardware = new DriveHardware();
-        gyroHardware = new I2cGyroHardware();
-        gyroDriveHardware = new GyroDriveHardware(driveHardware, gyroHardware);
+        gyroHardware = new I2cIMUHardware();
+        smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);
         usHardware = new UltrasonicPairHardware();
 
         registerHardwareInterface("drive", driveHardware);
         registerHardwareInterface("gyro", gyroHardware);
-        registerHardwareInterface("gyro_drive", gyroDriveHardware);
+        registerHardwareInterface("gyro_drive", smartDriveHardware);
 
         promptAllianceColor();
 
@@ -39,15 +39,15 @@ public class BlockAuto extends LinearRobotController {
         waitMillis(1000);
         driveHardware.setMotorSpeeds(0, 0);
 
-        if (getAllianceColor() == AllianceColor.RED) gyroDriveHardware.turnLeftSync(135);
-        else gyroDriveHardware.turnRightSync(135);
+        if (getAllianceColor() == AllianceColor.RED) smartDriveHardware.turnLeftSync(135);
+        else smartDriveHardware.turnRightSync(135);
 
         driveHardware.setMotorSpeeds(0.5, 0.5);
         waitMillis(2000);
         driveHardware.stopMotors();
 
-        if (getAllianceColor() == AllianceColor.RED) gyroDriveHardware.turnLeftSync(90);
-        else gyroDriveHardware.turnRightSync(90);
+        if (getAllianceColor() == AllianceColor.RED) smartDriveHardware.turnLeftSync(90);
+        else smartDriveHardware.turnRightSync(90);
 
         while ((System.currentTimeMillis() - startMillis) < 10000) {
             waitOneFullHardwareCycle();

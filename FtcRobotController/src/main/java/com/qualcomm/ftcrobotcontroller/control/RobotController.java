@@ -1,13 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.control;
 
-import android.graphics.Color;
-import android.graphics.LinearGradient;
-
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.robot.Robot;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import java.util.HashMap;
 

@@ -32,20 +32,6 @@ public class DriveHardware extends HardwareInterface {
     }
 
     @Override
-    public void loop(double timeSinceLastLoop) {
-//        if ((leftRate > 0 && actualLeft < targetLeft) || (leftRate < 0 && actualLeft > targetLeft)) {
-//            actualLeft += leftRate * timeSinceLastLoop;
-//        }
-//        if ((rightRate > 0 && actualRight < targetRight) || (rightRate < 0 && actualRight > targetRight)) {
-//            actualRight += rightRate * timeSinceLastLoop;
-//        }
-//        this.leftMotors[0].setPower(actualLeft);
-//        this.leftMotors[1].setPower(actualLeft);
-//        this.rightMotors[0].setPower(actualRight);
-//        this.rightMotors[1].setPower(actualRight);
-    }
-
-    @Override
     public String getStatusString() {
         return "left: " + leftMotors[0].getPower() + "/" + leftMotors[1].getPower() + "  right: " + rightMotors[0].getPower() + "/" + rightMotors[1].getPower();
     }

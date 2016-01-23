@@ -68,7 +68,7 @@ public class I2cColorHardware extends I2cHardware {
 
     @Override
     public String getStatusString() {
-        return "color: " + getPredominantColor().toString();
+        return "color: " + getPredominantColor().toString() + "  " + super.getStatusString();
     }
 
     @Override
