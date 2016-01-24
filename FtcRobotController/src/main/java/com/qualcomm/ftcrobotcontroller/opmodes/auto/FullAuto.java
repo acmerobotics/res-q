@@ -18,7 +18,9 @@ public class FullAuto extends LinearRobotController {
     public static double BOT_LENGTH = cm(18.0),
                          LENGTH_FROM_START = cm(36.0),
                          LENGTH_TO_END = cm(Math.sqrt(2.0) * 12.0),
-                         LENGTH_FROM_STATION = cm(10.0);
+                         LENGTH_FROM_STATION = cm(10.0),
+                         THETA = 135,
+                         PHI = 180 - THETA;
 
     private DriveHardware driveHardware;
     private SmartDriveHardware smartDriveHardware;
@@ -66,7 +68,11 @@ public class FullAuto extends LinearRobotController {
         }
         driveHardware.stopMotors();
 
-        smartDriveHardware.turnLeftSync(135);
+        if (getAllianceColor().equals(AllianceColor.BLUE)) {
+            smartDriveHardware.turnLeftSync(THETA);
+        } else {
+            smartDriveHardware.turnRightSync(THETA);
+        }
 
         while (usHardware.getDistance() > LENGTH_TO_END) {
             driveHardware.setMotorSpeeds(0.15, 0.15);
@@ -74,7 +80,11 @@ public class FullAuto extends LinearRobotController {
         }
         driveHardware.stopMotors();
 
-        smartDriveHardware.turnRightSync(45);
+        if (getAllianceColor().equals(AllianceColor.BLUE)) {
+            smartDriveHardware.turnRightSync(PHI);
+        } else {
+            smartDriveHardware.turnLeftSync(PHI);
+        }
 
         // experimental
         double diff, speed;
