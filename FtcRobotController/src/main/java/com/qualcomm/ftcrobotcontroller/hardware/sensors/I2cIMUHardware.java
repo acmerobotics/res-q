@@ -14,22 +14,31 @@ public class I2cIMUHardware extends I2cHardware {
     public static final byte UNIT_SEL_DATA = 0;
     public static final int EUL_DATA_X_ADDRESS = 0x1a;
 
-    private double rawHeading = 0.0;
-    private double offset = 0;
+    private boolean calibrated = false;
+    private double lastRawHeading = 0.0;
+    private double heading = 0.0;
 
     public I2cReadCallback callback = new I2cReadCallback() {
         @Override
         public void onReadFinished(int address, byte[] result, int length) {
             if (address == EUL_DATA_X_ADDRESS) {
                 int val = I2cHardware.assembleWord(result[0], result[1]);
-                double heading = ((double) val) / 16.0; // 16 bytes = 1 degree
-                rawHeading = heading;
-//                if (offset == 0) {
-//                    offset = rawHeading;
-//                }
-//                if (rawHeading > 360) {
-//                    rawHeading = rawHeading - 360;
-//                }
+                double rawHeading = ((double) val) / 16.0; // 16 bytes = 1 degree
+                double delta = rawHeading - lastRawHeading;
+                if (!calibrated && (Math.abs(delta) < 1.0)) {
+                    calibrated = true;
+                }
+                if (calibrated) {
+                    if (delta > 180) {
+                        delta = -lastRawHeading - (360 - rawHeading);
+                    } else if (delta < -180) {
+                        delta = (360 - lastRawHeading) + rawHeading;
+                    }
+                    RobotLog.d("Delta: " + delta);
+                    heading += delta;
+                    RobotLog.d("Heading: " + heading);
+                }
+                lastRawHeading = rawHeading;
             }
         }
     };
@@ -57,7 +66,7 @@ public class I2cIMUHardware extends I2cHardware {
 
     @Override
     public String getStatusString() {
-        return "heading: " + getNormalizedHeading() + "  raw: " + getRawHeading() + "  offset: " + getOffset() + "  " + super.getStatusString();
+        return "raw: " + getRawHeading() + "  heading: " + getHeading() + "  calibrated: " + calibrated + "  " + super.getStatusString();
     }
 
     @Override
@@ -70,25 +79,11 @@ public class I2cIMUHardware extends I2cHardware {
         return 0x28 * 2;
     }
 
-    public double getOffset() {
-        return offset;
+    public double getHeading() {
+        return heading;
     }
 
     public double getRawHeading() {
-        return rawHeading;
-    }
-
-    public double getHeading() {
-        return rawHeading - offset;
-    }
-
-    public double getNormalizedHeading() {
-        double heading = getHeading();
-        int semi = (int) Math.floor(heading / 180) % 2;
-        return 0;
-    }
-
-    public void resetHeading() {
-        offset = rawHeading;
+        return lastRawHeading;
     }
 }

@@ -32,12 +32,19 @@ public class UltrasonicPairHardware extends HardwareInterface {
 
         double new1 = us1.getUltrasonicLevel();
         double new2 = us2.getUltrasonicLevel();
-        if (new1 != 0) {
-            last1 = new1;
+
+        if ((new1 == 255 && new2 != 255) || (new1 != 255 && new2 == 255)) {
+            last1 = 255;
+            last2 = 255;
+        } else {
+            if (new1 != 0) {
+                last1 = new1;
+            }
+            if (new2 != 0) {
+                last2 = new2;
+            }
         }
-        if (new2 != 0) {
-            last2 = new2;
-        }
+
     }
 
     @Override

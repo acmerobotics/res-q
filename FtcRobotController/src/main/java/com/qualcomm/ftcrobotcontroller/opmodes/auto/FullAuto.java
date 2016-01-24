@@ -16,7 +16,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 public class FullAuto extends LinearRobotController {
 
     public static double BOT_LENGTH = cm(18.0),
-                         LENGTH_FROM_START = cm(3.0 * 12.0),
+                         LENGTH_FROM_START = cm(36.0),
                          LENGTH_TO_END = cm(Math.sqrt(2.0) * 12.0),
                          LENGTH_FROM_STATION = cm(10.0);
 

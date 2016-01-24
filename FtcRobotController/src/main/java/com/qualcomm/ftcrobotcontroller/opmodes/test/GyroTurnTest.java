@@ -28,9 +28,9 @@ public class GyroTurnTest extends LinearRobotController {
         waitForStart();
 
         while(true) {
-            smartDriveHardware.turnLeftSync(90);
-
             waitMillis(5000);
+
+            smartDriveHardware.turnLeftSync(90);
         }
     }
 }

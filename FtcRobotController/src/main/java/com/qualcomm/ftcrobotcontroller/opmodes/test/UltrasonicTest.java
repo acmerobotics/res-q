@@ -20,8 +20,6 @@ public class UltrasonicTest extends LinearRobotController {
         waitForStart();
 
         while(true) {
-            telemetry.addData("Angle", us.getOffsetAngle());
-            telemetry.addData("Distance", us.getDistance());
             waitOneFullHardwareCycle();
         }
     }

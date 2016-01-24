@@ -46,8 +46,8 @@ public class SmartDriveHardware extends HardwareInterface {
     public void loop(double timeSinceLastLoop) {
         gyroHardware.loop(timeSinceLastLoop);
         if (
-            (turnState.equals(TurnState.LEFT) && gyroHardware.getNormalizedHeading() >= targetHeading) ||
-            (turnState.equals(TurnState.RIGHT) && gyroHardware.getNormalizedHeading() <= targetHeading)
+            (turnState.equals(TurnState.LEFT) && gyroHardware.getHeading() <= targetHeading) ||
+            (turnState.equals(TurnState.RIGHT) && gyroHardware.getHeading() >= targetHeading)
             ) {
             driveHardware.stopMotors();
             turnState = TurnState.NOT_TURNING;
@@ -58,21 +58,19 @@ public class SmartDriveHardware extends HardwareInterface {
 
     @Override
     public String getStatusString() {
-        return "turn state: " + this.turnState.toString();
+        return "turn state: " + this.turnState.toString() + "  target: " + targetHeading;
     }
 
     public void turnLeft(double degrees, TurnCallback cb) {
         callback = cb;
-        gyroHardware.resetHeading();
-        targetHeading = -degrees;
+        targetHeading = gyroHardware.getHeading() - degrees;
         driveHardware.setMotorSpeeds(-TURN_SPEED, TURN_SPEED);
         turnState = TurnState.LEFT;
     }
 
     public void turnRight(double degrees, TurnCallback cb) {
         callback = cb;
-        gyroHardware.resetHeading();
-        targetHeading = degrees;
+        targetHeading = gyroHardware.getHeading() + degrees;
         driveHardware.setMotorSpeeds(TURN_SPEED, -TURN_SPEED);
         turnState = TurnState.RIGHT;
     }
@@ -100,10 +98,6 @@ public class SmartDriveHardware extends HardwareInterface {
                 RobotLog.e(e.getMessage());
             }
         }
-    }
-
-    public void reset() {
-        gyroHardware.resetHeading();
     }
 
     public boolean isTurning() {
