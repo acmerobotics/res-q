@@ -32,9 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.PartialAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.PushButtons;
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.TimingAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
@@ -83,8 +81,6 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("FullAuto", FullAuto.class);
         manager.register("PushButtons", PushButtons.class);
-        manager.register("PartialAuto", PartialAuto.class);
-        manager.register("TimingAuto", TimingAuto.class);
        // manager.register("BlockAuto", BlockAuto.class);
     }
 }
