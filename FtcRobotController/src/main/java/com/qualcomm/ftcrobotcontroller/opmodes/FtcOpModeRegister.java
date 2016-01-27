@@ -32,7 +32,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.PartialAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.PushButtons;
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.TimingAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
@@ -49,7 +51,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  */
 public class FtcOpModeRegister implements OpModeRegister {
 
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
 
     /**
      * The Op Mode Manager will call this method when it wants a list of all
@@ -81,6 +83,8 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("FullAuto", FullAuto.class);
         manager.register("PushButtons", PushButtons.class);
+        manager.register("PartialAuto", PartialAuto.class);
+        manager.register("TimingAuto", TimingAuto.class);
        // manager.register("BlockAuto", BlockAuto.class);
     }
 }

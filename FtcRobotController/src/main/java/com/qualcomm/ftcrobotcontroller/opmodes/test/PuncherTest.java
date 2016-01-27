@@ -18,9 +18,12 @@ public class PuncherTest extends LinearRobotController {
 
         waitForStart();
 
-        while (opModeIsActive()) {
-            puncherHardware.punchLeft();
-            waitMillis(1500);
-        }
+        puncherHardware.punchLeft();
+
+        waitMillis(3000);
+
+        puncherHardware.punchRight();
+
+        waitMillis(3000);
     }
 }

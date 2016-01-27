@@ -24,6 +24,15 @@ public class I2cColorHardware extends I2cHardware {
     private double green = 0.0;
     private double blue = 0.0;
 
+    private double cOffset = 0.0;
+    private double rOffset = 0.0;
+    private double gOffset = 0.0;
+    private double bOffset = 0.0;
+
+    private boolean calibrated = false;
+
+    private int cycles = 0;
+
     public enum Color {
         RED, GREEN, BLUE, NONE
     }
@@ -35,6 +44,14 @@ public class I2cColorHardware extends I2cHardware {
             red = (double) assembleWord(latestData[2], latestData[3]);
             green = (double) assembleWord(latestData[4], latestData[5]);
             blue = (double) assembleWord(latestData[6], latestData[7]);
+            if (!calibrated && cycles > 10) {
+                calibrated = true;
+                cOffset = clear;
+                rOffset = red;
+                gOffset = green;
+                bOffset = blue;
+            }
+            cycles++;
         }
     };
 
@@ -68,7 +85,7 @@ public class I2cColorHardware extends I2cHardware {
 
     @Override
     public String getStatusString() {
-        return "color: " + getPredominantColor().toString() + "  " + super.getStatusString();
+        return "color: " + getPredominantColor().toString() + "  r: " + getRed() + "  g: " + getGreen() + "  b: " + getBlue() + "  " + super.getStatusString();
     }
 
     @Override
@@ -82,22 +99,25 @@ public class I2cColorHardware extends I2cHardware {
     }
 
     public double getClear() {
-        return clear;
+        return clear - cOffset;
     }
 
     public double getRed() {
-        return red;
+        return red - rOffset;
     }
 
     public double getGreen() {
-        return green;
+        return green - gOffset;
     }
 
     public double getBlue() {
-        return blue;
+        return blue - bOffset;
     }
 
     public Color getPredominantColor() {
+        double red = getRed(),
+                blue = getBlue(),
+                green = getGreen();
         if (red > green && red > blue) {
             return Color.RED;
         } else if (blue > green && blue > red) {

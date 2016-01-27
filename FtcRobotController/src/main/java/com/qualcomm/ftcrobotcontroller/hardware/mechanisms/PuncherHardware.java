@@ -41,8 +41,8 @@ public class PuncherHardware extends HardwareInterface {
     }
 
     public void punchRight() {
-        p2.setPosition(1);
-        ((LinearRobotController) controller).waitMillis(1500);
         p2.setPosition(0);
+        ((LinearRobotController) controller).waitMillis(1500);
+        p2.setPosition(1);
     }
 }

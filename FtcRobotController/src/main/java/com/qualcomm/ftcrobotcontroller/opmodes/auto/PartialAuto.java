@@ -13,14 +13,14 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 /**
  * Created by Ryan on 12/10/2015.
  */
-public class FullAuto extends LinearRobotController {
+public class PartialAuto extends LinearRobotController {
 
     public static double BOT_LENGTH = cm(18.0),
-                         LENGTH_FROM_START = cm(32.0),
-                         LENGTH_TO_END = 46.0,
-                         LENGTH_FROM_STATION = 13.0,
-                         THETA = 135,
-                         PHI = 180 - THETA;
+            LENGTH_FROM_START = cm(32.0),
+            LENGTH_TO_END = 46.0,
+            LENGTH_FROM_STATION = 13.0,
+            THETA = 135,
+            PHI = 180 - THETA;
 
     private DriveHardware driveHardware;
     private SmartDriveHardware smartDriveHardware;
@@ -96,24 +96,24 @@ public class FullAuto extends LinearRobotController {
         } while (Math.abs(diff) > 1.0);
         // end experimental
 
-        do {
-            driveHardware.setMotorSpeeds(0.075, 0.075);
-            waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() > LENGTH_FROM_STATION);
-        driveHardware.stopMotors();
-
-        I2cColorHardware.Color color;
-        do {
-            color = colorHardware.getPredominantColor();
-        } while (color != I2cColorHardware.Color.BLUE && color != I2cColorHardware.Color.RED);
-
-        if (color.toString().equals(getAllianceColor().toString())) {
-            // right side
-            puncherHardware.punchRight();
-        } else {
-            // left side
-            puncherHardware.punchLeft();
-        }
+//        do {
+//            driveHardware.setMotorSpeeds(0.075, 0.075);
+//            waitOneFullHardwareCycle();
+//        } while (usHardware.getDistance() > LENGTH_FROM_STATION);
+//        driveHardware.stopMotors();
+//
+//        I2cColorHardware.Color color;
+//        do {
+//            color = colorHardware.getPredominantColor();
+//        } while (color != I2cColorHardware.Color.BLUE && color != I2cColorHardware.Color.RED);
+//
+//        if (color.toString().equals(getAllianceColor().toString())) {
+//            // right side
+//            puncherHardware.punchRight();
+//        } else {
+//            // left side
+//            puncherHardware.punchLeft();
+//        }
 
         flipperHardware.dump();
     }

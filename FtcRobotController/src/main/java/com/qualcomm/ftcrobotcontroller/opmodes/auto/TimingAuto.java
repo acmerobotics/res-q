@@ -13,15 +13,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 /**
  * Created by Ryan on 12/10/2015.
  */
-public class FullAuto extends LinearRobotController {
-
-    public static double BOT_LENGTH = cm(18.0),
-                         LENGTH_FROM_START = cm(32.0),
-                         LENGTH_TO_END = 46.0,
-                         LENGTH_FROM_STATION = 13.0,
-                         THETA = 135,
-                         PHI = 180 - THETA;
-
+public class TimingAuto extends LinearRobotController {
     private DriveHardware driveHardware;
     private SmartDriveHardware smartDriveHardware;
     private I2cIMUHardware gyroHardware;
@@ -30,10 +22,6 @@ public class FullAuto extends LinearRobotController {
     private PuncherHardware puncherHardware;
     private ArmHardware armHardware;
     private FlipperHardware flipperHardware;
-
-    public static double cm(double in) {
-        return in * 2.54;
-    }
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -74,32 +62,18 @@ public class FullAuto extends LinearRobotController {
 //            smartDriveHardware.turnRightSync(THETA);
 //        }
 
-        while (usHardware.getDistance() > LENGTH_TO_END) {
-            driveHardware.setMotorSpeeds(0.25, 0.25);
-            waitOneFullHardwareCycle();
-        }
+        driveHardware.setMotorSpeeds(0.3, 0.3);
+        waitMillis(4700);
         driveHardware.stopMotors();
 
         if (getAllianceColor().equals(AllianceColor.BLUE)) {
-            smartDriveHardware.turnRightSync(PHI);
+            smartDriveHardware.turnRightSync(35);
         } else {
-            smartDriveHardware.turnLeftSync(PHI);
+            smartDriveHardware.turnLeftSync(45);
         }
 
-        // experimental
-        double diff, speed;
-        do {
-            diff = usHardware.getDifference();
-            speed = diff * -0.1;
-            driveHardware.setMotorSpeeds(-speed, speed);
-            waitOneFullHardwareCycle();
-        } while (Math.abs(diff) > 1.0);
-        // end experimental
-
-        do {
-            driveHardware.setMotorSpeeds(0.075, 0.075);
-            waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() > LENGTH_FROM_STATION);
+        driveHardware.setMotorSpeeds(0.1, 0.1);
+        waitMillis(1600);
         driveHardware.stopMotors();
 
         I2cColorHardware.Color color;
