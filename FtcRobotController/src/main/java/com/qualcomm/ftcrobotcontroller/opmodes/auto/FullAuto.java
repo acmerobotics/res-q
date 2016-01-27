@@ -13,7 +13,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 /**
  * Created by Ryan on 12/10/2015.
  */
-public class FullAuto extends LinearRobotController {
+public class FullAuto extends Auto {
 
     public static double BOT_LENGTH = cm(18.0),
                          LENGTH_FROM_START = cm(32.0),
@@ -86,15 +86,7 @@ public class FullAuto extends LinearRobotController {
             smartDriveHardware.turnLeftSync(PHI);
         }
 
-        // experimental
-        double diff, speed;
-        do {
-            diff = usHardware.getDifference();
-            speed = diff * -0.1;
-            driveHardware.setMotorSpeeds(-speed, speed);
-            waitOneFullHardwareCycle();
-        } while (Math.abs(diff) > 1.0);
-        // end experimental
+        this.alignWithWall();
 
         do {
             driveHardware.setMotorSpeeds(0.075, 0.075);
@@ -102,18 +94,7 @@ public class FullAuto extends LinearRobotController {
         } while (usHardware.getDistance() > LENGTH_FROM_STATION);
         driveHardware.stopMotors();
 
-        I2cColorHardware.Color color;
-        do {
-            color = colorHardware.getPredominantColor();
-        } while (color != I2cColorHardware.Color.BLUE && color != I2cColorHardware.Color.RED);
-
-        if (color.toString().equals(getAllianceColor().toString())) {
-            // right side
-            puncherHardware.punchRight();
-        } else {
-            // left side
-            puncherHardware.punchLeft();
-        }
+        this.pushButtons();
 
         flipperHardware.dump();
     }
