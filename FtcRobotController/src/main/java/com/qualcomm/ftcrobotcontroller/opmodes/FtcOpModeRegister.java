@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.ODSAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.PushButtons;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
@@ -39,6 +40,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.ODSTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.PuncherTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.UltrasonicTest;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
@@ -76,11 +78,13 @@ public class FtcOpModeRegister implements OpModeRegister {
             manager.register("UltrasonicTest", UltrasonicTest.class);
             manager.register("GyroTurnTest", GyroTurnTest.class);
             manager.register("PuncherTest", PuncherTest.class);
+            manager.register("ODS Test", ODSTest.class);
         }
         manager.register("TeleOp", TeleOp.class);
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("FullAuto", FullAuto.class);
         manager.register("PushButtons", PushButtons.class);
+        manager.register("ODSAuto", ODSAuto.class);
        // manager.register("BlockAuto", BlockAuto.class);
     }
 }
