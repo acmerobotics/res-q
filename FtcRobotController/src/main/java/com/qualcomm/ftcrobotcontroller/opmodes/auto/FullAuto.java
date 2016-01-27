@@ -16,9 +16,9 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 public class FullAuto extends LinearRobotController {
 
     public static double BOT_LENGTH = cm(18.0),
-                         LENGTH_FROM_START = cm(36.0),
-                         LENGTH_TO_END = cm(Math.sqrt(2.0) * 12.0),
-                         LENGTH_FROM_STATION = cm(10.0),
+                         LENGTH_FROM_START = cm(32.0),
+                         LENGTH_TO_END = 46.0,
+                         LENGTH_FROM_STATION = 13.0,
                          THETA = 135,
                          PHI = 180 - THETA;
 
@@ -62,20 +62,20 @@ public class FullAuto extends LinearRobotController {
 
         waitForStart();
 
-        while (usHardware.getDistance() < LENGTH_FROM_START) {
-            driveHardware.setMotorSpeeds(-0.15, -0.15);
-            waitOneFullHardwareCycle();
-        }
-        driveHardware.stopMotors();
-
-        if (getAllianceColor().equals(AllianceColor.BLUE)) {
-            smartDriveHardware.turnLeftSync(THETA);
-        } else {
-            smartDriveHardware.turnRightSync(THETA);
-        }
+//        while (usHardware.getDistance() < LENGTH_FROM_START) {
+//            driveHardware.setMotorSpeeds(-0.15, -0.15);
+//            waitOneFullHardwareCycle();
+//        }
+//        driveHardware.stopMotors();
+//
+//        if (getAllianceColor().equals(AllianceColor.BLUE)) {
+//            smartDriveHardware.turnLeftSync(THETA);
+//        } else {
+//            smartDriveHardware.turnRightSync(THETA);
+//        }
 
         while (usHardware.getDistance() > LENGTH_TO_END) {
-            driveHardware.setMotorSpeeds(0.15, 0.15);
+            driveHardware.setMotorSpeeds(0.25, 0.25);
             waitOneFullHardwareCycle();
         }
         driveHardware.stopMotors();
@@ -90,14 +90,14 @@ public class FullAuto extends LinearRobotController {
         double diff, speed;
         do {
             diff = usHardware.getDifference();
-            speed = diff * -0.025;
+            speed = diff * -0.1;
             driveHardware.setMotorSpeeds(-speed, speed);
             waitOneFullHardwareCycle();
         } while (Math.abs(diff) > 1.0);
         // end experimental
 
         do {
-            driveHardware.setMotorSpeeds(0.15, 0.15);
+            driveHardware.setMotorSpeeds(0.075, 0.075);
             waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > LENGTH_FROM_STATION);
         driveHardware.stopMotors();

@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  */
 public class FtcOpModeRegister implements OpModeRegister {
 
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
 
     /**
      * The Op Mode Manager will call this method when it wants a list of all
