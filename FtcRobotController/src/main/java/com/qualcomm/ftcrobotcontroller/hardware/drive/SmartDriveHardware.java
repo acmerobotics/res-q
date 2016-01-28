@@ -2,7 +2,7 @@ package com.qualcomm.ftcrobotcontroller.hardware.drive;
 
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -14,7 +14,7 @@ public class SmartDriveHardware extends HardwareInterface {
     public static final double TURN_SPEED = 0.9;
 
     public DriveHardware driveHardware;
-    public I2cIMUHardware gyroHardware;
+    public IMUHardware gyroHardware;
 
     private TurnState turnState = TurnState.NOT_TURNING;
     private double targetHeading;
@@ -32,7 +32,7 @@ public class SmartDriveHardware extends HardwareInterface {
         public void onTurnFinished();
     }
 
-    public SmartDriveHardware(DriveHardware driveHardware, I2cIMUHardware gyroHardware) {
+    public SmartDriveHardware(DriveHardware driveHardware, IMUHardware gyroHardware) {
         this.driveHardware = driveHardware;
         this.gyroHardware = gyroHardware;
     }

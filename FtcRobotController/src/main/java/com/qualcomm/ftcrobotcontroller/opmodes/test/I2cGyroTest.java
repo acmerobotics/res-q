@@ -1,6 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.ftcrobotcontroller.control.RobotController;
 
 /**
@@ -8,13 +8,13 @@ import com.qualcomm.ftcrobotcontroller.control.RobotController;
  */
 public class I2cGyroTest extends RobotController {
 
-    private I2cIMUHardware gyroHardware;
+    private IMUHardware gyroHardware;
 
     @Override
     public void init() {
         super.init();
 
-        gyroHardware = new I2cIMUHardware();
+        gyroHardware = new IMUHardware();
         registerHardwareInterface("gyro", gyroHardware);
     }
 

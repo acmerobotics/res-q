@@ -1,5 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.ODSHardware;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 /**
@@ -7,7 +8,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
  */
 public class ODSAuto extends Auto {
 
-    protected OpticalDistanceSensor odsSensor;
+    protected ODSHardware odsHardware;
     
     public enum LineSide {
         LEFT,
@@ -18,40 +19,36 @@ public class ODSAuto extends Auto {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        odsSensor = hardwareMap.opticalDistanceSensor.get("ods");
+        odsHardware = new ODSHardware();
+        registerHardwareInterface("ods", odsHardware);
 
         waitForStart();
 
-        while (odsSensor.getLightDetected() < 0.5) {
+        while (odsHardware.getLineColor().equals(ODSHardware.LineColor.DARK)) {
             driveHardware.setMotorSpeeds(0.3, 0.3);
             waitOneFullHardwareCycle();
         }
         driveHardware.stopMotors();
 
-        LineSide side = LineSide.RIGHT;
+        LineSide currentSide = LineSide.LEFT;
         boolean centered = true;
-
         // experimental
-        double speed, lineError;
+        double speed, error, lineError, usError;
         do {
-            if (odsSensor.getLightDetected() > 0.5) {
-                lineError = 0;
+            if (odsHardware.getLineColor().equals(ODSHardware.LineColor.LIGHT)) {
                 centered = true;
-            } else if (side.equals(LineSide.LEFT)) {
-                if (centered) {
-                    side = LineSide.RIGHT;
-                    centered = false;
-                }
-                lineError = -25;
+                lineError = 0;
             } else {
                 if (centered) {
-                    side = LineSide.LEFT;
                     centered = false;
+                    currentSide = currentSide.equals(LineSide.RIGHT) ? LineSide.LEFT : LineSide.RIGHT;
                 }
-                lineError = 25;
+                lineError = currentSide.equals(LineSide.RIGHT) ? -25 : 25;
             }
-            speed = lineError * -0.025;
-            driveHardware.setMotorSpeeds(-speed, speed);
+            usError = usHardware.getDifference();
+            error = lineError + usError;
+            speed = error * 0.025;
+            driveHardware.setMotorSpeeds(speed, -speed);
             waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > 13);
         // end experimental

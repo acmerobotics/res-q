@@ -2,7 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 
 /**
@@ -11,14 +11,14 @@ import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 public class GyroTurnTest extends LinearRobotController {
 
     public SmartDriveHardware smartDriveHardware;
-    public I2cIMUHardware gyroHardware;
+    public IMUHardware gyroHardware;
     public DriveHardware driveHardware;
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        gyroHardware = new I2cIMUHardware();
+        gyroHardware = new IMUHardware();
         registerHardwareInterface("gyro", gyroHardware);
         driveHardware = new DriveHardware();
         registerHardwareInterface("drive", driveHardware);

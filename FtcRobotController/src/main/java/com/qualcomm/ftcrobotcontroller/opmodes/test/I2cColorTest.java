@@ -1,6 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.ColorHardware;
 import com.qualcomm.ftcrobotcontroller.control.RobotController;
 
 /**
@@ -8,13 +8,13 @@ import com.qualcomm.ftcrobotcontroller.control.RobotController;
  */
 public class I2cColorTest extends RobotController {
 
-    private I2cColorHardware rgbHardware;
+    private ColorHardware rgbHardware;
 
     @Override
     public void init() {
         super.init();
 
-        rgbHardware = new I2cColorHardware();
+        rgbHardware = new ColorHardware();
         registerHardwareInterface("color", rgbHardware);
     }
 

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 /**
  * Created by Admin on 11/30/2015.
  */
-public class I2cColorHardware extends I2cHardware {
+public class ColorHardware extends I2cHardware {
 
     public static final int RGBC_TIME_ADDRESS = 0x01;
     public static final byte RGBC_TIME_DATA = (byte) 0xb0; // set the integration
@@ -24,15 +24,6 @@ public class I2cColorHardware extends I2cHardware {
     private double green = 0.0;
     private double blue = 0.0;
 
-    private double cOffset = 0.0;
-    private double rOffset = 0.0;
-    private double gOffset = 0.0;
-    private double bOffset = 0.0;
-
-    private boolean calibrated = false;
-
-    private int cycles = 0;
-
     public enum Color {
         RED, GREEN, BLUE, NONE
     }
@@ -44,14 +35,6 @@ public class I2cColorHardware extends I2cHardware {
             red = (double) assembleWord(latestData[2], latestData[3]);
             green = (double) assembleWord(latestData[4], latestData[5]);
             blue = (double) assembleWord(latestData[6], latestData[7]);
-            if (!calibrated && cycles > 10) {
-                calibrated = true;
-                cOffset = clear;
-                rOffset = red;
-                gOffset = green;
-                bOffset = blue;
-            }
-            cycles++;
         }
     };
 
@@ -99,25 +82,22 @@ public class I2cColorHardware extends I2cHardware {
     }
 
     public double getClear() {
-        return clear - cOffset;
+        return clear;
     }
 
     public double getRed() {
-        return red - rOffset;
+        return red;
     }
 
     public double getGreen() {
-        return green - gOffset;
+        return green;
     }
 
     public double getBlue() {
-        return blue - bOffset;
+        return blue;
     }
 
     public Color getPredominantColor() {
-        double red = getRed(),
-                blue = getBlue(),
-                green = getGreen();
         if (red > green && red > blue) {
             return Color.RED;
         } else if (blue > green && blue > red) {

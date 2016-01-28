@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 /**
  * Created by Ryan on 11/29/2015.
  */
-public class I2cIMUHardware extends I2cHardware {
+public class IMUHardware extends I2cHardware {
 
     public static final int OPR_MODE_ADDRESS = 0x3d;
     public static final byte OPR_MODE_DATA = 8;
@@ -43,7 +43,7 @@ public class I2cIMUHardware extends I2cHardware {
         }
     };
 
-    public I2cIMUHardware() {
+    public IMUHardware() {
 
     }
 

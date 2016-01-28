@@ -6,10 +6,9 @@ import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.FlipperHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.ColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 /**
  * Created by Ryan on 12/10/2015.
@@ -18,9 +17,9 @@ public class Auto extends LinearRobotController {
 
     protected DriveHardware driveHardware;
     protected SmartDriveHardware smartDriveHardware;
-    protected I2cIMUHardware gyroHardware;
+    protected IMUHardware gyroHardware;
     protected UltrasonicPairHardware usHardware;
-    protected I2cColorHardware colorHardware;
+    protected ColorHardware colorHardware;
     protected PuncherHardware puncherHardware;
     protected ArmHardware armHardware;
     protected FlipperHardware flipperHardware;
@@ -42,10 +41,10 @@ public class Auto extends LinearRobotController {
     }
 
     protected void pushButtons() {
-        I2cColorHardware.Color color;
+        ColorHardware.Color color;
         do {
             color = colorHardware.getPredominantColor();
-        } while (color != I2cColorHardware.Color.BLUE && color != I2cColorHardware.Color.RED);
+        } while (color != ColorHardware.Color.BLUE && color != ColorHardware.Color.RED);
 
         if (color.toString().equals(getAllianceColor().toString())) {
             // right side
@@ -61,11 +60,11 @@ public class Auto extends LinearRobotController {
         super.runOpMode();
 
         driveHardware = new DriveHardware();
-        gyroHardware = new I2cIMUHardware();
+        gyroHardware = new IMUHardware();
         smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);
 
         usHardware = new UltrasonicPairHardware();
-        colorHardware = new I2cColorHardware();
+        colorHardware = new ColorHardware();
         puncherHardware = new PuncherHardware();
         armHardware = new ArmHardware();
         flipperHardware = new FlipperHardware();

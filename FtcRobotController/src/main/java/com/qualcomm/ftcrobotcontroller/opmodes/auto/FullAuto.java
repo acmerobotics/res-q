@@ -1,13 +1,12 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
-import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.FlipperHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cIMUHardware;
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.I2cColorHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.sensors.ColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 
 /**
@@ -24,9 +23,9 @@ public class FullAuto extends Auto {
 
     private DriveHardware driveHardware;
     private SmartDriveHardware smartDriveHardware;
-    private I2cIMUHardware gyroHardware;
+    private IMUHardware gyroHardware;
     private UltrasonicPairHardware usHardware;
-    private I2cColorHardware colorHardware;
+    private ColorHardware colorHardware;
     private PuncherHardware puncherHardware;
     private ArmHardware armHardware;
     private FlipperHardware flipperHardware;
@@ -40,11 +39,11 @@ public class FullAuto extends Auto {
         super.runOpMode();
 
         driveHardware = new DriveHardware();
-        gyroHardware = new I2cIMUHardware();
+        gyroHardware = new IMUHardware();
         smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);
 
         usHardware = new UltrasonicPairHardware();
-        colorHardware = new I2cColorHardware();
+        colorHardware = new ColorHardware();
         puncherHardware = new PuncherHardware();
         armHardware = new ArmHardware();
         flipperHardware = new FlipperHardware();

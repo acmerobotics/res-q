@@ -1,5 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
+import com.qualcomm.ftcrobotcontroller.control.RobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
@@ -9,33 +10,19 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor;
  */
 public class UltrasonicPairHardware extends HardwareInterface {
 
-    public static final double WIDTH = 29.5;
-
-    private UltrasonicSensor us1, us2;
-    private double last1, last2;
+    private UltrasonicHardware us1, us2;
 
     private OpMode opMode;
-
-    public UltrasonicPairHardware() {
-    }
 
     @Override
     public void init(OpMode mode) {
         this.opMode = mode;
-        us1 = mode.hardwareMap.ultrasonicSensor.get("us1");
-        us2 = mode.hardwareMap.ultrasonicSensor.get("us2");
-    }
 
-    @Override
-    public void loop(double timeSinceLastLoop) {
-        super.loop(timeSinceLastLoop);
+        us1 = new UltrasonicHardware("us1");
+        us2 = new UltrasonicHardware("us2");
 
-        double new1 = us1.getUltrasonicLevel();
-        double new2 = us2.getUltrasonicLevel();
-
-        new1 = last1;
-        new2 = last2;
-
+        ((RobotController) mode).registerHardwareInterface("us1", us1);
+        ((RobotController) mode).registerHardwareInterface("us2", us2);
     }
 
     @Override
@@ -43,17 +30,11 @@ public class UltrasonicPairHardware extends HardwareInterface {
         return "diff: " + getDifference() + "  distance: " + getDistance();
     }
 
-    @Deprecated
-    public double getOffsetAngle() {
-        double theta = Math.atan(0.5 * WIDTH / getDistance());
-        return last1 > last2 ? theta : -theta;
-    }
-
     public double getDistance() {
-        return (last1 + last2) / 2;
+        return (us1.getDistance() + us2.getDistance()) / 2;
     }
 
     public double getDifference() {
-        return last1 - last2;
+        return us1.getDistance() - us2.getDistance();
     }
 }
