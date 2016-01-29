@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.Auto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.FullAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.ODSAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
@@ -83,5 +84,15 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("FullAuto", FullAuto.class);
         manager.register("ODSAuto", ODSAuto.class);
+
+        manager.register("PushButtons", new Auto() {
+            @Override
+            public void runOpMode() throws InterruptedException {
+                super.runOpMode();
+                promptAllianceColor();
+                waitForStart();
+                pushButtons();
+            }
+        });
     }
 }
