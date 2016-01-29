@@ -1,5 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
+import com.qualcomm.ftcrobotcontroller.control.Controller;
 import com.qualcomm.ftcrobotcontroller.control.RobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -21,8 +22,8 @@ public class UltrasonicPairHardware extends HardwareInterface {
         us1 = new UltrasonicHardware("us1");
         us2 = new UltrasonicHardware("us2");
 
-        ((RobotController) mode).registerHardwareInterface("us1", us1);
-        ((RobotController) mode).registerHardwareInterface("us2", us2);
+        ((Controller) mode).registerHardwareInterface("us1", us1);
+        ((Controller) mode).registerHardwareInterface("us2", us2);
     }
 
     @Override

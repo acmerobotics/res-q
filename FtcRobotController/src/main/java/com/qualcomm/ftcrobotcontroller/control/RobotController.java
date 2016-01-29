@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 
 
-public class RobotController extends OpMode {
+public class RobotController extends OpMode implements Controller {
     private HashMap<String, HardwareInterface> hardwareInterfaces;
     private OpMode opMode;
 

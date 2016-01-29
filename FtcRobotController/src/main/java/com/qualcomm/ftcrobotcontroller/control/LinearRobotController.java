@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 /**
  * Created by Ryan on 12/6/2015.
  */
-public class LinearRobotController extends LinearOpMode {
+public class LinearRobotController extends LinearOpMode implements Controller {
 
     public RobotController robotController;
 
@@ -45,8 +45,8 @@ public class LinearRobotController extends LinearOpMode {
         return robotController.registerHardwareInterface(name, hi);
     }
 
-    public void deregisterHardwareInterface(String name) {
-        robotController.deregisterHardwareInterface(name);
+    public boolean deregisterHardwareInterface(String name) {
+        return robotController.deregisterHardwareInterface(name);
     }
 
     public void waitMillis(long ms) {

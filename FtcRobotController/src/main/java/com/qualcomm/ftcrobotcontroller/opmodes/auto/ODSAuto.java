@@ -22,6 +22,8 @@ public class ODSAuto extends Auto {
         odsHardware = new ODSHardware();
         registerHardwareInterface("ods", odsHardware);
 
+        promptAllianceColor();
+
         waitForStart();
 
         while (odsHardware.getLineColor().equals(ODSHardware.LineColor.DARK)) {
@@ -33,7 +35,7 @@ public class ODSAuto extends Auto {
         LineSide currentSide = LineSide.LEFT;
         boolean centered = true;
         // experimental
-        double speed, error, lineError, usError;
+        double speed, error, lineError, usError, base;
         do {
             if (odsHardware.getLineColor().equals(ODSHardware.LineColor.LIGHT)) {
                 centered = true;
@@ -43,14 +45,21 @@ public class ODSAuto extends Auto {
                     centered = false;
                     currentSide = currentSide.equals(LineSide.RIGHT) ? LineSide.LEFT : LineSide.RIGHT;
                 }
-                lineError = currentSide.equals(LineSide.RIGHT) ? -25 : 25;
+                lineError = currentSide.equals(LineSide.RIGHT) ? 0.3 : -0.3;
             }
             usError = usHardware.getDifference();
-            error = lineError + usError;
-            speed = error * 0.025;
-            driveHardware.setMotorSpeeds(speed, -speed);
+            speed = lineError + usError * 0.035;
+            base = (usHardware.getDistance() - 10.0) / 100.0;
+            driveHardware.setMotorSpeeds(base + speed, base - speed);
             waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() > 13);
+        } while (usHardware.getDistance() > 15);
         // end experimental
+        driveHardware.stopMotors();
+
+        this.alignWithWall();
+
+        this.pushButtons();
+
+        flipperHardware.dump();
     }
 }

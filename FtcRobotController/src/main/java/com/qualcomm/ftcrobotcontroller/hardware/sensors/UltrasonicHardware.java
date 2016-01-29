@@ -9,12 +9,13 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor;
  */
 public class UltrasonicHardware extends HardwareInterface {
 
-    public static final int SMOOTHING_SIZE = 10;
+    public static final int SMOOTHING_SIZE = 25;
 
     private UltrasonicSensor usSensor;
     private String name;
     private double[] data;
     private double sum;
+    private int numSpikes;
 
     public UltrasonicHardware(String name) {
         this.name = name;
@@ -29,6 +30,7 @@ public class UltrasonicHardware extends HardwareInterface {
             this.data[i] = 0;
         }
         this.sum = 0;
+        this.numSpikes = 0;
     }
 
     @Override
@@ -36,12 +38,24 @@ public class UltrasonicHardware extends HardwareInterface {
         super.loop(timeSinceLastLoop);
 
         double next = usSensor.getUltrasonicLevel();
-        sum -= data[0];
-        for (int i = 1; i < data.length; i++) {
-            data[i - 1] = data[i];
+
+        if (next != 0 && next != 255) {
+            numSpikes = 0;
+            sum -= data[0];
+            for (int i = 1; i < data.length; i++) {
+                data[i - 1] = data[i];
+            }
+            data[data.length-1] = next;
+            sum += next;
+        } else {
+            numSpikes++;
+            if (numSpikes > 15) {
+                for (int i = 0; i < data.length; i++) {
+                    data[i] = next;
+                }
+                this.sum = next * data.length;
+            }
         }
-        data[data.length-1] = next;
-        sum += next;
     }
 
     @Override
