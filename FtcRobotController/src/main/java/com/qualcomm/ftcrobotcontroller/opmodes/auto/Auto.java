@@ -36,7 +36,7 @@ public class Auto extends LinearRobotController {
             speed = diff * 0.07;
             driveHardware.setMotorSpeeds(speed, -speed);
             waitOneFullHardwareCycle();
-        } while (Math.abs(diff) > 1.0);
+        } while (Math.abs(diff) > 2.5);
         driveHardware.stopMotors();
         // end experimental
     }
