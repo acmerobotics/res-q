@@ -28,7 +28,7 @@ public class FlipperHardware extends HardwareInterface {
 
     public void dump() {
         this.extend();
-        ((LinearRobotController) opMode).waitMillis(1500);
+        ((LinearRobotController) opMode).waitMillis(2500);
         this.retract();
     }
 

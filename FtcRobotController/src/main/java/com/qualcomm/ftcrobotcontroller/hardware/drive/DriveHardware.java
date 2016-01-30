@@ -37,8 +37,6 @@ public class DriveHardware extends HardwareInterface {
     }
 
     public void setMotorSpeeds(double leftSpeed, double rightSpeed) {
-        leftSpeed = Range.clip(leftSpeed, -1, 1);
-        rightSpeed = Range.clip(rightSpeed, -1, 1);
 //        targetLeft = -leftSpeed;
 //        targetRight = rightSpeed;
 //        leftRate = (targetLeft - actualLeft) / RAMP_TIME;
@@ -47,10 +45,10 @@ public class DriveHardware extends HardwareInterface {
 //        actualRight = rightSpeed;
         this.rightMotors[0].setDirection(DcMotor.Direction.REVERSE);
         this.rightMotors[1].setDirection(DcMotor.Direction.REVERSE);
-        this.leftMotors[0].setPower(leftSpeed);
-        this.leftMotors[1].setPower(leftSpeed);
-        this.rightMotors[0].setPower(rightSpeed);
-        this.rightMotors[1].setPower(rightSpeed);
+        this.leftMotors[0].setPower(Range.clip(leftSpeed, -1, 1));
+        this.leftMotors[1].setPower(Range.clip(leftSpeed, -1, 1));
+        this.rightMotors[0].setPower(Range.clip(rightSpeed, -1, 1));
+        this.rightMotors[1].setPower(Range.clip(rightSpeed, -1, 1));
     }
 
     public double mapMotorSpeed(double speed) {
@@ -64,5 +62,13 @@ public class DriveHardware extends HardwareInterface {
 
     public void stopMotors() {
         setMotorSpeeds(0, 0);
+    }
+
+    public boolean movingLeft() {
+        return leftMotors[0].getPower() > rightMotors[0].getPower();
+    }
+
+    public boolean movingRight() {
+        return !movingLeft();
     }
 }

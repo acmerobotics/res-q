@@ -32,40 +32,52 @@ public class ODSAuto extends Auto {
         }
         driveHardware.stopMotors();
 
-//        LineSide currentSide = LineSide.LEFT;
-//        boolean centered = true;
-//        // experimental
-//        double speed, error, lineError, usError, base;
-//        do {
-//            if (odsHardware.getLineColor().equals(ODSHardware.LineColor.LIGHT)) {
-//                centered = true;
-//                lineError = 0;
-//            } else {
-//                if (centered) {
-//                    centered = false;
-//                    currentSide = currentSide.equals(LineSide.RIGHT) ? LineSide.LEFT : LineSide.RIGHT;
-//                }
-//                lineError = currentSide.equals(LineSide.RIGHT) ? 1 : -1;
-//            }
-//            usError = usHardware.getDifference();
-//            speed = lineError * 0.2 + usError * 0.035;
-//            base = (usHardware.getDistance() - 10.0) / 200.0;
-//            driveHardware.setMotorSpeeds(base + speed, base - speed);
-//            waitOneFullHardwareCycle();
-//        } while (usHardware.getDistance() > 13 || Math.abs(usHardware.getDifference()) > 3);
-//        // end experimental
-//        driveHardware.stopMotors();
+        //smartDriveHardware.turnRightSync(20);
 
-        this.alignWithWall();
-
+        LineSide currentSide = LineSide.LEFT;
+        boolean centered = true;
+        // experimental
+        double speed, lineError, usError, base;
         do {
-            driveHardware.setMotorSpeeds(0.3, 0.3);
+            if (odsHardware.getLineColor().equals(ODSHardware.LineColor.LIGHT)) {
+                lineError = 0;
+                centered = true;
+            } else {
+                lineError = driveHardware.movingLeft() ? 1 : -1;
+            }
+            usError = usHardware.getDifference();
+//            speed = usError * 0.05 + lineError * (usHardware.getDistance() - 15) / 150;
+//            if (usHardware.getDistance() > 15) {
+//                speed += lineError * 0.2;
+//            }
+
+            base = (usHardware.getDistance() - 10.0) / 300.0;
+            if (!centered) {
+                speed = 0.5 * lineError;
+                base = 0;
+            } else {
+                speed = usError * 0.05;
+            }
+            driveHardware.setMotorSpeeds(base + speed, base - speed);
+            telemetry.clearData();
+            telemetry.addData("base", base);
+            telemetry.addData("usError", usError);
+            telemetry.addData("speed", speed);
             waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() > 10);
+        } while (usHardware.getDistance() > 15 || Math.abs(usHardware.getDifference()) > 1.5);
+        // end experimental
         driveHardware.stopMotors();
 
-        this.pushButtons();
+//        this.alignWithWall();
+//
+//        do {
+//            driveHardware.setMotorSpeeds(0.2, 0.2);
+//            waitOneFullHardwareCycle();
+//        } while (usHardware.getDistance() > 10);
+//        driveHardware.stopMotors();
 
         flipperHardware.dump();
+
+        this.pushButtons();
     }
 }

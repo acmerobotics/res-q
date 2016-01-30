@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.UltrasonicSensor;
  */
 public class UltrasonicHardware extends HardwareInterface {
 
-    public static final int SMOOTHING_SIZE = 25;
+    public static final int SMOOTHING_SIZE = 10;
 
     private UltrasonicSensor usSensor;
     private String name;
