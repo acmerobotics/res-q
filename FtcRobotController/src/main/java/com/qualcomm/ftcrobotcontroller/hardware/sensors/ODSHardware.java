@@ -23,11 +23,11 @@ public class ODSHardware extends HardwareInterface {
 
     @Override
     public String getStatusString() {
-        return "line color: " + getLineColor().toString();
+        return "line color: " + getLineColor().toString() + "  raw: " + odsSensor.getLightDetected();
     }
 
     public LineColor getLineColor() {
-        return odsSensor.getLightDetected() > 0.5 ? LineColor.LIGHT : LineColor.DARK;
+        return odsSensor.getLightDetected() > 0.97 ? LineColor.LIGHT : LineColor.DARK;
     }
 
 

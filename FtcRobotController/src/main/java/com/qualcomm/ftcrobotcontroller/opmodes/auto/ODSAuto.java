@@ -2,6 +2,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.ODSHardware;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Admin on 1/26/2016.
@@ -26,11 +27,13 @@ public class ODSAuto extends Auto {
 
         waitForStart();
 
+       // ElapsedTime elapsedTime = new ElapsedTime();
+
         while (odsHardware.getLineColor().equals(ODSHardware.LineColor.DARK)) {
-            driveHardware.setMotorSpeeds(0.3, 0.3);
+            smartDriveHardware.driveStraight();
             waitOneFullHardwareCycle();
         }
-        driveHardware.stopMotors();
+        smartDriveHardware.stopMotors();
 
         //smartDriveHardware.turnRightSync(20);
 
@@ -51,7 +54,7 @@ public class ODSAuto extends Auto {
 //                speed += lineError * 0.2;
 //            }
 
-            base = (usHardware.getDistance() - 10.0) / 300.0;
+            base = (usHardware.getDistance() - 5.0) / 170.0;
             if (!centered) {
                 speed = 0.5 * lineError;
                 base = 0;
@@ -59,12 +62,17 @@ public class ODSAuto extends Auto {
                 speed = usError * 0.05;
             }
             driveHardware.setMotorSpeeds(base + speed, base - speed);
-            telemetry.clearData();
-            telemetry.addData("base", base);
-            telemetry.addData("usError", usError);
-            telemetry.addData("speed", speed);
+
+//            // dump after 25 seconds and stop if close enough
+//            if (elapsedTime.time() > 25.0 && usHardware.getDistance() <= 16) {
+//                driveHardware.stopMotors();
+//                waitOneFullHardwareCycle();
+//                flipperHardware.dump();
+//                stop();
+//            }
+
             waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() > 15 || Math.abs(usHardware.getDifference()) > 1.5);
+        } while (usHardware.getDistance() > 12 || Math.abs(usHardware.getDifference()) > 1.5);
         // end experimental
         driveHardware.stopMotors();
 

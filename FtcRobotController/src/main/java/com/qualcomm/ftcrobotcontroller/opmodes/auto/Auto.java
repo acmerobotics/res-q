@@ -9,6 +9,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.ColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 
 /**
  * Created by Ryan on 12/10/2015.
@@ -33,10 +34,10 @@ public class Auto extends LinearRobotController {
         double diff, speed;
         do {
             diff = usHardware.getDifference();
-            speed = diff * 0.07;
+            speed = diff * 0.05;
             driveHardware.setMotorSpeeds(speed, -speed);
             waitOneFullHardwareCycle();
-        } while (Math.abs(diff) > 2.5);
+        } while (Math.abs(diff) > 1.5);
         driveHardware.stopMotors();
         // end experimental
     }

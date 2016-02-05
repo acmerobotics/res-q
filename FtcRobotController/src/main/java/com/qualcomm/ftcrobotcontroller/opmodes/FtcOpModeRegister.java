@@ -97,5 +97,17 @@ public class FtcOpModeRegister implements OpModeRegister {
         });
 
         manager.register("ClimberAuto", ClimberAuto.class);
+
+        manager.register("Straight", new Auto() {
+            @Override
+            public void runOpMode() throws InterruptedException {
+                super.runOpMode();
+                waitForStart();
+                smartDriveHardware.driveStraight();
+                while(opModeIsActive()) {
+                    waitOneFullHardwareCycle();
+                }
+            }
+        });
     }
 }

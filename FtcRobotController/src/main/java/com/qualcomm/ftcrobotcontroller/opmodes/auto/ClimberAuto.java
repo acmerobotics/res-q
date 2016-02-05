@@ -21,11 +21,11 @@ public class ClimberAuto extends Auto {
         waitForStart();
 
         do {
-            driveHardware.setMotorSpeeds(0.2, 0.2);
+            smartDriveHardware.driveStraight();
             waitOneFullHardwareCycle();
         } while (odsHardware.getLineColor().equals(ODSHardware.LineColor.DARK));
-        waitMillis(200);
-        driveHardware.stopMotors();
+        //waitMillis(200);
+        smartDriveHardware.stopMotors();
 
         alignWithWall();
 

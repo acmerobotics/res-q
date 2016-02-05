@@ -24,6 +24,7 @@ public class SmartDriveHardware extends HardwareInterface {
 
     public enum TurnState {
         NOT_TURNING,
+        STRAIGHT,
         LEFT,
         RIGHT
     }
@@ -53,6 +54,9 @@ public class SmartDriveHardware extends HardwareInterface {
             turnState = TurnState.NOT_TURNING;
             if (callback != null) callback.onTurnFinished();
             callback = null;
+        } else if (turnState.equals(TurnState.STRAIGHT)) {
+            double error = -0.05 * (gyroHardware.getHeading() - targetHeading);
+            driveHardware.setMotorSpeeds(0.15 + error, 0.15 - error);
         }
     }
 
@@ -98,6 +102,16 @@ public class SmartDriveHardware extends HardwareInterface {
                 RobotLog.e(e.getMessage());
             }
         }
+    }
+
+    public void driveStraight() {
+        this.targetHeading = gyroHardware.getHeading();
+        this.turnState = TurnState.STRAIGHT;
+    }
+
+    public void stopMotors() {
+        driveHardware.stopMotors();
+        turnState = TurnState.NOT_TURNING;
     }
 
     public boolean isTurning() {
