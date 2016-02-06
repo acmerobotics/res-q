@@ -14,6 +14,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 
 /**
  * Created by Ryan on 12/10/2015.
@@ -24,7 +25,7 @@ public class Auto extends LinearRobotController {
 
     protected DriveHardware driveHardware;
     protected SmartDriveHardware smartDriveHardware;
-    protected IMUHardware gyroHardware;
+    protected GyroSensor gyroSensor;
     protected UltrasonicPairHardware usHardware;
     protected PuncherHardware puncherHardware;
     protected ArmHardware armHardware;
@@ -82,8 +83,8 @@ public class Auto extends LinearRobotController {
         lineColorSensor = hardwareMap.colorSensor.get("line");
 
         driveHardware = new DriveHardware();
-        gyroHardware = new IMUHardware();
-        smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);
+        gyroSensor = hardwareMap.gyroSensor.get("gyro");
+        smartDriveHardware = new SmartDriveHardware(driveHardware, gyroSensor);
 
         usHardware = new UltrasonicPairHardware();
         puncherHardware = new PuncherHardware();
@@ -91,7 +92,6 @@ public class Auto extends LinearRobotController {
         flipperHardware = new FlipperHardware();
 
         registerHardwareInterface("drive", driveHardware);
-        registerHardwareInterface("gyro", gyroHardware);
         registerHardwareInterface("gyro_drive", smartDriveHardware);
         registerHardwareInterface("us", usHardware);
         registerHardwareInterface("pusher", puncherHardware);

@@ -4,6 +4,7 @@ import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 /**
@@ -14,7 +15,7 @@ public class SmartDriveHardware extends HardwareInterface {
     public static final double TURN_SPEED = 0.9;
 
     public DriveHardware driveHardware;
-    public IMUHardware gyroHardware;
+    public GyroSensor gyroSensor;
 
     private TurnState turnState = TurnState.NOT_TURNING;
     private double targetHeading;
@@ -33,9 +34,9 @@ public class SmartDriveHardware extends HardwareInterface {
         public void onTurnFinished();
     }
 
-    public SmartDriveHardware(DriveHardware driveHardware, IMUHardware gyroHardware) {
+    public SmartDriveHardware(DriveHardware driveHardware, GyroSensor gyroSensor) {
         this.driveHardware = driveHardware;
-        this.gyroHardware = gyroHardware;
+        this.gyroSensor = gyroSensor;
     }
 
     @Override
@@ -45,17 +46,16 @@ public class SmartDriveHardware extends HardwareInterface {
 
     @Override
     public void loop(double timeSinceLastLoop) {
-        gyroHardware.loop(timeSinceLastLoop);
         if (
-            (turnState.equals(TurnState.LEFT) && gyroHardware.getHeading() <= targetHeading) ||
-            (turnState.equals(TurnState.RIGHT) && gyroHardware.getHeading() >= targetHeading)
+            (turnState.equals(TurnState.LEFT) && gyroSensor.getHeading() <= targetHeading) ||
+            (turnState.equals(TurnState.RIGHT) && gyroSensor.getHeading() >= targetHeading)
             ) {
             driveHardware.stopMotors();
             turnState = TurnState.NOT_TURNING;
             if (callback != null) callback.onTurnFinished();
             callback = null;
         } else if (turnState.equals(TurnState.STRAIGHT)) {
-            double error = -0.05 * (gyroHardware.getHeading() - targetHeading);
+            double error = -0.05 * (gyroSensor.getHeading() - targetHeading);
             driveHardware.setMotorSpeeds(0.15 + error, 0.15 - error);
         }
     }
@@ -67,14 +67,14 @@ public class SmartDriveHardware extends HardwareInterface {
 
     public void turnLeft(double degrees, TurnCallback cb) {
         callback = cb;
-        targetHeading = gyroHardware.getHeading() - degrees;
+        targetHeading = gyroSensor.getHeading() - degrees;
         driveHardware.setMotorSpeeds(-TURN_SPEED, TURN_SPEED);
         turnState = TurnState.LEFT;
     }
 
     public void turnRight(double degrees, TurnCallback cb) {
         callback = cb;
-        targetHeading = gyroHardware.getHeading() + degrees;
+        targetHeading = gyroSensor.getHeading() + degrees;
         driveHardware.setMotorSpeeds(TURN_SPEED, -TURN_SPEED);
         turnState = TurnState.RIGHT;
     }
@@ -105,7 +105,7 @@ public class SmartDriveHardware extends HardwareInterface {
     }
 
     public void driveStraight() {
-        this.targetHeading = gyroHardware.getHeading();
+        this.targetHeading = gyroSensor.getHeading();
         this.turnState = TurnState.STRAIGHT;
     }
 
