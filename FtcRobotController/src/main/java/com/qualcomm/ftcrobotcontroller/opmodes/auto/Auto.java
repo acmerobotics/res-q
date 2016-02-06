@@ -1,5 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
+import android.graphics.Color;
+
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
@@ -9,24 +11,44 @@ import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.ColorHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.UltrasonicPairHardware;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  * Created by Ryan on 12/10/2015.
  */
 public class Auto extends LinearRobotController {
 
+    public static int LIGHT_THRESHOLD = 200;
+
     protected DriveHardware driveHardware;
     protected SmartDriveHardware smartDriveHardware;
     protected IMUHardware gyroHardware;
     protected UltrasonicPairHardware usHardware;
-    protected ColorHardware colorHardware;
     protected PuncherHardware puncherHardware;
     protected ArmHardware armHardware;
     protected FlipperHardware flipperHardware;
+    protected ColorSensor lineColorSensor;
+    protected ColorSensor frontColorSensor;
+
+    public enum LineColor {
+        LIGHT,
+        DARK
+    }
 
     public static double cm(double in) {
         return in * 2.54;
+    }
+
+    public LineColor getLineColor() {
+        return lineColorSensor.alpha() > LIGHT_THRESHOLD ? LineColor.LIGHT : LineColor.DARK;
+    }
+
+    public boolean isFrontRed() {
+        int r = lineColorSensor.red(),
+            b = lineColorSensor.blue();
+        return r > b;
     }
 
     protected void alignWithWall() throws InterruptedException {
@@ -43,12 +65,7 @@ public class Auto extends LinearRobotController {
     }
 
     protected void pushButtons() {
-        ColorHardware.Color color;
-        do {
-            color = colorHardware.getPredominantColor();
-        } while (color != ColorHardware.Color.BLUE && color != ColorHardware.Color.RED);
-
-        if (color.toString().equals(getAllianceColor().toString())) {
+        if (isFrontRed() && getAllianceColor() == AllianceColor.RED) {
             // right side
             puncherHardware.punchRight();
         } else {
@@ -61,12 +78,14 @@ public class Auto extends LinearRobotController {
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
+        frontColorSensor = hardwareMap.colorSensor.get("front");
+        lineColorSensor = hardwareMap.colorSensor.get("line");
+
         driveHardware = new DriveHardware();
         gyroHardware = new IMUHardware();
         smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);
 
         usHardware = new UltrasonicPairHardware();
-        colorHardware = new ColorHardware();
         puncherHardware = new PuncherHardware();
         armHardware = new ArmHardware();
         flipperHardware = new FlipperHardware();
@@ -75,7 +94,6 @@ public class Auto extends LinearRobotController {
         registerHardwareInterface("gyro", gyroHardware);
         registerHardwareInterface("gyro_drive", smartDriveHardware);
         registerHardwareInterface("us", usHardware);
-        registerHardwareInterface("color", colorHardware);
         registerHardwareInterface("pusher", puncherHardware);
         registerHardwareInterface("arm", armHardware);
         registerHardwareInterface("flipper", flipperHardware);

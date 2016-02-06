@@ -1,11 +1,9 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
-import com.qualcomm.ftcrobotcontroller.hardware.sensors.ODSHardware;
-
 /**
  * Created by Admin on 1/29/2016.
  */
-public class ClimberAuto extends Auto {
+public class DumbAuto extends Auto {
 
     protected ODSHardware odsHardware;
 
