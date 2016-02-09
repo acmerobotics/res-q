@@ -1,4 +1,4 @@
-package com.acmerobotics.library.data;
+package com.acmerobotics.library.i2c;
 
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cDevice;

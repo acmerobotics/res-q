@@ -1,4 +1,4 @@
-package com.acmerobotics.library.data;
+package com.acmerobotics.library.i2c;
 
 public class TimestampedData<T> {
 
