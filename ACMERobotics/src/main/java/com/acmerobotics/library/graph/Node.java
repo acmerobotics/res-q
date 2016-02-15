@@ -14,6 +14,10 @@ public class Node<Input, Output> {
         children.add(node);
     }
 
+    public ArrayList<Node<Output, ?>> getChildren() {
+        return children;
+    }
+
     public Output process(Input i) {
         return null;
     }
