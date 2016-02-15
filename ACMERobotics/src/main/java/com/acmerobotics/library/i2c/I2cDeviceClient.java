@@ -1,12 +1,13 @@
 package com.acmerobotics.library.i2c;
 
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 
-public class I2cDeviceReaderAndWriter {
+public class I2cDeviceClient implements HardwareDevice {
 
     public final int msPortReadyDelay = 1;
 
@@ -20,7 +21,7 @@ public class I2cDeviceReaderAndWriter {
     private final int port;
     private int address;
 
-    public I2cDeviceReaderAndWriter(DeviceInterfaceModule dim, int address, int port) {
+    public I2cDeviceClient(DeviceInterfaceModule dim, int address, int port) {
         this.dim = dim;
         this.port = port;
         this.address = address;
@@ -71,5 +72,50 @@ public class I2cDeviceReaderAndWriter {
 
     public void write8(int register, byte data) {
         this.write(register, new byte[]{data}, 1);
+    }
+
+    public void write8(int register, int data) {
+        this.write8(register, ((byte) data) & 0xFF);
+    }
+
+    public int readInt(int register, int len, ByteOrder bo) {
+        byte[] result = read(register, len);
+        if (bo.equals(ByteOrder.LITTLE_ENDIAN)) {
+            for (int i = 0; i < result.length / 2; i++) {
+                byte temp = result[i];
+                result[i] = result[result.length - 1 - i];
+                result[result.length - 1 - i] = temp;
+            }
+        }
+        int num = result[0] & 0xff;
+        for (int i = 1; i < len; i++) {
+            num <<= 8;
+            num |= result[i] & 0xff;
+        }
+        return num;
+    }
+
+    public int readInt(int register, int len) {
+        return readInt(register, len, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    @Override
+    public String getDeviceName() {
+        return null;
+    }
+
+    @Override
+    public String getConnectionInfo() {
+        return null;
+    }
+
+    @Override
+    public int getVersion() {
+        return 0;
+    }
+
+    @Override
+    public void close() {
+
     }
 }
