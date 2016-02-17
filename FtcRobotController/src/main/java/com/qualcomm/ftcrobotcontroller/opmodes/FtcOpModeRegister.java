@@ -83,6 +83,8 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("TeleOp", TeleOp.class);
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("Smart Auto", SmartAuto.class);
+        manager.register("Line Follow", LineFollow.class);
+        manager.register("HSV", HSV.class);
 
         manager.register("PushButtons", new Auto() {
             @Override

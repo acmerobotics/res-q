@@ -16,11 +16,16 @@ public class PIDController<T extends Double> {
     }
 
     public void add(TimestampedData<T> data) {
+        if (lastData == null) {
+            lastData = data;
+            return;
+        }
         double error = data.getData().doubleValue() - lastData.getData().doubleValue(),
-               dt = ((double) data.getTimeSince(lastData)) / Math.pow(10, 6),
+               dt = ((double) data.getTimeSince(lastData)) / Math.pow(10, 9),
                rate = error / dt;
         sumError += error * dt;
         output = kP * error + kI * sumError + kD * rate;
+        lastData = data;
     }
 
     public double getOutput() {

@@ -4,6 +4,7 @@ import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.drive.SmartDriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.IMUHardware;
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 
 /**
  * Created by Ryan on 12/6/2015.
@@ -11,15 +12,15 @@ import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 public class GyroTurnTest extends LinearRobotController {
 
     public SmartDriveHardware smartDriveHardware;
-    public IMUHardware gyroHardware;
+    public GyroSensor gyroHardware;
     public DriveHardware driveHardware;
 
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        gyroHardware = new IMUHardware();
-        registerHardwareInterface("gyro", gyroHardware);
+        gyroHardware =  hardwareMap.gyroSensor.get("gyro");
+
         driveHardware = new DriveHardware();
         registerHardwareInterface("drive", driveHardware);
         smartDriveHardware = new SmartDriveHardware(driveHardware, gyroHardware);

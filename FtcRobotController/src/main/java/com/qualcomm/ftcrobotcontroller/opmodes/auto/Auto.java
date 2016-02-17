@@ -82,7 +82,9 @@ public class Auto extends LinearRobotController {
         frontColorSensor = hardwareMap.colorSensor.get("front");
         lineColorSensor = hardwareMap.colorSensor.get("line");
 
-        lineColorSensor.enableLed(false);
+        frontColorSensor.enableLed(false);
+
+        lineColorSensor.setI2cAddress(0x3e);
 
         driveHardware = new DriveHardware();
         gyroSensor = hardwareMap.gyroSensor.get("gyro");

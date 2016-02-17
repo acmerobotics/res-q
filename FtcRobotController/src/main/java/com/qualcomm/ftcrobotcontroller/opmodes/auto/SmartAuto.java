@@ -8,6 +8,11 @@ import com.qualcomm.ftcrobotcontroller.data.TimestampedData;
  */
 public class SmartAuto extends Auto {
 
+    public enum LineSide {
+        LEFT,
+        RIGHT
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
@@ -22,22 +27,36 @@ public class SmartAuto extends Auto {
         }
         smartDriveHardware.stopMotors();
 
-        PIDController<Double> controller = new PIDController(0.01, 0.005, 0);
-        while (usHardware.getDistance() > 16) {
-            double base = 0.1, reading;
-            if (getLineColor() == LineColor.DARK) {
-                if (usHardware.getDifference() < 0) {
-                    reading = 1D;
-                } else {
-                    reading = -1D;
-                }
+        LineSide currentSide = LineSide.LEFT;
+        boolean centered = true;
+        // experimental
+        double speed, lineError, usError, base;
+        do {
+            if (getLineColor().equals(LineColor.LIGHT)) {
+                lineError = 0;
+                centered = true;
             } else {
-                reading = 0D;
+                lineError = driveHardware.movingLeft() ? 1 : -1;
             }
-            controller.add(new TimestampedData<Double>(reading));
-            double output = controller.getOutput();
-            driveHardware.setMotorSpeeds(base + output, base - output);
-        }
+            usError = usHardware.getDifference();
+//            speed = usError * 0.05 + lineError * (usHardware.getDistance() - 15) / 150;
+//            if (usHardware.getDistance() > 15) {
+//                speed += lineError * 0.2;
+//            }
+
+            base = (usHardware.getDistance() - 10.0) / 300.0;
+            if (!centered) {
+                speed = 0.5 * lineError;
+                base = 0;
+            } else {
+                speed = usError * 0.05;
+            }
+            driveHardware.setMotorSpeeds(base + speed, base - speed);
+            telemetry.clearData();
+            waitOneFullHardwareCycle();
+        } while (usHardware.getDistance() > 15 || Math.abs(usHardware.getDifference()) > 1.5);
+        // end experimental
+        driveHardware.stopMotors();
 
         flipperHardware.dump();
 

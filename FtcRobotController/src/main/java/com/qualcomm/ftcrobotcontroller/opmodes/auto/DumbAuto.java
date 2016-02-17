@@ -5,14 +5,10 @@ package com.qualcomm.ftcrobotcontroller.opmodes.auto;
  */
 public class DumbAuto extends Auto {
 
-    protected ODSHardware odsHardware;
-
     @Override
     public void runOpMode() throws InterruptedException {
-        super.runOpMode();
+            super.runOpMode();
 
-        odsHardware = new ODSHardware();
-        registerHardwareInterface("ods", odsHardware);
 
         promptAllianceColor();
 
@@ -21,7 +17,7 @@ public class DumbAuto extends Auto {
         do {
             smartDriveHardware.driveStraight();
             waitOneFullHardwareCycle();
-        } while (odsHardware.getLineColor().equals(ODSHardware.LineColor.DARK));
+        } while (getLineColor().equals(LineColor.DARK));
         //waitMillis(200);
         smartDriveHardware.stopMotors();
 
