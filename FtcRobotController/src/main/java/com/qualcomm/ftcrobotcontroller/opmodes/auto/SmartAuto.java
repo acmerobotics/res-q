@@ -8,6 +8,28 @@ import com.qualcomm.ftcrobotcontroller.data.TimestampedData;
  */
 public class SmartAuto extends Auto {
 
+    /*
+        PARAMETERS
+        ==========
+        BASE_SPEED: Controls the robot speed near the beacon.
+        SPEED_INCR: Controls the robot speed up until the beacon.
+        WALL_P:     Controls how fast the robot turns to align with the wall.
+        LINE_P:     Controls how fast the robot turns to find the line again.
+        WALL_DISTANCE: The distance between the robot and the wall at dumping time.
+        DIFF_BOUND: An acceptable ultrasonic sensor difference for termination.
+
+        CONFIGURATIONS
+        ==============
+        NORMAL: TODO fill this in with actual results!
+    */
+
+    public static final double BASE_SPEED       = 0.2,
+                               SPEED_INCR       = 0.01,
+                               WALL_P           = 0.3,
+                               LINE_P           = 0.2,
+                               WALL_DISTANCE    = 15,
+                               DIFF_BOUND       = 1.5;
+
     public enum LineSide {
         LEFT,
         RIGHT
@@ -29,8 +51,7 @@ public class SmartAuto extends Auto {
 
         LineSide currentSide = LineSide.LEFT;
         boolean centered = true;
-        // experimental
-        double speed, lineError, usError, base;
+        double baseSpeed, speedDiff, usDist, usDiff, lineError;
         do {
             if (getLineColor().equals(LineColor.LIGHT)) {
                 lineError = 0;
@@ -38,24 +59,21 @@ public class SmartAuto extends Auto {
             } else {
                 lineError = driveHardware.movingLeft() ? 1 : -1;
             }
-            usError = usHardware.getDifference();
-//            speed = usError * 0.05 + lineError * (usHardware.getDistance() - 15) / 150;
-//            if (usHardware.getDistance() > 15) {
-//                speed += lineError * 0.2;
-//            }
 
-            base = (usHardware.getDistance() - 10.0) / 300.0;
-            if (!centered) {
-                speed = 0.5 * lineError;
-                base = 0;
+            usDiff = usHardware.getDifference();
+            usDist = usHardware.getDistance();
+            baseSpeed = BASE_SPEED + SPEED_INCR * (usDist - WALL_DISTANCE);
+            speedDiff = WALL_P * usDiff;
+
+            if (centered) {
+                driveHardware.setMotorSpeeds(baseSpeed - speedDiff, baseSpeed + speedDiff);
             } else {
-                speed = usError * 0.05;
+                driveHardware.setMotorSpeeds(LINE_P * lineError, -LINE_P * lineError);
             }
-            driveHardware.setMotorSpeeds(base + speed, base - speed);
-            telemetry.clearData();
+
             waitOneFullHardwareCycle();
-        } while (usHardware.getDistance() > 15 || Math.abs(usHardware.getDifference()) > 1.5);
-        // end experimental
+        } while (usHardware.getDistance() > WALL_DISTANCE || Math.abs(usHardware.getDifference()) > DIFF_BOUND);
+
         driveHardware.stopMotors();
 
         flipperHardware.dump();
