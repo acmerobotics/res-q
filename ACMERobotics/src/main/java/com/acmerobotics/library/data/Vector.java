@@ -4,6 +4,10 @@ public class Vector {
 
     public double x, y, z;
 
+    public enum Axis {
+        X, Y, Z
+    }
+
     public Vector() {
         this(0, 0, 0);
     }
