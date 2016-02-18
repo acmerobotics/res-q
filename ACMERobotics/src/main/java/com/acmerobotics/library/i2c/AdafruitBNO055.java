@@ -12,10 +12,23 @@ public class AdaFruitBNO055 extends GyroSensor {
     public static final int BNO055ESS_A_ADDR = (0x28);
     public static final int BNO055ESS_B_ADDR = (0x29);
     public static final int BNO055_ID        = (0xA0);
+
+    private AngleUnits angleUnits = null;
+    private TemperatureUnits tempUnits = null;
     
     private I2cDeviceClient device; 
 
     private OperationMode mode;
+
+    enum AngleUnits {
+        RADIANS,
+        DEGREES
+    }
+
+    enum TemperatureUnits {
+        CELSIUS,
+        FAHRENHEIT
+    }
 
     enum PowerMode {
         NORMAL (0x00),
@@ -204,6 +217,27 @@ public class AdaFruitBNO055 extends GyroSensor {
         this.device = device;
     }
 
+    public void setTemperatureUnits(TemperatureUnits tempUnits) {
+        this.tempUnits = tempUnits;
+        byte val = device.read8(Registers.BNO055_UNIT_SEL);
+        device.write8(Registers.BNO055_UNIT_SEL, val & (tempUnits.equals(TemperatureUnits.CELSIUS) ? 0 : 1) << 4);
+        delay(10);
+    }
+
+    public TemperatureUnits getTemperatureUnits() {
+        return this.tempUnits;
+    }
+
+    public void setAngleUnits(AngleUnits angleUnits) {
+        this.angleUnits = angleUnits;
+        byte val = device.read8(Registers.BNO055_UNIT_SEL);
+        device.write8(Registers.BNO055_UNIT_SEL, val & (angleUnits.equals(AngleUnits.RADIANS) ? 0b11 : 0b00) << 1);
+    }
+
+    public AngleUnits getAngleUnits() {
+        return this.angleUnits;
+    }
+
     // TODO
     public void delay(int ms) {
         device.delay(ms);
@@ -236,6 +270,9 @@ public class AdaFruitBNO055 extends GyroSensor {
         setPowerMode(PowerMode.NORMAL);
 
         device.write8(Registers.BNO055_PAGE_ID, 0);
+
+        setAngleUnits(AngleUnits.DEGREES);
+        setTemperatureUnits(TemperatureUnits.FAHRENHEIT);
 
         /* Set the output units */
         /*
@@ -282,8 +319,8 @@ public class AdaFruitBNO055 extends GyroSensor {
         delay(20);
     }
 
-    public int getTemp() {
-        return device.readInt(Registers.BNO055_TEMP, 1);
+    public int getTemperature() {
+        return device.readInt(Registers.BNO055_TEMP, 1) * (getTemperatureUnits().equals(TemperatureUnits.FAHRENHEIT) ? 2 : 1);
     }
 
     public Vector getVector(int startRegister, double scale) {
@@ -298,14 +335,18 @@ public class AdaFruitBNO055 extends GyroSensor {
         return (MagneticFlux) getVector(Registers.BNO055_MAG_DATA_X_LSB, 16);
     }
 
-    /** @returns degrees per second */
+    /** @returns angle units per second */
     public AngularVelocity getAngularVelocity() {
-        return (AngularVelocity) getVector(Registers.BNO055_ACCEL_DATA_X_LSB, 2.5);
+        return (AngularVelocity) getVector(Registers.BNO055_GYRO_DATA_X_LSB,
+            getAngleUnits().equals(AngleUnits.RADIANS) ? 900 : 16
+        );
     }
 
-    /** @returns degrees */
+    /** @returns angle units */
     public EulerAngle getEulerAngles() {
-        return (EulerAngle) getVector(Registers.BNO055_EULER_H_LSB, 16);
+        return (EulerAngle) getVector(Registers.BNO055_EULER_H_LSB,
+            getAngleUnits().equals(AngleUnits.RADIANS) ? 900 : 16
+        );
     }
 
     /** @returns meters per second^2 */
