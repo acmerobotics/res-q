@@ -20,17 +20,17 @@ public class AdaFruitBNO055 extends GyroSensor {
 
     private OperationMode mode;
 
-    enum AngleUnits {
+    public enum AngleUnits {
         RADIANS,
         DEGREES
     }
 
-    enum TemperatureUnits {
+    public enum TemperatureUnits {
         CELSIUS,
         FAHRENHEIT
     }
 
-    enum PowerMode {
+    public enum PowerMode {
         NORMAL (0x00),
         LOWPOWER (0x01),
         SUSPEND (0x02);
@@ -42,7 +42,7 @@ public class AdaFruitBNO055 extends GyroSensor {
         }
     }
 
-    enum OperationMode {
+    public enum OperationMode {
         CONFIG (0x00),
         ACCONLY (0x01),
         MAGONLY (0x02),

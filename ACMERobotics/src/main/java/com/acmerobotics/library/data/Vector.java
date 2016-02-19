@@ -18,4 +18,8 @@ public class Vector {
         this.z = z;
     }
 
+    public String toString() {
+        return getClass().toString() + "(" + x + ", " + y + ", " + z + ")";
+    }
+
 }
