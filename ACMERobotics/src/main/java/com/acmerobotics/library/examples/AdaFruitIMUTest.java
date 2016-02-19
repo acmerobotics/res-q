@@ -14,10 +14,10 @@ public class AdaFruitIMUTest extends OpMode {
     public void init() {
         dim = hardwareMap.deviceInterfaceModule.get("dim");
         imuChip = new AdaFruitBNO055(new I2cDeviceClient(dim, 0, AdaFruitBNO055.BNO055ESS_A_ADDR));
+        imuChip.begin();
         imuChip.setAngleUnits(AdaFruitBNO055.AngleUnits.DEGREES);
         imuChip.setTemperatureUnits(AdaFruitBNO055.TemperatureUnits.FAHRENHEIT);
         imuChip.setMode(AdaFruitBNO055.OperationMode.NDOF);
-        imuChip.begin();
     }
 
     @Override

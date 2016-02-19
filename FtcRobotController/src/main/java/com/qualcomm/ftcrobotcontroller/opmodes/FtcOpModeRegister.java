@@ -32,8 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.Auto;
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.DumbAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.SmartAuto;
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.SmarterAuto;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
@@ -84,8 +84,7 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("TeleOp", TeleOp.class);
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("Smart Auto", SmartAuto.class);
-        manager.register("Line Follow", LineFollow.class);
-        manager.register("HSV", HSV.class);
+        manager.register("Smarter Auto", SmarterAuto.class);
 
         manager.register("LightSensorTest", LightSensorTest.class);
 
@@ -98,8 +97,6 @@ public class FtcOpModeRegister implements OpModeRegister {
                 pushButtons();
             }
         });
-
-        manager.register("Dumb Auto", DumbAuto.class);
 
         manager.register("Straight", new Auto() {
             @Override

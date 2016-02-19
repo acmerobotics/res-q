@@ -1,4 +1,4 @@
-package com.qualcomm.ftcrobotcontroller;
+package com.qualcomm.ftcrobotcontroller.data;
 
 import android.graphics.Color;
 
