@@ -40,6 +40,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.LightSensorTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.ODSTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.PuncherTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.UltrasonicTest;
@@ -85,6 +86,8 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("Smart Auto", SmartAuto.class);
         manager.register("Line Follow", LineFollow.class);
         manager.register("HSV", HSV.class);
+
+        manager.register("LightSensorTest", LightSensorTest.class);
 
         manager.register("PushButtons", new Auto() {
             @Override

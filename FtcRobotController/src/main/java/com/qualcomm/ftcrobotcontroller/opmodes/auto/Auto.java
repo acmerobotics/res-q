@@ -21,8 +21,6 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
  */
 public class Auto extends LinearRobotController {
 
-    public static int LIGHT_THRESHOLD = 200;
-
     protected DriveHardware driveHardware;
     protected SmartDriveHardware smartDriveHardware;
     protected GyroSensor gyroSensor;
@@ -43,7 +41,7 @@ public class Auto extends LinearRobotController {
     }
 
     public LineColor getLineColor() {
-        return lineColorSensor.alpha() > LIGHT_THRESHOLD ? LineColor.LIGHT : LineColor.DARK;
+        return lineColorSensor.alpha() > 1 ? LineColor.LIGHT : LineColor.DARK;
     }
 
     public boolean isFrontRed() {

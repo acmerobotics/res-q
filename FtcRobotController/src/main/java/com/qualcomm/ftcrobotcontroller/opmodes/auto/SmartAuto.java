@@ -23,12 +23,12 @@ public class SmartAuto extends Auto {
         NORMAL: TODO fill this in with actual results!
     */
 
-    public static final double BASE_SPEED       = 0.2,
-                               SPEED_INCR       = 0.01,
-                               WALL_P           = 0.3,
-                               LINE_P           = 0.2,
+    public static final double BASE_SPEED       = 0.05,
+                               SPEED_INCR       = 0.0025,
+                               WALL_P           = -0.05,
+                               LINE_P           = 1,
                                WALL_DISTANCE    = 15,
-                               DIFF_BOUND       = 1.5;
+                               DIFF_BOUND       = 1;
 
     public enum LineSide {
         LEFT,
@@ -70,7 +70,6 @@ public class SmartAuto extends Auto {
             } else {
                 driveHardware.setMotorSpeeds(LINE_P * lineError, -LINE_P * lineError);
             }
-
             waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > WALL_DISTANCE || Math.abs(usHardware.getDifference()) > DIFF_BOUND);
 
