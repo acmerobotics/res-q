@@ -31,19 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.Auto;
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.SmartAuto;
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.SmarterAuto;
-import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
-import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.FlipperTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.GyroTurnTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cGyroTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.LightSensorTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.ODSTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.PuncherTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.UltrasonicTest;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.*;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.*;
+import com.qualcomm.ftcrobotcontroller.opmodes.auto.*;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -87,6 +77,8 @@ public class FtcOpModeRegister implements OpModeRegister {
         manager.register("Smarter Auto", SmarterAuto.class);
 
         manager.register("LightSensorTest", LightSensorTest.class);
+
+        manager.register("MRColorLogger", MRColorLogger.class);
 
         manager.register("PushButtons", new Auto() {
             @Override

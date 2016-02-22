@@ -1,5 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
+import com.acmerobotics.library.file.DataLogger;
 import com.qualcomm.ftcrobotcontroller.hardware.sensors.ColorHardware;
 import com.qualcomm.ftcrobotcontroller.control.RobotController;
 
