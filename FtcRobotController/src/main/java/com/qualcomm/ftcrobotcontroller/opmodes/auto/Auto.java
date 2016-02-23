@@ -31,9 +31,18 @@ public class Auto extends LinearRobotController {
     protected ColorSensor lineColorSensor;
     protected ColorSensor frontColorSensor;
 
+    public enum LineColor {
+        DARK,
+        LIGHT
+    }
+
     /** 0 = DARK, 1-5 = LIGHT (greater = stronger) */
     public double getLineStrength() {
         return lineColorSensor.alpha();
+    }
+
+    public LineColor getLineColor() {
+        return getLineStrength() > 3 ? LineColor.LIGHT : LineColor.DARK;
     }
 
     public boolean isFrontRed() {
