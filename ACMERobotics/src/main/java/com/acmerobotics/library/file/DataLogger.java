@@ -39,6 +39,7 @@ public class DataLogger {
         if (!active) return false;
         try {
             fos.write((line + "\n").getBytes());
+            fos.flush();
         } catch (IOException e) {
             RobotLog.e(e.getMessage());
         }
