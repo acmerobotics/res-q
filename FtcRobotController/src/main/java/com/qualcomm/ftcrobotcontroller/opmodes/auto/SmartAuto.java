@@ -24,12 +24,12 @@ public class SmartAuto extends Auto {
         1:
     */
 
-    public static final double BASE_SPEED       = 0.05,
-                               SPEED_INCR       = 0.001 ,
-                               WALL_P           = -0.025,
-                               LINE_P           = 0.3,
+    public static final double BASE_SPEED       = 0.06,
+                               SPEED_INCR       = 0.006,
+                               WALL_P           = -0.05,
+                               LINE_P           = 0.5,
                                WALL_DISTANCE    = 15,
-                               DIFF_BOUND       = 1;
+                               DIFF_BOUND       = 1.5;
 
     public enum LineSide {
         LEFT,

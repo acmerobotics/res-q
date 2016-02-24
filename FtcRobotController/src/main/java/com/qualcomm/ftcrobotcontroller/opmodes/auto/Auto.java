@@ -51,7 +51,7 @@ public class Auto extends LinearRobotController {
     }
 
     public LineColor getLineColor() {
-        return getLineStrength() > 3 ? LineColor.LIGHT : LineColor.DARK;
+        return getLineStrength() > 1 ? LineColor.LIGHT : LineColor.DARK;
     }
 
     public boolean isFrontRed() {
