@@ -11,47 +11,39 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class DataLogger {
 
     private Context appContext;
     private File file;
     private FileOutputStream fos;
-    private boolean active = false;
+    private PrintWriter writer;
 
     public DataLogger(OpMode ctx, String filename) {
         appContext = ctx.hardwareMap.appContext;
         File dir = new File(appContext.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "DataLogger");
+        dir.mkdir();
         file = new File(dir, filename);
         try {
             file.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            RobotLog.e(e.getMessage());
         }
         try {
             fos = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean writeLine(String line) {
-        if (!active) return false;
-        try {
-            fos.write((line + "\n").getBytes());
-            fos.flush();
-        } catch (IOException e) {
             RobotLog.e(e.getMessage());
         }
-        return true;
+        writer = new PrintWriter(fos);
+    }
+
+    public void writeLine(String line) {
+        writer.write(line + "\n");
+        writer.flush();
     }
 
     public void close() {
-        active = false;
-        try {
-            fos.close();
-        } catch (IOException e) {
-            RobotLog.e(e.getMessage());
-        }
+        writer.close();
     }
 }

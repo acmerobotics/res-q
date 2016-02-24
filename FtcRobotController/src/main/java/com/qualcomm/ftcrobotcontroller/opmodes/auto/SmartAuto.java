@@ -21,12 +21,13 @@ public class SmartAuto extends Auto {
         CONFIGURATIONS
         ==============
         NORMAL: TODO fill this in with actual results!
+        1:
     */
 
     public static final double BASE_SPEED       = 0.05,
-                               SPEED_INCR       = 0.0025,
-                               WALL_P           = -0.05,
-                               LINE_P           = 1,
+                               SPEED_INCR       = 0.001 ,
+                               WALL_P           = -0.025,
+                               LINE_P           = 0.3,
                                WALL_DISTANCE    = 15,
                                DIFF_BOUND       = 1;
 
@@ -49,25 +50,30 @@ public class SmartAuto extends Auto {
         }
         smartDriveHardware.stopMotors();
 
-        LineSide currentSide = LineSide.LEFT;
         boolean centered = true;
         double baseSpeed, speedDiff, usDist, usDiff, lineError;
         do {
-            if (getLineColor().equals(LineColor.LIGHT)) {
-                lineError = 0;
-                centered = true;
-            } else {
-                lineError = driveHardware.movingLeft() ? 1 : -1;
-            }
-
             usDiff = usHardware.getDifference();
             usDist = usHardware.getDistance();
+
+            if (getLineColor().equals(LineColor.LIGHT)) {
+                centered = true;
+                lineError = 0;
+            } else {
+                lineError = driveHardware.movingLeft() ? 1 : -1;
+                centered = false;
+            }
+
             baseSpeed = BASE_SPEED + SPEED_INCR * (usDist - WALL_DISTANCE);
             speedDiff = WALL_P * usDiff;
 
+            telemetry.addData("line", getLineStrength());
+
             if (centered) {
+                telemetry.addData("status", "moving forward");
                 driveHardware.setMotorSpeeds(baseSpeed - speedDiff, baseSpeed + speedDiff);
             } else {
+                telemetry.addData("status", "lining up");
                 driveHardware.setMotorSpeeds(LINE_P * lineError, -LINE_P * lineError);
             }
             waitOneFullHardwareCycle();

@@ -1,6 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.auto;
 
 import com.acmerobotics.library.data.TimestampedData;
+import com.acmerobotics.library.file.DataLogger;
 import com.acmerobotics.library.graph.PIDNode;
 import com.acmerobotics.library.graph.ValueNode;
 
@@ -9,35 +10,15 @@ import com.acmerobotics.library.graph.ValueNode;
  */
 public class SmarterAuto extends Auto {
 
-    /*
-        PARAMETERS
-        ==========
-        BASE_SPEED: Controls the robot speed near the beacon.
-        SPEED_INCR: Controls the robot speed up until the beacon.
-        WALL_P:     Controls how fast the robot turns to align with the wall.
-        LINE_P:     Controls how fast the robot turns to find the line again.
-        WALL_DISTANCE: The distance between the robot and the wall at dumping time.
-        DIFF_BOUND: An acceptable ultrasonic sensor difference for termination.
-
-        CONFIGURATIONS
-        ==============
-        NORMAL: TODO fill this in with actual results!
-    */
-
-    /**
-     * @param a number
-     * @return -1 or 1 depending on the sign of a
-     */
-    public double sign(double a) {
-        return a > 0 ? 1 : -1;
-    }
-
     @Override
     public void runOpMode() throws InterruptedException {
         super.runOpMode();
 
-        PIDNode<Double> speedController = new PIDNode<Double>(0.1, 0.01, 0);
-        ValueNode<Double> speedValue = new ValueNode<Double>();
+        PIDNode<Double> speedController = new PIDNode<Double>(0.5, 0, 0);
+        ValueNode<Double> speedValue = new ValueNode<Double>(0D);
+        DataLogger dataLogger = new DataLogger(this, "smarter_auto.csv");
+
+        dataLogger.writeLine("timestamp,strength,diff");
 
         speedController.connect(speedValue);
 
@@ -53,14 +34,21 @@ public class SmarterAuto extends Auto {
         smartDriveHardware.stopMotors();
 
         // line follow maybe?
-        while (usHardware.getDifference() < 15) {
-            double lineStrength = getLineStrength();
+        while (usHardware.getDistance() > 15) {
             double usDiff = usHardware.getDifference();
-            double datum = (lineStrength - 5.0) * sign(usDiff);
-            double base = 0.2;
+
+            double datum = getLineStrength() * sign(usDiff);
+
+            double base = 0.1;
+
             speedController.update(TimestampedData.wrap(datum));
+
             double diff = speedValue.getLatestValue();
+
             driveHardware.setMotorSpeeds(base - diff, base + diff);
+
+            dataLogger.writeLine(System.nanoTime() + "," + getLineStrength() + "," + diff);
+
             waitOneFullHardwareCycle();
         }
         driveHardware.stopMotors();

@@ -36,6 +36,9 @@ public class UltrasonicPairHardware extends HardwareInterface {
     }
 
     public double getDifference() {
+        if (us1.getDistance() == 255 || us2.getDistance() == 255) {
+            return 255;
+        }
         return us1.getDistance() - us2.getDistance();
     }
 }

@@ -19,6 +19,10 @@ public class PIDNode<T extends Double> extends Node<TimestampedData<T>, Double> 
 
     @Override
     public Double process(TimestampedData<T> data) {
+        if (lastData == null) {
+            lastData = data;
+            return 0D;
+        }
         double error = data.getData().doubleValue() - lastData.getData().doubleValue(),
                 dt = ((double) data.getTimeSince(lastData)) / Math.pow(10, 6),
                 rate = error / dt;

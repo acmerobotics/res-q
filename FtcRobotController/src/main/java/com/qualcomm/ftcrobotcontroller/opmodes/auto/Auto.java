@@ -36,6 +36,15 @@ public class Auto extends LinearRobotController {
         LIGHT
     }
 
+
+    /**
+     * @param a number
+     * @return -1 or 1 depending on the sign of a
+     */
+    public double sign(double a) {
+        return a > 0 ? 1 : -1;
+    }
+
     /** 0 = DARK, 1-5 = LIGHT (greater = stronger) */
     public double getLineStrength() {
         return lineColorSensor.alpha();
