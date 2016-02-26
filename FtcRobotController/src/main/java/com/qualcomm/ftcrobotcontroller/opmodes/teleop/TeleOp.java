@@ -29,7 +29,7 @@ public class TeleOp extends ArcadeDrive {
         registerHardwareInterface("arm", armHardware);
         registerHardwareInterface("flipper", flipperHardware);
         registerHardwareInterface("puncher", new PuncherHardware()); // this resets the puncher position
-        registerHardwareInterface("winchHardware", winchHardware);
+        registerHardwareInterface("winch", winchHardware);
     }
 
     @Override

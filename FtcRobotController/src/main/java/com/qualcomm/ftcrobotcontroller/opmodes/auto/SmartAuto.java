@@ -27,7 +27,7 @@ public class SmartAuto extends Auto {
     public static final double BASE_SPEED       = 0.06,
                                SPEED_INCR       = 0.006,
                                WALL_P           = -0.05,
-                               LINE_P           = 0.5,
+                               LINE_P           = 0.01,
                                WALL_DISTANCE    = 15,
                                DIFF_BOUND       = 1.5;
 
@@ -57,10 +57,14 @@ public class SmartAuto extends Auto {
             usDist = usHardware.getDistance();
 
             if (getLineColor().equals(LineColor.LIGHT)) {
+                gyroSensor.resetZAxisIntegrator();
                 centered = true;
                 lineError = 0;
             } else {
-                lineError = driveHardware.movingLeft() ? 1 : -1;
+                lineError = gyroSensor.getHeading();
+                if (lineError > 180) {
+                    lineError -= 360;
+                }
                 centered = false;
             }
 

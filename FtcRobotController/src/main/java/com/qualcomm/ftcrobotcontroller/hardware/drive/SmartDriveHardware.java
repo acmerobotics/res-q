@@ -67,14 +67,16 @@ public class SmartDriveHardware extends HardwareInterface {
 
     public void turnLeft(double degrees, TurnCallback cb) {
         callback = cb;
-        targetHeading = gyroSensor.getHeading() - degrees;
+        targetHeading = degrees;
+        gyroSensor.resetZAxisIntegrator();
         driveHardware.setMotorSpeeds(-TURN_SPEED, TURN_SPEED);
         turnState = TurnState.LEFT;
     }
 
     public void turnRight(double degrees, TurnCallback cb) {
         callback = cb;
-        targetHeading = gyroSensor.getHeading() + degrees;
+        targetHeading = degrees;
+        gyroSensor.resetZAxisIntegrator();
         driveHardware.setMotorSpeeds(TURN_SPEED, -TURN_SPEED);
         turnState = TurnState.RIGHT;
     }
