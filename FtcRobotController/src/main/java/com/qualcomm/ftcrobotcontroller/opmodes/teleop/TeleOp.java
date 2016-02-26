@@ -3,6 +3,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes.teleop;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.FlipperHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
+import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.WinchHardware;
 
 /**
  * Created by Admin on 12/11/2015.
@@ -11,6 +12,7 @@ public class TeleOp extends ArcadeDrive {
 
     protected ArmHardware armHardware;
     protected FlipperHardware flipperHardware;
+    protected WinchHardware winchHardware;
 
     protected double servoPosition = ArmHardware.SERVO_UP;
 
@@ -22,10 +24,12 @@ public class TeleOp extends ArcadeDrive {
 
         armHardware = new ArmHardware();
         flipperHardware = new FlipperHardware();
+        winchHardware = new WinchHardware();
 
         registerHardwareInterface("arm", armHardware);
         registerHardwareInterface("flipper", flipperHardware);
-        registerHardwareInterface("puncher", new PuncherHardware());
+        registerHardwareInterface("puncher", new PuncherHardware()); // this resets the puncher position
+        registerHardwareInterface("winchHardware", winchHardware);
     }
 
     @Override
@@ -81,6 +85,15 @@ public class TeleOp extends ArcadeDrive {
         // reset encoders
         if (gamepad2.right_bumper && gamepad2.left_bumper) {
             armHardware.resetEncoders();
+        }
+
+        // winch
+        if (gamepad1.y) {
+            winchHardware.beginExtending();
+        } else if (gamepad1.a) {
+            winchHardware.beginRetracting();
+        } else {
+            winchHardware.stop();
         }
 
         super.loop();
