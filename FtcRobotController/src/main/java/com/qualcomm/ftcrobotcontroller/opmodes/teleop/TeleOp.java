@@ -90,7 +90,7 @@ public class TeleOp extends ArcadeDrive {
         // winch
         if (gamepad1.y) {
             winchHardware.beginExtending();
-        } else if (gamepad1.a) {
+        } else if (gamepad1.a && !gamepad1.start) {
             winchHardware.beginRetracting();
         } else {
             winchHardware.stop();

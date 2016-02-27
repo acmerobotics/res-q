@@ -8,6 +8,8 @@ import com.qualcomm.ftcrobotcontroller.data.TimestampedData;
  */
 public class SmartAuto extends Auto {
 
+    public static final double SCALING_FACTOR = 60.0 / Math.sqrt(60.0);
+
     /*
         PARAMETERS
         ==========
@@ -24,12 +26,19 @@ public class SmartAuto extends Auto {
         1:
     */
 
-    public static final double BASE_SPEED       = 0.06,
-                               SPEED_INCR       = 0.006,
-                               WALL_P           = -0.05,
-                               LINE_P           = 0.01,
+    public static final double BASE_SPEED       = 0.085,
+                               SPEED_INCR       = 0.002,
+                               WALL_P           = -0.04,
+                               LINE_P           = 0.035,
                                WALL_DISTANCE    = 15,
-                               DIFF_BOUND       = 1.5;
+                               DIFF_BOUND       = 0.5;
+
+//    public static final double BASE_SPEED       = 0.05,
+//            SPEED_INCR       = 0.005,
+//            WALL_P           = -0.05,
+//            LINE_P           = 0.1,
+//            WALL_DISTANCE    = 12,
+//            DIFF_BOUND       = 1.5;
 
     public enum LineSide {
         LEFT,
@@ -48,9 +57,71 @@ public class SmartAuto extends Auto {
             smartDriveHardware.driveStraight();
             waitOneFullHardwareCycle();
         }
+
+        waitMillis(400);
+
         smartDriveHardware.stopMotors();
 
-        boolean centered = true;
+        while (getLineStrength() < 2) {
+            driveHardware.setMotorSpeeds(0.4, -0.4);
+        }
+
+        double baseSpeed, speedDiff, usDist, usDiff, lineError, lineDiff;
+        do {
+            usDiff = usHardware.getDifference();
+            usDist = usHardware.getDistance();
+
+            if (getLineColor().equals(LineColor.LIGHT)) {
+                gyroSensor.resetZAxisIntegrator();
+                lineError = 0;
+            } else {
+                lineError = gyroSensor.getHeading();
+                if (lineError > 180) {
+                    lineError -= 360;
+                }
+                double sign = sign(lineError);
+                lineError = sign * SCALING_FACTOR * Math.sqrt(Math.abs(lineError));
+            }
+
+            baseSpeed = BASE_SPEED + SPEED_INCR * (usDist - WALL_DISTANCE);
+            speedDiff = WALL_P * usDiff;
+            lineDiff = LINE_P * lineError;
+
+            telemetry.addData("line", getLineStrength());
+            telemetry.addData("status", speedDiff > lineDiff ? "lining up" : "looking for the line");
+
+            driveHardware.setMotorSpeeds(baseSpeed - (lineDiff + speedDiff), baseSpeed + lineDiff + speedDiff);
+
+//            if (Math.abs(lineError) < 2) {
+//                telemetry.addData("status", "moving forward");
+//                driveHardware.setMotorSpeeds(baseSpeed - speedDiff, baseSpeed + speedDiff);
+//            } else {
+//                telemetry.addData("status", "lining up");
+//                driveHardware.setMotorSpeeds(-LINE_P * lineError, LINE_P * lineError);
+//            }
+            waitOneFullHardwareCycle();
+        } while (usHardware.getDistance() > WALL_DISTANCE || Math.abs(usHardware.getDifference()) > DIFF_BOUND);
+        driveHardware.stopMotors();
+
+        this.alignWithWall();
+
+        flipperHardware.dump();
+
+        this.pushButtons();
+    }
+}
+
+/*
+promptAllianceColor();
+
+        waitForStart();
+
+        while (getLineColor() == LineColor.DARK) {
+            smartDriveHardware.driveStraight();
+            waitOneFullHardwareCycle();
+        }
+        smartDriveHardware.stopMotors();
+
         double baseSpeed, speedDiff, usDist, usDiff, lineError;
         do {
             usDiff = usHardware.getDifference();
@@ -58,14 +129,14 @@ public class SmartAuto extends Auto {
 
             if (getLineColor().equals(LineColor.LIGHT)) {
                 gyroSensor.resetZAxisIntegrator();
-                centered = true;
                 lineError = 0;
             } else {
                 lineError = gyroSensor.getHeading();
                 if (lineError > 180) {
                     lineError -= 360;
                 }
-                centered = false;
+                double sign = sign(lineError);
+                lineError = sign * SCALING_FACTOR * Math.sqrt(Math.abs(lineError));
             }
 
             baseSpeed = BASE_SPEED + SPEED_INCR * (usDist - WALL_DISTANCE);
@@ -73,20 +144,21 @@ public class SmartAuto extends Auto {
 
             telemetry.addData("line", getLineStrength());
 
-            if (centered) {
+            if (Math.abs(lineError) < 2) {
                 telemetry.addData("status", "moving forward");
                 driveHardware.setMotorSpeeds(baseSpeed - speedDiff, baseSpeed + speedDiff);
             } else {
                 telemetry.addData("status", "lining up");
-                driveHardware.setMotorSpeeds(LINE_P * lineError, -LINE_P * lineError);
+                driveHardware.setMotorSpeeds(-LINE_P * lineError, LINE_P * lineError);
             }
             waitOneFullHardwareCycle();
         } while (usHardware.getDistance() > WALL_DISTANCE || Math.abs(usHardware.getDifference()) > DIFF_BOUND);
 
         driveHardware.stopMotors();
 
+        this.alignWithWall();
+
         flipperHardware.dump();
 
         this.pushButtons();
-    }
-}
+ */
