@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.acmerobotics.library.examples.AdaFruitIMUTest;
 import com.qualcomm.ftcrobotcontroller.opmodes.test.*;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.*;
 import com.qualcomm.ftcrobotcontroller.opmodes.auto.*;
@@ -42,7 +43,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  */
 public class FtcOpModeRegister implements OpModeRegister {
 
-    public static final boolean TEST = true;
+    public static final boolean TEST = false;
 
     /**
      * The Op Mode Manager will call this method when it wants a list of all
@@ -71,34 +72,36 @@ public class FtcOpModeRegister implements OpModeRegister {
             manager.register("PuncherTest", PuncherTest.class);
             manager.register("ODS Test", ODSTest.class);
         }
-        manager.register("TeleOp", TeleOp.class);
-        manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
-        manager.register("Smart Auto", SmartAuto.class);
+//        manager.register("TeleOp", TeleOp.class);
+//        manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
+//        manager.register("Smart Auto", SmartAuto.class);
 
-        manager.register("LightSensorTest", LightSensorTest.class);
+        manager.register("IMU Test", AdaFruitIMUTest.class);
 
-        manager.register("MRColorLogger", MRColorLogger.class);
-
-        manager.register("PushButtons", new Auto() {
-            @Override
-            public void runOpMode() throws InterruptedException {
-                super.runOpMode();
-                promptAllianceColor();
-                waitForStart();
-                pushButtons();
-            }
-        });
-
-        manager.register("Straight", new Auto() {
-            @Override
-            public void runOpMode() throws InterruptedException {
-                super.runOpMode();
-                waitForStart();
-                smartDriveHardware.driveStraight();
-                while(opModeIsActive()) {
-                    waitOneFullHardwareCycle();
-                }
-            }
-        });
+//        manager.register("LightSensorTest", LightSensorTest.class);
+//
+//        manager.register("MRColorLogger", MRColorLogger.class);
+//
+//        manager.register("PushButtons", new Auto() {
+//            @Override
+//            public void runOpMode() throws InterruptedException {
+//                super.runOpMode();
+//                promptAllianceColor();
+//                waitForStart();
+//                pushButtons();
+//            }
+//        });
+//
+//        manager.register("Straight", new Auto() {
+//            @Override
+//            public void runOpMode() throws InterruptedException {
+//                super.runOpMode();
+//                waitForStart();
+//                smartDriveHardware.driveStraight();
+//                while(opModeIsActive()) {
+//                    waitOneFullHardwareCycle();
+//                }
+//            }
+//        });
     }
 }

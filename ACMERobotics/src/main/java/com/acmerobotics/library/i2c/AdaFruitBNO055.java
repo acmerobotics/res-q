@@ -1,22 +1,29 @@
 package com.acmerobotics.library.i2c;
 
+import android.os.SystemClock;
+
 import com.acmerobotics.library.data.Acceleration;
 import com.acmerobotics.library.data.AngularVelocity;
 import com.acmerobotics.library.data.EulerAngle;
 import com.acmerobotics.library.data.MagneticFlux;
 import com.acmerobotics.library.data.Vector;
-import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceImpl;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.util.RobotLog;
 
-public class AdaFruitBNO055 extends GyroSensor {
+import java.nio.ByteBuffer;
 
-    public static final int BNO055ESS_A_ADDR = (0x28);
-    public static final int BNO055ESS_B_ADDR = (0x29);
-    public static final int BNO055_ID        = (0xA0);
+public class AdaFruitBNO055 implements HardwareDevice {
+
+    public static final int BNO055ESS_A_ADDR = 0x28;
+    public static final int BNO055ESS_B_ADDR = 0x29;
+    public static final int BNO055_ID        = 0xA0;
 
     private AngleUnits angleUnits = null;
     private TemperatureUnits tempUnits = null;
     
-    private I2cDeviceClient device; 
+    private I2cDeviceSynch device;
 
     private OperationMode mode;
 
@@ -213,53 +220,42 @@ public class AdaFruitBNO055 extends GyroSensor {
         MAG_RADIUS_MSB = 0X6A;
     }
 
-    public AdaFruitBNO055(I2cDeviceClient device) {
+    public AdaFruitBNO055(I2cDeviceSynch device) {
         this.device = device;
     }
 
-    public void setTemperatureUnits(TemperatureUnits tempUnits) {
-        this.tempUnits = tempUnits;
-        byte val = device.read8(Registers.BNO055_UNIT_SEL);
-        device.write8(Registers.BNO055_UNIT_SEL, val & (tempUnits.equals(TemperatureUnits.CELSIUS) ? 0 : 1) << 4);
-        delay(10);
+    public void delay(long ms) {
+//        long ns = ms * 1000L;
+//        long start = System.nanoTime();
+//        while ((System.nanoTime() - start) < ns) {
+//            try {
+//                Thread.sleep(0, 250);
+//            } catch (InterruptedException e) {
+//                RobotLog.e("Interrupted when delaying for " + ms + "ms");
+//            }
+//        }
+        SystemClock.sleep(ms);
     }
 
-    public TemperatureUnits getTemperatureUnits() {
-        return this.tempUnits;
-    }
-
-    public void setAngleUnits(AngleUnits angleUnits) {
-        this.angleUnits = angleUnits;
-        byte val = device.read8(Registers.BNO055_UNIT_SEL);
-        device.write8(Registers.BNO055_UNIT_SEL, val & (angleUnits.equals(AngleUnits.RADIANS) ? 0b11 : 0b00) << 1);
-    }
-
-    public AngleUnits getAngleUnits() {
-        return this.angleUnits;
-    }
-
-    // TODO
-    public void delay(int ms) {
-        device.delay(ms);
+    public boolean chipIdMatches() {
+        int val = device.read8(Registers.BNO055_CHIP_ID) & 0xff;
+        RobotLog.e("Chip ID is " + val);
+        return val == BNO055_ID;
     }
 
     public boolean begin() {
+        RobotLog.i("Begin");
+
         /* Make sure we have the right device */
-        int id = (byte) device.read8(Registers.BNO055_CHIP_ID);
-        if(id != BNO055_ID)
-        {
-            delay(1000); // hold on for boot
-            id = device.read8(Registers.BNO055_CHIP_ID);
-            if(id != BNO055_ID) {
-                return false;  // still not? ok bail
-            }
-        }
+//        while (!chipIdMatches()) {
+//            delay(1000);
+//        }
 
         /* Switch to config mode (just in case since this is the default) */
         setMode(OperationMode.CONFIG);
 
         /* Reset */
-        device.write8(Registers.BNO055_SYS_TRIGGER, 0x20);
+        device.write8(Registers.BNO055_SYS_TRIGGER, (byte) 0x20);
         while (device.read8(Registers.BNO055_CHIP_ID) != BNO055_ID)
         {
             delay(10);
@@ -269,7 +265,7 @@ public class AdaFruitBNO055 extends GyroSensor {
         /* Set to normal power mode */
         setPowerMode(PowerMode.NORMAL);
 
-        device.write8(Registers.BNO055_PAGE_ID, 0);
+        device.write8(Registers.BNO055_PAGE_ID, (byte) 0);
 
         setAngleUnits(AngleUnits.DEGREES);
         setTemperatureUnits(TemperatureUnits.FAHRENHEIT);
@@ -294,11 +290,42 @@ public class AdaFruitBNO055 extends GyroSensor {
 
         device.write8(Registers.BNO055_SYS_TRIGGER, (byte) 0x0);
         delay(10);
-        /* Set the requested operating mode (see section 3.3) */
-        setMode(mode);
-        delay(20);
+
+        RobotLog.i("End");
 
         return true;
+    }
+
+    public void setPowerMode(PowerMode mode) {
+        device.write8(Registers.BNO055_PWR_MODE, mode.byteVal);
+        delay(10);
+    }
+
+    public void setMode(OperationMode mode) {
+        this.mode = mode;
+        device.write8(Registers.BNO055_OPR_MODE, mode.byteVal);
+        delay(30);
+    }
+
+    public void setTemperatureUnits(TemperatureUnits tempUnits) {
+        this.tempUnits = tempUnits;
+        int val = device.read8(Registers.BNO055_UNIT_SEL);
+        device.write8(Registers.BNO055_UNIT_SEL, (byte) ((val & 0b11101111) | (tempUnits.equals(TemperatureUnits.CELSIUS) ? 0 : 1) << 4));
+        delay(10);
+    }
+
+    public TemperatureUnits getTemperatureUnits() {
+        return this.tempUnits;
+    }
+
+    public void setAngleUnits(AngleUnits angleUnits) {
+        this.angleUnits = angleUnits;
+        int val = device.read8(Registers.BNO055_UNIT_SEL);
+        device.write8(Registers.BNO055_UNIT_SEL, (byte) ((val & 0b11111101) | (angleUnits.equals(AngleUnits.RADIANS) ? 0b11 : 0b00) << 1));
+    }
+
+    public AngleUnits getAngleUnits() {
+        return this.angleUnits;
     }
 
     public void setExtCrystalUse(boolean usextal) {
@@ -307,11 +334,11 @@ public class AdaFruitBNO055 extends GyroSensor {
         /* Switch to config mode (just in case since this is the default) */
         setMode(OperationMode.CONFIG);
         delay(25);
-        device.write8(Registers.BNO055_PAGE_ID, 0);
+        device.write8(Registers.BNO055_PAGE_ID, (byte) 0);
         if (usextal) {
-            device.write8(Registers.BNO055_SYS_TRIGGER, 0x80);
+            device.write8(Registers.BNO055_SYS_TRIGGER, (byte) 0x80);
         } else {
-            device.write8(Registers.BNO055_SYS_TRIGGER, 0x00);
+            device.write8(Registers.BNO055_SYS_TRIGGER, (byte) 0x00);
         }
         delay(10);
         /* Set the requested operating mode (see section 3.3) */
@@ -320,13 +347,14 @@ public class AdaFruitBNO055 extends GyroSensor {
     }
 
     public int getTemperature() {
-        return device.readInt(Registers.BNO055_TEMP, 1) * (getTemperatureUnits().equals(TemperatureUnits.FAHRENHEIT) ? 2 : 1);
+        return device.read8(Registers.BNO055_TEMP) * (getTemperatureUnits().equals(TemperatureUnits.FAHRENHEIT) ? 2 : 1);
     }
 
     public Vector getVector(int startRegister, double scale) {
-        double x = device.readInt(startRegister, 2),
-                y = device.readInt(startRegister + 2, 2),
-                z = device.readInt(startRegister + 4, 2);
+        ByteBuffer buf = ByteBuffer.wrap(device.read(startRegister, 6));
+        double x = (double) buf.getShort(0),
+                y = (double) buf.getShort(2),
+                z = (double) buf.getShort(4);
         return new Vector(x / scale, y / scale, z / scale);
     }
 
@@ -354,62 +382,6 @@ public class AdaFruitBNO055 extends GyroSensor {
         return (Acceleration) getVector(Registers.BNO055_ACCEL_DATA_X_LSB, 100);
     }
 
-    public void setPowerMode(PowerMode mode) {
-        device.write8(Registers.BNO055_PWR_MODE, mode.byteVal);
-        delay(10);
-    }
-
-    public void setMode(OperationMode mode) {
-        this.mode = mode;
-        device.write8(Registers.BNO055_OPR_MODE, mode.byteVal);
-        delay(30);
-    }
-    
-    @Override
-    public void calibrate() {
-
-    }
-
-    @Override
-    public boolean isCalibrating() {
-        return false;
-    }
-
-    @Override
-    public int getHeading() {
-        return (int) getEulerAngles().x;
-    }
-
-    @Override
-    public double getRotation() {
-        return getEulerAngles().x;
-    }
-
-    @Override
-    public int rawX() {
-        return (int) getAngularVelocity().x;
-    }
-
-    @Override
-    public int rawY() {
-        return (int) getAngularVelocity().y;
-    }
-
-    @Override
-    public int rawZ() {
-        return (int) getAngularVelocity().z;
-    }
-
-    @Override
-    public void resetZAxisIntegrator() {
-        throw new RuntimeException("unimplemented: z-axis integrator");
-    }
-
-    @Override
-    public String status() {
-        return "";
-    }
-
     @Override
     public String getDeviceName() {
         return "BNO055 Bosch IMU";
@@ -427,6 +399,6 @@ public class AdaFruitBNO055 extends GyroSensor {
 
     @Override
     public void close() {
-
+        device.close();
     }
 }
