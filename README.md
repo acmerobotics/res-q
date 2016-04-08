@@ -21,6 +21,15 @@ For technical questions regarding the SDK, please visit the FTC Technology forum
 
 **************************************************************************************
 
+Release 16.03.30
+
+ * For the MIT App Inventor, the design blocks have new icons that better represent the function of each design component.
+ * Some changes were made to the shutdown logic to ensure the robust shutdown of some of our USB services.
+ * A change was made to LinearOpMode so as to allow a given instance to be executed more than once, which is required for the App Inventor.
+ * Javadoc improved/updated.
+
+**************************************************************************************
+
 Release 16.03.09
 
  * Changes made to make the FTC SDK synchronous (significant change!)
@@ -29,7 +38,7 @@ Release 16.03.09
     - loop() (for an OpMode) is now decoupled from the system's hardware read/write thread.
     - Methods are synchronous.
     - For example, if you call setMode(DcMotorController.RunMode.RESET_ENCODERS) for a motor, the encoder is guaranteed to be reset when the method call is complete.
-    - For legacy module (NXT compatible), user no longer has to toggle between read and write modes when reading from or writing to a legacy sensor.
+    - For legacy module (NXT compatible), user no longer has to toggle between read and write modes when reading from or writing to a legacy device.
  * Changes made to enhance reliability/robustness during ESD event.
  * Changes made to make code thread safe.
  * Debug keystore added so that user-generated robot controller APKs will all use the same signed key (to avoid conflicts if a team has multiple developer laptops for example).
@@ -70,7 +79,7 @@ Release 16.02.09
  * Incorporated a display filter on pairing screen to filter out devices that don’t use the “<TEAM NUMBER>-“ format. This filter can be turned off to show all WiFi Direct devices.
  * Updated text in License file.
  * Fixed formatting error in OpticalDistanceSensor.toString().
- * Fixed issue on with a blank (“”) sensor name that would disrupt WiFi Direct Pairing.
+ * Fixed issue on with a blank (“”) device name that would disrupt WiFi Direct Pairing.
  * Made a change so that the WiFi info and battery info can be displayed more quickly on the DS upon connecting to RC.
  * Improved javadoc generation.
  * Modified code to make it easier to support language localization in the future.
@@ -129,7 +138,7 @@ Release 15.11.04.001
   - Fix USB initializtion race condition.
   - Better error reporting during FTDI open.
   - More explicit messages during USB failures.
-  - Fixed bug so that USB sensor is closed if event loop teardown method was not called.
+  - Fixed bug so that USB device is closed if event loop teardown method was not called.
  * Fixed timer UI issue
  * Fixed duplicate name UI bug (Legacy Module configuration).
  * Fixed race condition in EventLoopManager.

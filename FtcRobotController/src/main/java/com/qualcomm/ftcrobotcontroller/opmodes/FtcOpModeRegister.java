@@ -32,9 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.acmerobotics.library.examples.AdaFruitIMUTest;
-import com.qualcomm.ftcrobotcontroller.opmodes.test.*;
-import com.qualcomm.ftcrobotcontroller.opmodes.teleop.*;
-import com.qualcomm.ftcrobotcontroller.opmodes.auto.*;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -43,65 +41,23 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  */
 public class FtcOpModeRegister implements OpModeRegister {
 
-    public static final boolean TEST = false;
+  /**
+   * The Op Mode Manager will call this method when it wants a list of all
+   * available op modes. Add your op mode to the list to enable it.
+   *
+   * @param manager op mode manager
+   */
+  public void register(OpModeManager manager) {
 
-    /**
-     * The Op Mode Manager will call this method when it wants a list of all
-     * available op modes. Add your op mode to the list to enable it.
+    /*
+     * register your op modes here.
+     * The first parameter is the name of the op mode
+     * The second parameter is the op mode class property
      *
-     * @param manager op mode manager
+     * If two or more op modes are registered with the same name, the app will display an error.
      */
-    public void register(OpModeManager manager) {
-        /*
-         * register your op modes here.
-         * The first parameter is the name of the op mode
-         * The second parameter is the op mode class property
-         *
-         * If two or more op modes are registered with the same name, the app will display an error.
-         */
 
-//        manager.register("TankDrive", TankDrive.class);
-//        manager.register("ArcadeDrive", ArcadeDrive.class);
-
-        if (TEST) {
-            manager.register("FlipperTest", FlipperTest.class);
-            manager.register("I2cGyroTest", I2cGyroTest.class);
-            manager.register("I2cColorTest", I2cColorTest.class);
-            manager.register("UltrasonicTest", UltrasonicTest.class);
-            manager.register("GyroTurnTest", GyroTurnTest.class);
-            manager.register("PuncherTest", PuncherTest.class);
-            manager.register("ODS Test", ODSTest.class);
-        }
-//        manager.register("TeleOp", TeleOp.class);
-//        manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
-//        manager.register("Smart Auto", SmartAuto.class);
-
-        manager.register("IMU Test", AdaFruitIMUTest.class);
-
-//        manager.register("LightSensorTest", LightSensorTest.class);
-//
-//        manager.register("MRColorLogger", MRColorLogger.class);
-//
-//        manager.register("PushButtons", new Auto() {
-//            @Override
-//            public void runOpMode() throws InterruptedException {
-//                super.runOpMode();
-//                promptAllianceColor();
-//                waitForStart();
-//                pushButtons();
-//            }
-//        });
-//
-//        manager.register("Straight", new Auto() {
-//            @Override
-//            public void runOpMode() throws InterruptedException {
-//                super.runOpMode();
-//                waitForStart();
-//                smartDriveHardware.driveStraight();
-//                while(opModeIsActive()) {
-//                    waitOneFullHardwareCycle();
-//                }
-//            }
-//        });
-    }
+    manager.register("TeleOp", TeleOpNoLimits.class);
+    manager.register("Bosch IMU Test", AdaFruitIMUTest.class);
+  }
 }
