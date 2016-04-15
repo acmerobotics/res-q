@@ -29,10 +29,10 @@ public class AdaFruitIMUTest extends OpMode {
 //        telemetry.addData("Counter", counter++);
 //        imuChip.delay(5000);
         telemetry.addData("Euler", imuChip.getEulerAngles());
-        telemetry.addData("Gyro", imuChip.getAngularVelocity());
-        telemetry.addData("Accel", imuChip.getAcceleration());
-        telemetry.addData("Mag", imuChip.getMagneticFlux());
+//        telemetry.addData("Gyro", imuChip.getAngularVelocity());
+//        telemetry.addData("Accel", imuChip.getAcceleration());
+//        telemetry.addData("Mag", imuChip.getMagneticFlux());
         telemetry.addData("Temp", imuChip.getTemperature());
-        imuChip.delay(1000);
+        imuChip.delay(50);
     }
 }

@@ -19,7 +19,7 @@ public class Vector {
     }
 
     public String toString() {
-        return getClass().toString() + "(" + x + ", " + y + ", " + z + ")";
+        return "(" + x + ", " + y + ", " + z + ")";
     }
 
 }

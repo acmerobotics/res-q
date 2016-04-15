@@ -2,17 +2,13 @@ package com.acmerobotics.library.i2c;
 
 import android.os.SystemClock;
 
-import com.acmerobotics.library.data.Acceleration;
-import com.acmerobotics.library.data.AngularVelocity;
-import com.acmerobotics.library.data.EulerAngle;
-import com.acmerobotics.library.data.MagneticFlux;
 import com.acmerobotics.library.data.Vector;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
-import com.qualcomm.robotcore.hardware.I2cDeviceImpl;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class AdaFruitBNO055 implements HardwareDevice {
 
@@ -222,6 +218,8 @@ public class AdaFruitBNO055 implements HardwareDevice {
 
     public AdaFruitBNO055(I2cDeviceSynch device) {
         this.device = device;
+        this.device.engage();
+        RobotLog.i("Device armed: " + this.device.isArmed());
     }
 
     public void delay(long ms) {
@@ -247,17 +245,16 @@ public class AdaFruitBNO055 implements HardwareDevice {
         RobotLog.i("Begin");
 
         /* Make sure we have the right device */
-//        while (!chipIdMatches()) {
-//            delay(1000);
-//        }
+        while (!chipIdMatches()) {
+            delay(1000);
+        }
 
         /* Switch to config mode (just in case since this is the default) */
         setMode(OperationMode.CONFIG);
 
         /* Reset */
         device.write8(Registers.BNO055_SYS_TRIGGER, (byte) 0x20);
-        while (device.read8(Registers.BNO055_CHIP_ID) != BNO055_ID)
-        {
+        while (!chipIdMatches()) {
             delay(10);
         }
         delay(50);
@@ -350,8 +347,18 @@ public class AdaFruitBNO055 implements HardwareDevice {
         return device.read8(Registers.BNO055_TEMP) * (getTemperatureUnits().equals(TemperatureUnits.FAHRENHEIT) ? 2 : 1);
     }
 
+    public void displayBytes(ByteBuffer buffer) {
+        byte[] arr = buffer.array();
+        for (int i = 0; i < arr.length; i++) {
+            RobotLog.i(String.format("0x%2s", arr[i]));
+        }
+    }
+
     public Vector getVector(int startRegister, double scale) {
         ByteBuffer buf = ByteBuffer.wrap(device.read(startRegister, 6));
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+//        RobotLog.i("Bytes (" + System.nanoTime() + ")");
+//        displayBytes(buf);
         double x = (double) buf.getShort(0),
                 y = (double) buf.getShort(2),
                 z = (double) buf.getShort(4);
@@ -359,27 +366,27 @@ public class AdaFruitBNO055 implements HardwareDevice {
     }
 
     /** @returns micro Teslas */
-    public MagneticFlux getMagneticFlux() {
-        return (MagneticFlux) getVector(Registers.BNO055_MAG_DATA_X_LSB, 16);
+    public Vector getMagneticFlux() {
+        return getVector(Registers.BNO055_MAG_DATA_X_LSB, 16);
     }
 
     /** @returns angle units per second */
-    public AngularVelocity getAngularVelocity() {
-        return (AngularVelocity) getVector(Registers.BNO055_GYRO_DATA_X_LSB,
+    public Vector getAngularVelocity() {
+        return getVector(Registers.BNO055_GYRO_DATA_X_LSB,
             getAngleUnits().equals(AngleUnits.RADIANS) ? 900 : 16
         );
     }
 
     /** @returns angle units */
-    public EulerAngle getEulerAngles() {
-        return (EulerAngle) getVector(Registers.BNO055_EULER_H_LSB,
+    public Vector getEulerAngles() {
+        return getVector(Registers.BNO055_EULER_H_LSB,
             getAngleUnits().equals(AngleUnits.RADIANS) ? 900 : 16
         );
     }
 
     /** @returns meters per second^2 */
-    public Acceleration getAcceleration() {
-        return (Acceleration) getVector(Registers.BNO055_ACCEL_DATA_X_LSB, 100);
+    public Vector getAcceleration() {
+        return getVector(Registers.BNO055_ACCEL_DATA_X_LSB, 100);
     }
 
     @Override
