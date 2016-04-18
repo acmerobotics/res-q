@@ -1,15 +1,14 @@
 package com.acmerobotics.library.examples;
 
-import com.acmerobotics.library.i2c.AdaFruitBNO055;
+import com.acmerobotics.library.i2c.BoschBNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
-public class AdaFruitIMUTest extends OpMode {
+public class BoschIMUTest extends OpMode {
 
-    public AdaFruitBNO055 imuChip;
+    public BoschBNO055IMU imuChip;
     private int counter = 0;
 
     @Override
@@ -17,11 +16,11 @@ public class AdaFruitIMUTest extends OpMode {
         I2cDevice device = hardwareMap.i2cDevice.get("gyro");
         telemetry.addData("Conn. Info", device.getConnectionInfo());
         I2cDeviceSynch deviceSynch = new I2cDeviceSynchImpl(device, 0x50, true);
-        imuChip = new AdaFruitBNO055(deviceSynch);
+        imuChip = new BoschBNO055IMU(this, deviceSynch);
         imuChip.begin();
-        imuChip.setAngleUnits(AdaFruitBNO055.AngleUnits.DEGREES);
-        imuChip.setTemperatureUnits(AdaFruitBNO055.TemperatureUnits.FAHRENHEIT);
-        imuChip.setMode(AdaFruitBNO055.OperationMode.NDOF);
+        imuChip.setAngleUnits(BoschBNO055IMU.AngleUnits.DEGREES);
+        imuChip.setTemperatureUnits(BoschBNO055IMU.TemperatureUnits.FAHRENHEIT);
+        imuChip.setMode(BoschBNO055IMU.OperationMode.NDOF);
     }
 
     @Override
@@ -33,6 +32,6 @@ public class AdaFruitIMUTest extends OpMode {
 //        telemetry.addData("Accel", imuChip.getAcceleration());
 //        telemetry.addData("Mag", imuChip.getMagneticFlux());
         telemetry.addData("Temp", imuChip.getTemperature());
-        imuChip.delay(50);
+        imuChip.delay(100);
     }
 }
