@@ -3,8 +3,7 @@ package com.acmerobotics.library.i2c;
 import android.os.SystemClock;
 
 import com.acmerobotics.library.data.Vector;
-import com.acmerobotics.library.i2c.json.Chip;
-import com.acmerobotics.library.i2c.json.I2cChip;
+import com.acmerobotics.library.sensors.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -13,7 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 @Chip("BNO055")
-public class BoschBNO055IMU extends I2cChip {
+public class BoschBNO055IMU extends I2cChip implements GyroSensor {
 
     private AngleUnits angleUnits = null;
     private TemperatureUnits tempUnits = null;
@@ -21,6 +20,21 @@ public class BoschBNO055IMU extends I2cChip {
     private I2cDeviceSynch device;
 
     private OperationMode mode;
+
+    @Override
+    public double getYaw() {
+        return getAngularVelocity().z;
+    }
+
+    @Override
+    public double getPitch() {
+        return getAngularVelocity().y;
+    }
+
+    @Override
+    public double getRoll() {
+        return getAngularVelocity().x;
+    }
 
     public enum AngleUnits {
         RADIANS,

@@ -1,4 +1,4 @@
-package com.acmerobotics.library.i2c.json;
+package com.acmerobotics.library.i2c;
 
 import android.content.res.AssetManager;
 import android.os.SystemClock;
@@ -7,7 +7,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
