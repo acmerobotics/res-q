@@ -13,7 +13,7 @@ public class BoschIMUTest extends OpMode {
 
     @Override
     public void init() {
-        I2cDevice device = hardwareMap.i2cDevice.get("gyro");
+        I2cDevice device = hardwareMap.i2cDevice.get("device");
         telemetry.addData("Conn. Info", device.getConnectionInfo());
         I2cDeviceSynch deviceSynch = new I2cDeviceSynchImpl(device, 0x50, true);
         imuChip = new BoschBNO055IMU(this, deviceSynch);

@@ -75,10 +75,6 @@ public class BoschBNO055IMU extends I2cChip implements GyroSensor {
         this.device.engage();
     }
 
-    public void delay(long ms) {
-        SystemClock.sleep(ms);
-    }
-
     public boolean chipIdMatches() {
         int val = device.read8(registers.get("BNO055_CHIP_ID_ADDR")) & 0xff;
         return val == Integer.parseInt(getExtra("id"));
@@ -132,6 +128,13 @@ public class BoschBNO055IMU extends I2cChip implements GyroSensor {
         delay(10);
 
         RobotLog.i("End");
+
+        // read window
+//        device.ensureReadWindow(null, new I2cDeviceSynch.ReadWindow(
+//                registers.get("BNO055_ACC_DATA_X_LSB_ADDR"),
+//                26,
+//                I2cDeviceSynch.ReadMode.REPEAT
+//        ));
 
         return true;
     }
@@ -190,13 +193,6 @@ public class BoschBNO055IMU extends I2cChip implements GyroSensor {
 
     public int getTemperature() {
         return device.read8(registers.get("BNO055_TEMP_ADDR")) * (getTemperatureUnits().equals(TemperatureUnits.FAHRENHEIT) ? 2 : 1);
-    }
-
-    public void displayBytes(ByteBuffer buffer) {
-        byte[] arr = buffer.array();
-        for (int i = 0; i < arr.length; i++) {
-            RobotLog.i(String.format("0x%2s", arr[i]));
-        }
     }
 
     public Vector getVector(int startRegister, double scale) {

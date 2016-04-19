@@ -32,8 +32,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.acmerobotics.library.examples.BoschIMUTest;
+import com.acmerobotics.library.examples.ColorTest;
 import com.acmerobotics.library.examples.InternalGyroTest;
 import com.acmerobotics.library.examples.InternalSensorScanner;
+import com.qualcomm.ftcrobotcontroller.opmodes.test.I2cColorTest;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -62,5 +64,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("Bosch IMU Test", BoschIMUTest.class);
     manager.register("Internal Gyro Test", InternalGyroTest.class);
       manager.register("Internal Sensor Scanner", InternalSensorScanner.class);
+    manager.register("Color Sensor", ColorTest.class);
+    manager.register("I2c Color Test", I2cColorTest.class);
   }
 }

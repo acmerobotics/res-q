@@ -14,7 +14,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,6 +94,35 @@ public abstract class I2cChip {
 
     public void delay(int ms) {
         SystemClock.sleep(ms);
+    }
+
+    protected int[] normalizeByteArray(byte[] buf) {
+        int[] b = new int[buf.length];
+        for (int i = 0; i < buf.length; i++) {
+            b[i] = ((int) buf[i]) & 0xff;
+        }
+        return b;
+    }
+
+    protected int assembleByteArray(int[] arr) {
+        String s = "";
+        for (int i = 0; i < arr.length; i++) {
+            s += arr[i] + " ";
+        }
+        int n = 0;
+        for (int i = 0; i < arr.length; i++) {
+            n <<= 8;
+            n |= arr[i];
+        }
+        RobotLog.e(s + "-> " + n);
+        return n;
+    }
+
+    protected void displayBytes(ByteBuffer buffer) {
+        byte[] arr = buffer.array();
+        for (int i = 0; i < arr.length; i++) {
+            RobotLog.i(String.format("0x%2s", arr[i]));
+        }
     }
 
 }
