@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 @Chip("BNO055")
-public class BoschBNO055IMU extends I2cChip implements GyroSensor {
+public class BNO055 extends I2cChip implements GyroSensor {
 
     private AngleUnits angleUnits = null;
     private TemperatureUnits tempUnits = null;
@@ -68,7 +68,7 @@ public class BoschBNO055IMU extends I2cChip implements GyroSensor {
         NDOF
     }
 
-    public BoschBNO055IMU(OpMode mode, I2cDeviceSynch device) {
+    public BNO055(OpMode mode, I2cDeviceSynch device) {
         super(mode);
 
         this.device = device;
