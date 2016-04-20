@@ -1,4 +1,4 @@
-package com.acmerobotics.library.i2c;
+package com.acmerobotics.library.sensors.i2c;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

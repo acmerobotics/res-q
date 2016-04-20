@@ -2,8 +2,7 @@ package com.acmerobotics.library.examples;
 
 import android.os.SystemClock;
 
-import com.acmerobotics.library.i2c.TCS34725;
-import com.acmerobotics.library.sensors.ColorSensor;
+import com.acmerobotics.library.sensors.drivers.TCS34725;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;

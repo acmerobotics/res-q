@@ -1,8 +1,8 @@
-package com.acmerobotics.library.i2c;
+package com.acmerobotics.library.sensors.drivers;
 
-import android.os.SystemClock;
-
-import com.acmerobotics.library.data.Vector;
+import com.acmerobotics.library.sensors.i2c.Chip;
+import com.acmerobotics.library.sensors.i2c.I2cChip;
+import com.acmerobotics.library.vector.Vector;
 import com.acmerobotics.library.sensors.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;

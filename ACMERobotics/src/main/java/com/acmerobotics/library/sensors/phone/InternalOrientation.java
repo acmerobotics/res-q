@@ -1,4 +1,4 @@
-package com.acmerobotics.library.phone;
+package com.acmerobotics.library.sensors.phone;
 
 import android.content.Context;
 import android.hardware.Sensor;

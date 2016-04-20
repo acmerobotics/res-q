@@ -2,9 +2,7 @@ package com.acmerobotics.library.examples;
 
 import android.os.SystemClock;
 
-import com.acmerobotics.library.phone.InternalGyro;
-import com.acmerobotics.library.phone.InternalOrientation;
-import com.acmerobotics.library.sensors.GyroSensor;
+import com.acmerobotics.library.sensors.phone.InternalOrientation;
 import com.acmerobotics.library.sensors.OrientationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
