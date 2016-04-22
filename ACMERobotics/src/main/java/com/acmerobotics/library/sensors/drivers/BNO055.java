@@ -201,26 +201,26 @@ public class BNO055 extends I2cChip implements GyroSensor {
         return new Vector(x / scale, y / scale, z / scale);
     }
 
-    /** @returns micro Teslas */
+    /** @return micro Teslas */
     public Vector getMagneticFlux() {
         return getVector(registers.get("BNO055_MAG_DATA_X_LSB_ADDR"), 16);
     }
 
-    /** @returns angle units per second */
+    /** @return angle units per second */
     public Vector getAngularVelocity() {
         return getVector(registers.get("BNO055_GYRO_DATA_X_LSB_ADDR"),
                 getAngleUnits().equals(AngleUnits.RADIANS) ? 900 : 16
         );
     }
 
-    /** @returns angle units */
+    /** @return angle units */
     public Vector getEulerAngles() {
         return getVector(registers.get("BNO055_EULER_H_LSB_ADDR"),
                 getAngleUnits().equals(AngleUnits.RADIANS) ? 900 : 16
         );
     }
 
-    /** @returns meters per second^2 */
+    /** @return meters per second^2 */
     public Vector getAcceleration() {
         return getVector(registers.get("BNO055_ACCEL_DATA_X_LSB_ADDR"), 100);
     }

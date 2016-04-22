@@ -1,6 +1,5 @@
 package com.acmerobotics.library.sensors.i2c;
 
-import android.content.res.AssetManager;
 import android.os.SystemClock;
 
 import com.acmerobotics.library.util.FileUtils;
@@ -11,13 +10,7 @@ import com.google.gson.JsonParser;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
-import com.qualcomm.robotcore.util.RobotLog;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
