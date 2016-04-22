@@ -1,4 +1,4 @@
-package com.acmerobotics.library.sensors;
+package com.acmerobotics.library.sensors.types;
 
 public interface GyroSensor {
 

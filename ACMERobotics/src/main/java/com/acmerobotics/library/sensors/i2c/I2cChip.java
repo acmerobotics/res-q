@@ -3,11 +3,14 @@ package com.acmerobotics.library.sensors.i2c;
 import android.content.res.AssetManager;
 import android.os.SystemClock;
 
+import com.acmerobotics.library.util.FileUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.io.BufferedReader;
@@ -19,9 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class I2cChip {
+public abstract class I2cChip implements HardwareDevice {
 
     private String chipFile;
+
+    protected I2cDeviceSynch device;
 
     protected String name;
     protected String manufacturer;
@@ -29,42 +34,51 @@ public abstract class I2cChip {
     protected int[] addresses;
     protected Map<String, Integer> registers;
 
-    public I2cChip(OpMode mode) {
+    public I2cChip(OpMode mode, I2cDeviceSynch device) {
+        this.device = device;
+        this.device.engage();
+
         Chip chip = this.getClass().getAnnotation(Chip.class);
         chipFile = chip.value().toLowerCase() + ".json";
-        AssetManager manager = mode.hardwareMap.appContext.getAssets();
-        try {
-            InputStream inputStream = manager.open("chips/" + chipFile);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-            }
-            RobotLog.i(content.toString());
-            JsonObject root = new JsonParser().parse(content.toString()).getAsJsonObject();
-            name = root.get("chip").getAsString();
-            manufacturer = root.get("manufacturer").getAsString();
-            JsonArray addrList = root.get("addresses").getAsJsonArray();
-            int addrSize = addrList.size();
-            addresses = new int[addrSize];
-            for (int i = 0; i < addrSize; i++) {
-                addresses[i] = addrList.get(i).getAsInt();
-            }
-            extra = new HashMap<String, String>();
-            JsonObject obj = root.get("extra").getAsJsonObject();
-            Set<Map.Entry<String, JsonElement>> entries = obj.entrySet();
-            for (Map.Entry<String, JsonElement> entry : entries) {
-                extra.put(entry.getKey(), entry.getValue().getAsString());
-            }
-            registers = new HashMap<String, Integer>();
-            obj = root.get("registers").getAsJsonObject();
-            entries = obj.entrySet();
-            for (Map.Entry<String, JsonElement> entry : entries) {
-                registers.put(entry.getKey(), entry.getValue().getAsInt());
-            }
-        } catch (IOException e) {
-            RobotLog.e(e.getMessage());
+        String contents = FileUtils.getAssetFileContents(mode.hardwareMap.appContext, "chips/" + chipFile);
+        parseChipJson(contents);
+    }
+
+    private void parseChipJson(String contents) {
+        JsonObject root = new JsonParser().parse(contents).getAsJsonObject();
+        name = root.get("chip").getAsString();
+        manufacturer = root.get("manufacturer").getAsString();
+        parseAddressList(root);
+        parseExtras(root);
+        parseRegisters(root);
+    }
+
+    private void parseRegisters(JsonObject root) {
+        JsonObject obj;
+        Set<Map.Entry<String, JsonElement>> entries;
+        registers = new HashMap<String, Integer>();
+        obj = root.get("registers").getAsJsonObject();
+        entries = obj.entrySet();
+        for (Map.Entry<String, JsonElement> entry : entries) {
+            registers.put(entry.getKey(), entry.getValue().getAsInt());
+        }
+    }
+
+    private void parseExtras(JsonObject root) {
+        extra = new HashMap<String, String>();
+        JsonObject obj = root.get("extra").getAsJsonObject();
+        Set<Map.Entry<String, JsonElement>> entries = obj.entrySet();
+        for (Map.Entry<String, JsonElement> entry : entries) {
+            extra.put(entry.getKey(), entry.getValue().getAsString());
+        }
+    }
+
+    private void parseAddressList(JsonObject root) {
+        JsonArray addrList = root.get("addresses").getAsJsonArray();
+        int addrSize = addrList.size();
+        addresses = new int[addrSize];
+        for (int i = 0; i < addrSize; i++) {
+            addresses[i] = addrList.get(i).getAsInt();
         }
     }
 
@@ -92,33 +106,23 @@ public abstract class I2cChip {
         SystemClock.sleep(ms);
     }
 
-//    protected int[] normalizeByteArray(byte[] buf) {
-//        int[] b = new int[buf.length];
-//        for (int i = 0; i < buf.length; i++) {
-//            b[i] = ((int) buf[i]) & 0xff;
-//        }
-//        return b;
-//    }
-//
-//    protected int assembleByteArray(int[] arr) {
-//        String s = "";
-//        for (int i = 0; i < arr.length; i++) {
-//            s += arr[i] + " ";
-//        }
-//        int n = 0;
-//        for (int i = 0; i < arr.length; i++) {
-//            n <<= 8;
-//            n |= arr[i];
-//        }
-//        RobotLog.e(s + "-> " + n);
-//        return n;
-//    }
-//
-//    protected void displayBytes(ByteBuffer buffer) {
-//        byte[] arr = buffer.array();
-//        for (int i = 0; i < arr.length; i++) {
-//            RobotLog.i(String.format("0x%2s", arr[i]));
-//        }
-//    }
+    @Override
+    public String getDeviceName() {
+        return getManufacturer() + " " + getName();
+    }
 
+    @Override
+    public String getConnectionInfo() {
+        return getDeviceName() + "\n" + device.getConnectionInfo();
+    }
+
+    @Override
+    public int getVersion() {
+        return 1;
+    }
+
+    @Override
+    public void close() {
+        device.close();
+    }
 }

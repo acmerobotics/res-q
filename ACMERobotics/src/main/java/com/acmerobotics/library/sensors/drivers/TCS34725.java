@@ -1,6 +1,6 @@
 package com.acmerobotics.library.sensors.drivers;
 
-import com.acmerobotics.library.sensors.ColorSensor;
+import com.acmerobotics.library.sensors.types.ColorSensor;
 import com.acmerobotics.library.sensors.i2c.Chip;
 import com.acmerobotics.library.sensors.i2c.I2cChip;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -69,14 +69,11 @@ public class TCS34725 extends I2cChip implements ColorSensor {
     }
 
     public TCS34725(OpMode mode, I2cDeviceSynch device, IntegrationTime time, Gain g) {
-        super(mode);
+        super(mode, device);
 
         initialized = false;
         integrationTime = time;
         gain = g;
-
-        this.device = device;
-        this.device.engage();
     }
 
     public TCS34725(OpMode mode, I2cDeviceSynch device) {
@@ -104,6 +101,7 @@ public class TCS34725 extends I2cChip implements ColorSensor {
     }
 
     public boolean begin() {
+        // FIXME: 4/22/2016
 //        int x = read8(registers.get("TCS34725_ID"));
 //        if ((x != 0x44) && (x != 0x10)) {
 //            RobotLog.e("Didn't initialize");
@@ -115,13 +113,6 @@ public class TCS34725 extends I2cChip implements ColorSensor {
         setGain(gain);
 
         enable();
-
-        // read window
-//        device.ensureReadWindow(null, new I2cDeviceSynch.ReadWindow(
-//                registers.get("TCS34725_CDATAL"),
-//                8,
-//                I2cDeviceSynch.ReadMode.REPEAT
-//        ));
 
         return true;
     }

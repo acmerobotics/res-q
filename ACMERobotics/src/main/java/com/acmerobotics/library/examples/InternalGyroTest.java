@@ -3,7 +3,7 @@ package com.acmerobotics.library.examples;
 import android.os.SystemClock;
 
 import com.acmerobotics.library.sensors.phone.InternalOrientation;
-import com.acmerobotics.library.sensors.OrientationSensor;
+import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class InternalGyroTest extends OpMode {

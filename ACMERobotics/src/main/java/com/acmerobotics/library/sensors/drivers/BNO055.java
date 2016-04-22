@@ -3,7 +3,7 @@ package com.acmerobotics.library.sensors.drivers;
 import com.acmerobotics.library.sensors.i2c.Chip;
 import com.acmerobotics.library.sensors.i2c.I2cChip;
 import com.acmerobotics.library.vector.Vector;
-import com.acmerobotics.library.sensors.GyroSensor;
+import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -16,8 +16,6 @@ public class BNO055 extends I2cChip implements GyroSensor {
 
     private AngleUnits angleUnits = null;
     private TemperatureUnits tempUnits = null;
-
-    private I2cDeviceSynch device;
 
     private OperationMode mode;
 
@@ -69,10 +67,7 @@ public class BNO055 extends I2cChip implements GyroSensor {
     }
 
     public BNO055(OpMode mode, I2cDeviceSynch device) {
-        super(mode);
-
-        this.device = device;
-        this.device.engage();
+        super(mode, device);
     }
 
     public boolean chipIdMatches() {
