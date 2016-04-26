@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.acmerobotics.library.ExampleOpModeRegister;
 import com.acmerobotics.library.examples.BoschIMUTest;
 import com.acmerobotics.library.examples.ColorTest;
 import com.acmerobotics.library.examples.InternalGyroTest;
@@ -44,27 +45,24 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
  */
 public class FtcOpModeRegister implements OpModeRegister {
 
-  /**
-   * The Op Mode Manager will call this method when it wants a list of all
-   * available op modes. Add your op mode to the list to enable it.
-   *
-   * @param manager op mode manager
-   */
-  public void register(OpModeManager manager) {
+    /**
+    * The Op Mode Manager will call this method when it wants a list of all
+    * available op modes. Add your op mode to the list to enable it.
+    *
+    * @param manager op mode manager
+    */
+    public void register(OpModeManager manager) {
 
-    /*
-     * register your op modes here.
-     * The first parameter is the name of the op mode
-     * The second parameter is the op mode class property
-     *
-     * If two or more op modes are registered with the same name, the app will display an error.
-     */
+        /*
+         * register your op modes here.
+         * The first parameter is the name of the op mode
+         * The second parameter is the op mode class property
+         *
+         * If two or more op modes are registered with the same name, the app will display an error.
+         */
 
-//    manager.register("TeleOp", TeleOpNoLimits.class);
-    manager.register("Bosch IMU Test", BoschIMUTest.class);
-    manager.register("Internal Gyro Test", InternalGyroTest.class);
-      manager.register("Internal Sensor Scanner", InternalSensorScanner.class);
-    manager.register("Color Sensor", ColorTest.class);
-    manager.register("I2c Color Test", I2cColorTest.class);
-  }
+        //    manager.register("TeleOp", TeleOpNoLimits.class);
+        OpModeRegister reg = new ExampleOpModeRegister();
+        reg.register(manager);
+    }
 }
