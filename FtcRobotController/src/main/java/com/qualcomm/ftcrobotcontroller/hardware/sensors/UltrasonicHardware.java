@@ -1,8 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
-import android.provider.ContactsContract;
-
-import com.acmerobotics.library.file.DataLogger;
+import com.acmerobotics.library.file.DataFile;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
@@ -15,7 +13,7 @@ public class UltrasonicHardware extends HardwareInterface {
     public static final int SMOOTHING_SIZE = 10;
 
     private UltrasonicSensor usSensor;
-    private DataLogger logger;
+    private DataFile logger;
     private String name;
     private double[] data;
     private double sum;
@@ -29,7 +27,7 @@ public class UltrasonicHardware extends HardwareInterface {
     public void init(OpMode mode) {
         usSensor = mode.hardwareMap.ultrasonicSensor.get(name);
 
-        logger = new DataLogger(mode, this.name + "_data.csv");
+        logger = new DataFile(mode, this.name + "_data.csv");
         logger.writeLine("timestamp,raw,smooth");
 
         this.data = new double[SMOOTHING_SIZE];

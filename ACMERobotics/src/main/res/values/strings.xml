@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ACME Robotics</string>
+    <string name="files_directory">ACME</string>
 </resources>

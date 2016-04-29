@@ -1,13 +1,13 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.acmerobotics.library.file.DataLogger;
+import com.acmerobotics.library.file.DataFile;
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 public class MRColorLogger extends LinearRobotController {
 
     private ColorSensor colorSensor;
-    private DataLogger logger;
+    private DataFile logger;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,7 +17,7 @@ public class MRColorLogger extends LinearRobotController {
         colorSensor.setI2cAddress(0x3e);
         colorSensor.enableLed(true);
 
-        logger = new DataLogger(this, "colors.csv");
+        logger = new DataFile(this, "colors.csv");
         logger.writeLine("timestamp,red,green,blue,alpha");
 
         boolean collectingData = true;

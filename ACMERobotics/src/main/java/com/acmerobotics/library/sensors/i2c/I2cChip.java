@@ -1,5 +1,6 @@
 package com.acmerobotics.library.sensors.i2c;
 
+import android.content.res.AssetManager;
 import android.os.SystemClock;
 
 import com.acmerobotics.library.util.FileUtils;
@@ -10,14 +11,16 @@ import com.google.gson.JsonParser;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.util.RobotLog;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 public abstract class I2cChip implements HardwareDevice {
 
-    private String chipFile;
+    private String chipFilePath;
 
     protected I2cDeviceSynch device;
 
@@ -32,8 +35,14 @@ public abstract class I2cChip implements HardwareDevice {
         this.device.engage();
 
         Chip chip = this.getClass().getAnnotation(Chip.class);
-        chipFile = chip.value().toLowerCase() + ".json";
-        String contents = FileUtils.getAssetFileContents(mode.hardwareMap.appContext, "chips/" + chipFile);
+        chipFilePath = "chips/" + chip.value().toLowerCase() + ".json";
+        AssetManager manager = mode.hardwareMap.appContext.getAssets();
+        String contents = null;
+        try {
+            contents = FileUtils.getInputStreamContents(manager.open(chipFilePath));
+        } catch (IOException e) {
+            RobotLog.e(e.getMessage());
+        }
         parseChipJson(contents);
     }
 

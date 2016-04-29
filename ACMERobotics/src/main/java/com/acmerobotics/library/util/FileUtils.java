@@ -15,21 +15,19 @@ import java.io.InputStreamReader;
  */
 public class FileUtils {
 
-    public static String getAssetFileContents(Context ctx, String fileName) {
-        String contents = null;
-        AssetManager manager = ctx.getAssets();
+    public static String getInputStreamContents(InputStream stream) {
+        StringBuilder content = new StringBuilder();
         try {
-            InputStream inputStream = manager.open(fileName);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder content = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             String line;
             while ((line = reader.readLine()) != null) {
                 content.append(line);
             }
         } catch (IOException e) {
             RobotLog.e(e.getMessage());
+        } finally {
+            return content.toString();
         }
-        return contents;
     }
 
 }
