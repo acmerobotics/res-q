@@ -1,4 +1,8 @@
+# res-q ![Build Status](https://travis-ci.org/acmerobotics/res-q.svg?branch=master)
+FTC Library devoted to easing the process of constructing complex OpModes.
+
 # ftc_app
+
 FTC Android Studio project to create FTC Robot Controller app.
 
 This is the FTC SDK that can be used to create an FTC Robot Controller app, with custom op modes.
