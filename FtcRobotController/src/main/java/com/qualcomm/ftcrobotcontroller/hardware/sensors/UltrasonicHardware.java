@@ -1,5 +1,6 @@
 package com.qualcomm.ftcrobotcontroller.hardware.sensors;
 
+import com.acmerobotics.library.file.CSVFile;
 import com.acmerobotics.library.file.DataFile;
 import com.qualcomm.ftcrobotcontroller.hardware.HardwareInterface;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -13,11 +14,17 @@ public class UltrasonicHardware extends HardwareInterface {
     public static final int SMOOTHING_SIZE = 10;
 
     private UltrasonicSensor usSensor;
-    private DataFile logger;
+    private CSVFile file;
     private String name;
     private double[] data;
     private double sum;
     private int numSpikes;
+
+    private class USData {
+        public long time;
+        public double raw;
+        public double smoothed;
+    }
 
     public UltrasonicHardware(String name) {
         this.name = name;
@@ -27,8 +34,7 @@ public class UltrasonicHardware extends HardwareInterface {
     public void init(OpMode mode) {
         usSensor = mode.hardwareMap.ultrasonicSensor.get(name);
 
-        logger = new DataFile(mode, this.name + "_data.csv");
-        logger.writeLine("timestamp,raw,smooth");
+        file = new CSVFile(mode, name + "_data.csv", USData.class);
 
         this.data = new double[SMOOTHING_SIZE];
         for (int i = 0; i < data.length; i++) {
@@ -62,7 +68,11 @@ public class UltrasonicHardware extends HardwareInterface {
             }
         }
 
-        logger.writeLine(System.nanoTime() + "," + usSensor.getUltrasonicLevel() + "," + this.sum / SMOOTHING_SIZE);
+        USData packet = new USData();
+        packet.time = System.nanoTime();
+        packet.raw = usSensor.getUltrasonicLevel();
+        packet.smoothed = sum / ((double) SMOOTHING_SIZE);
+        file.write(packet);
     }
 
     @Override

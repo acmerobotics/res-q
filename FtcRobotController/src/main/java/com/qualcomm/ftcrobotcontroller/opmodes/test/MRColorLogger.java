@@ -1,13 +1,11 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.test;
 
-import com.acmerobotics.library.file.DataFile;
 import com.qualcomm.ftcrobotcontroller.control.LinearRobotController;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 public class MRColorLogger extends LinearRobotController {
 
     private ColorSensor colorSensor;
-    private DataFile logger;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -17,9 +15,6 @@ public class MRColorLogger extends LinearRobotController {
         colorSensor.setI2cAddress(0x3e);
         colorSensor.enableLed(true);
 
-        logger = new DataFile(this, "colors.csv");
-        logger.writeLine("timestamp,red,green,blue,alpha");
-
         boolean collectingData = true;
 
         waitForStart();
@@ -27,17 +22,8 @@ public class MRColorLogger extends LinearRobotController {
         while (collectingData && opModeIsActive()) {
             telemetry.addData("Status", "Currently logging color sensor data. Press [x] to stop.");
 
-            logger.writeLine(String.format("%d,%d,%d,%d,%d",
-                    System.nanoTime(),
-                    colorSensor.red(),
-                    colorSensor.green(),
-                    colorSensor.blue(),
-                    colorSensor.alpha()
-            ));
-
             if (gamepad1.x) {
                 collectingData = false;
-                logger.close();
             }
 
             waitOneFullHardwareCycle();

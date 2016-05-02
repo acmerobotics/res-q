@@ -1,5 +1,7 @@
 package com.acmerobotics.library.file;
 
+import android.content.Context;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -38,7 +40,7 @@ public class CSVFile extends DataFile {
         }
     }
 
-    private void write(Object o) {
+    public void write(Object o) {
         String[] values = new String[fields.length];
         try {
             for (int i = 0; i < fields.length; i++) {
