@@ -1,4 +1,4 @@
-# res-q ![Build Status](https://travis-ci.org/acmerobotics/res-q.svg?branch=master)
+# res-q [![Build Status](https://travis-ci.org/acmerobotics/res-q.svg?branch=master)](https://travis-ci.org/acmerobotics/res-q)
 FTC Library devoted to easing the process of constructing complex OpModes.
 
 # ftc_app
