@@ -1,4 +1,4 @@
-package com.acmerobotics.library;
+package com.acmerobotics.library.examples;
 
 import com.acmerobotics.library.examples.BoschIMUTest;
 import com.acmerobotics.library.examples.ColorTest;
