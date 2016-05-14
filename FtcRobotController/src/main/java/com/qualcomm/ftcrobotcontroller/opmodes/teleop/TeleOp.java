@@ -1,5 +1,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.teleop;
 
+import com.qualcomm.ftcrobotcontroller.control.RobotController;
+import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.ArmHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.FlipperHardware;
 import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.PuncherHardware;
@@ -8,11 +10,28 @@ import com.qualcomm.ftcrobotcontroller.hardware.mechanisms.WinchHardware;
 /**
  * Created by Admin on 12/11/2015.
  */
-public class TeleOp extends ArcadeDrive {
+public class TeleOp extends RobotController {
+
+    public enum OperationMode {
+        NORMAL,
+        DEMO
+    }
+
+    public enum DriveMode {
+        ARCADE,
+        TANK
+    }
 
     protected ArmHardware armHardware;
     protected FlipperHardware flipperHardware;
     protected WinchHardware winchHardware;
+    protected DriveHardware driveHardware;
+
+    protected ArcadeDrive arcadeDrive;
+    protected TankDrive tankDrive;
+
+    protected OperationMode operationMode;
+    protected DriveMode driveMode;
 
     protected double servoPosition = ArmHardware.SERVO_UP;
 
@@ -25,15 +44,49 @@ public class TeleOp extends ArcadeDrive {
         armHardware = new ArmHardware();
         flipperHardware = new FlipperHardware();
         winchHardware = new WinchHardware();
+        driveHardware = new DriveHardware();
+
+        arcadeDrive = new ArcadeDrive();
+        tankDrive = new TankDrive();
+
+        setOperationMode(OperationMode.NORMAL);
+        setDriveMode(DriveMode.ARCADE);
 
         registerHardwareInterface("arm", armHardware);
         registerHardwareInterface("flipper", flipperHardware);
         registerHardwareInterface("puncher", new PuncherHardware()); // this resets the puncher position
         registerHardwareInterface("winch", winchHardware);
+        registerHardwareInterface("drive", driveHardware);
+    }
+
+    public void setOperationMode(OperationMode operationMode) {
+        this.operationMode = operationMode;
+    }
+
+    public void setDriveMode(DriveMode mode) {
+        this.driveMode = mode;
+    }
+
+    public OperationMode getOperationMode() {
+        return operationMode;
+    }
+
+    public DriveMode getDriveMode() {
+        return driveMode;
     }
 
     @Override
     public void loop() {
+        // drive system
+        switch (getDriveMode()) {
+            case ARCADE:
+                arcadeDrive.loop(driveHardware, gamepad1);
+                break;
+            case TANK:
+                tankDrive.loop(driveHardware, gamepad1);
+                break;
+        }
+
         // deploy flipper
         if (gamepad1.right_bumper) {
             if (!rightBumper) {
@@ -63,7 +116,7 @@ public class TeleOp extends ArcadeDrive {
         // servo joystick
         double servoThrottle = gamepad2.right_stick_y;
         if (Math.abs(servoThrottle) > 0.05) {
-            servoPosition += servoThrottle * 0.0025;
+            servoPosition += servoThrottle * 0.0075;
         }
         if (servoPosition > ArmHardware.SERVO_UP) {
             servoPosition = ArmHardware.SERVO_UP;
@@ -87,13 +140,15 @@ public class TeleOp extends ArcadeDrive {
             armHardware.resetEncoders();
         }
 
-        // winch
-        if (gamepad1.y) {
-            winchHardware.beginExtending();
-        } else if (gamepad1.a && !gamepad1.start) {
-            winchHardware.beginRetracting();
-        } else {
-            winchHardware.stop();
+        if (!getOperationMode().equals(OperationMode.DEMO)) {
+            // winch
+            if (gamepad1.y) {
+                winchHardware.beginExtending();
+            } else if (gamepad1.a && !gamepad1.start) {
+                winchHardware.beginRetracting();
+            } else {
+                winchHardware.stop();
+            }
         }
 
         super.loop();

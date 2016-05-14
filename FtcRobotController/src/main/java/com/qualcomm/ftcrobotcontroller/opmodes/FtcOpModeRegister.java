@@ -32,6 +32,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.acmerobotics.library.examples.ExampleOpModeRegister;
+import com.qualcomm.ftcrobotcontroller.opmodes.teleop.Demo;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOp;
 import com.qualcomm.ftcrobotcontroller.opmodes.teleop.TeleOpNoLimits;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
@@ -60,6 +61,7 @@ public class FtcOpModeRegister implements OpModeRegister {
 
         manager.register("TeleOp (No Limits)", TeleOpNoLimits.class);
         manager.register("TeleOp", TeleOp.class);
+        manager.register("Demo", Demo.class);
         //OpModeRegister reg = new ExampleOpModeRegister();
         //reg.register(manager);
     }
