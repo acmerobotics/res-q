@@ -63,7 +63,7 @@ public class TeleOp extends ArcadeDrive {
         // servo joystick
         double servoThrottle = gamepad2.right_stick_y;
         if (Math.abs(servoThrottle) > 0.05) {
-            servoPosition += servoThrottle * 0.015;
+            servoPosition += servoThrottle * 0.0025;
         }
         if (servoPosition > ArmHardware.SERVO_UP) {
             servoPosition = ArmHardware.SERVO_UP;

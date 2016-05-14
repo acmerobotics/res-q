@@ -36,15 +36,15 @@ public class WinchHardware extends HardwareInterface {
     public void beginExtending() {
         state = WinchState.EXTENDING;
 
-        one.setPower(-SPEED);
-        two.setPower(-SPEED);
+        one.setPower(SPEED);
+        two.setPower(SPEED);
     }
 
     public void beginRetracting() {
         state = WinchState.RETRACTING;
 
-        one.setPower(SPEED);
-        two.setPower(SPEED);
+        one.setPower(-SPEED);
+        two.setPower(-SPEED);
     }
 
     public void stop() {
