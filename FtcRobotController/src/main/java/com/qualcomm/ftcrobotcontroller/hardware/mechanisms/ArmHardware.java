@@ -28,7 +28,8 @@ public class ArmHardware extends HardwareInterface {
     private int target, offset;
     private ArmMode armMode;
     private double lastError = Double.POSITIVE_INFINITY;
-    private double power = 0;
+    private double armPower = 0, bucketPosition = 0;
+
     private OpMode mode;
 
     public enum ArmMode {
@@ -89,7 +90,7 @@ public class ArmHardware extends HardwareInterface {
                 }
                 break;
             case NORMAL:
-                powerToSet = power;
+                powerToSet = armPower;
                 break;
         }
 
@@ -101,6 +102,12 @@ public class ArmHardware extends HardwareInterface {
 
         if (buttonState && powerToSet < 0) {
             powerToSet = 0;
+        }
+
+        if ((ENCODER_MAX - getPosition()) < 3000) {
+            bucket.setPosition(0.75);
+        } else {
+            bucket.setPosition(bucketPosition);
         }
 
         motor.setPower(powerToSet);
@@ -162,8 +169,9 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public void setArmPower(double val) {
+        if (!isCalibrated()) return;
         setArmMode(ArmMode.NORMAL);
-        power = Range.clip(val, -1, 1);
+        armPower = Range.clip(val, -1, 1);
     }
 
     public void resetEncoders() {
@@ -171,6 +179,6 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public void setBucketPosition(double i) {
-        bucket.setPosition(i);
+        bucketPosition = i;
     }
 }
