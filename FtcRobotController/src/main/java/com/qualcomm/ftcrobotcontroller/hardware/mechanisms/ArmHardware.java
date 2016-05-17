@@ -17,6 +17,8 @@ public class ArmHardware extends HardwareInterface {
     public static final int ENCODER_MAX = 13500;
     public static final int ENCODER_MIN = 0;
 
+    private static final double CALIBRATION_SPEED = -0.5;
+
     private boolean constrained;
     private boolean calibrated;
 
@@ -26,6 +28,8 @@ public class ArmHardware extends HardwareInterface {
     private int target, offset;
     private ArmMode armMode;
     private double lastError = Double.POSITIVE_INFINITY;
+    private double armPower = 0, bucketPosition = 0;
+
     private OpMode mode;
 
     public enum ArmMode {
@@ -51,7 +55,7 @@ public class ArmHardware extends HardwareInterface {
         bucket = mode.hardwareMap.servo.get("bucket");
         touch = mode.hardwareMap.touchSensor.get("touch");
 
-        // motor.setDirection(DcMotor.Direction.REVERSE);
+        motor.setDirection(DcMotor.Direction.REVERSE);
         resetEncoders();
         setArmMode(ArmMode.NORMAL);
         setBucketPosition(SERVO_UP);
@@ -61,6 +65,7 @@ public class ArmHardware extends HardwareInterface {
 
     @Override
     public void loop(double timeSinceLastLoop) {
+        double powerToSet = 0;
         boolean buttonState = touch.isPressed();
         if (buttonState) {
             resetEncoders();
@@ -68,26 +73,48 @@ public class ArmHardware extends HardwareInterface {
 
         switch (armMode) {
             case RUN_TO_POSITION:
-                double error = target - getPosition();
-                lastError = error;
-                motor.setPower(Range.clip(error * 0.0025, -0.5, 0.5));
+                if (target == 0) {
+                    setArmMode(ArmMode.CALIBRATING);
+                } else {
+                    double error = target - getPosition();
+                    lastError = error;
+                    powerToSet = Range.clip(error * 0.0025, -0.5, 0.5);
+                }
                 break;
             case CALIBRATING:
                 if (buttonState) {
                     setArmMode(ArmMode.NORMAL);
                     calibrated = true;
                 } else {
-                    motor.setPower(-0.1);
+                    powerToSet = CALIBRATION_SPEED;
                 }
+                break;
+            case NORMAL:
+                powerToSet = armPower;
+                break;
         }
 
-        if (isConstrained() && (getPosition() > ENCODER_MAX || getPosition() < ENCODER_MIN)) {
-            motor.setPower(0);
+        if (isConstrained() && !armMode.equals(ArmMode.CALIBRATING)) {
+            if ((getPosition() > ENCODER_MAX && powerToSet > 0) || (getPosition() < ENCODER_MIN && powerToSet < 0)) {
+                powerToSet = 0;
+            }
         }
+
+        if (buttonState && powerToSet < 0) {
+            powerToSet = 0;
+        }
+
+        if ((ENCODER_MAX - getPosition()) < 3000) {
+            bucket.setPosition(0.75);
+        } else {
+            bucket.setPosition(bucketPosition);
+        }
+
+        motor.setPower(powerToSet);
     }
 
     public void calibrate() {
-        if (isConstrained()) setArmMode(ArmMode.CALIBRATING);
+        setArmMode(ArmMode.CALIBRATING);
     }
 
     public boolean isCalibrated() {
@@ -96,7 +123,7 @@ public class ArmHardware extends HardwareInterface {
 
     @Override
     public String getStatusString() {
-        return "constrained: " + constrained + "  position: " + this.getPosition() + "  error: " + Double.toString(lastError).toLowerCase() + "  target: " + target + "  servo: " + bucket.getPosition() + "  calibrated: " + isCalibrated();
+        return "mode: " + armMode + "  constrained: " + constrained + "  position: " + this.getPosition() + "  error: " + Double.toString(lastError).toLowerCase() + "  target: " + target + "  servo: " + bucket.getPosition() + "  calibrated: " + isCalibrated();
     }
 
     public boolean isConstrained() {
@@ -142,8 +169,9 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public void setArmPower(double val) {
+        if (!isCalibrated()) return;
         setArmMode(ArmMode.NORMAL);
-        motor.setPower(Range.clip(val, -1, 1));
+        armPower = Range.clip(val, -1, 1);
     }
 
     public void resetEncoders() {
@@ -151,6 +179,6 @@ public class ArmHardware extends HardwareInterface {
     }
 
     public void setBucketPosition(double i) {
-        bucket.setPosition(i);
+        bucketPosition = i;
     }
 }

@@ -1,27 +1,16 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.teleop;
 
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
-import com.qualcomm.ftcrobotcontroller.control.RobotController;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
  * Created by Admin on 9/24/2015.
  */
-public class ArcadeDrive extends RobotController {
+public class ArcadeDrive {
 
-    private DriveHardware driveHardware;
-
-    @Override
-    public void init() {
-        super.init();
-
-        driveHardware = new DriveHardware();
-        registerHardwareInterface("drive", driveHardware);
-    }
-
-    @Override
-    public void loop() {
-        double leftRight = -gamepad1.right_stick_x;
-        double forwardBack = -gamepad1.left_stick_y;
+    public void loop(DriveHardware driveHardware, Gamepad gamepad) {
+        double leftRight = -gamepad.right_stick_x;
+        double forwardBack = -gamepad.left_stick_y;
         
         double rightSpeed = 0;
         double leftSpeed = 0;
@@ -36,8 +25,6 @@ public class ArcadeDrive extends RobotController {
         }
         
         driveHardware.setMappedMotorSpeeds(leftSpeed, rightSpeed);
-
-        super.loop();
     }
 
 }

@@ -2,26 +2,15 @@ package com.qualcomm.ftcrobotcontroller.opmodes.teleop;
 
 import com.qualcomm.ftcrobotcontroller.hardware.drive.DriveHardware;
 import com.qualcomm.ftcrobotcontroller.control.RobotController;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 /**
  * Created by Admin on 9/21/2015.
  */
 public class TankDrive extends RobotController {
 
-    private DriveHardware driveHardware;
-
-    @Override
-    public void init() {
-        super.init();
-
-        driveHardware = new DriveHardware();
-        registerHardwareInterface("drive", driveHardware);
+    public void loop(DriveHardware driveHardware, Gamepad gamepad) {
+        driveHardware.setMappedMotorSpeeds(-gamepad.left_stick_y, -gamepad.right_stick_y);
     }
 
-    @Override
-    public void loop() {
-        driveHardware.setMappedMotorSpeeds(-gamepad1.left_stick_y, -gamepad1.right_stick_y);
-
-        super.loop();
-    }
 }
