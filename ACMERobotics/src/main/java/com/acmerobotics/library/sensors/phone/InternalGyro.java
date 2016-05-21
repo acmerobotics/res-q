@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import com.acmerobotics.library.sensors.types.GyroSensor;
+import com.acmerobotics.library.vector.Vector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -28,18 +29,23 @@ public class InternalGyro implements GyroSensor, SensorEventListener {
     }
 
     @Override
-    public double getYaw() {
+    public double getAngularVelocityYaw() {
         return yaw;
     }
 
     @Override
-    public double getPitch() {
+    public double getAngularVelocityPitch() {
         return pitch;
     }
 
     @Override
-    public double getRoll() {
+    public double getAngularVelocityRoll() {
         return roll;
+    }
+
+    @Override
+    public Vector getAngularVelocity() {
+        return new Vector(roll, pitch, yaw);
     }
 
     @Override

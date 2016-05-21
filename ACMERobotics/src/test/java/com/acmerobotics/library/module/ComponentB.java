@@ -1,5 +1,7 @@
 package com.acmerobotics.library.module;
 
+import com.acmerobotics.library.module.core.Inject;
+
 public class ComponentB {
 
     private String string;

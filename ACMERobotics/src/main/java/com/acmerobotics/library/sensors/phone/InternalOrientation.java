@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import com.acmerobotics.library.sensors.types.OrientationSensor;
+import com.acmerobotics.library.vector.Vector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -28,18 +29,23 @@ public class InternalOrientation implements OrientationSensor, SensorEventListen
     }
 
     @Override
-    public double getYaw() {
+    public double getOrientationYaw() {
         return yaw;
     }
 
     @Override
-    public double getPitch() {
+    public double getOrientationPitch() {
         return pitch;
     }
 
     @Override
-    public double getRoll() {
+    public double getOrientationRoll() {
         return roll;
+    }
+
+    @Override
+    public Vector getOrientation() {
+        return new Vector(roll, pitch, yaw);
     }
 
     @Override

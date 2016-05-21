@@ -25,7 +25,7 @@ public class Vector {
     }
 
     public String toString() {
-        return String.format("(%5.1f,%5.1f,%5.1f)", x, y, z);
+        return String.format("(%+7.2f,%+7.2f,%+7.2f)", x, y, z);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.acmerobotics.library.module;
+package com.acmerobotics.library.module.core;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
