@@ -21,6 +21,7 @@ public class ClassProvider<T> implements Provider<T> {
         Object[] args = new Object[size];
         for (int i = 0; i < size; i++) {
             args[i] = injector.fulfil(new Dependency(parameters[i], annotations[i]));
+            System.out.println("arg: " + args[i].toString());
         }
         try {
             return constructor.newInstance(args);

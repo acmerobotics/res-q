@@ -8,9 +8,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsUsbI2cController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.io.IOException;
@@ -30,10 +34,7 @@ public abstract class I2cChip implements HardwareDevice {
     protected int[] addresses;
     protected Map<String, Integer> registers;
 
-    public I2cChip(OpMode mode, I2cDeviceSynch device) {
-        this.device = device;
-        this.device.engage();
-
+    public I2cChip(OpMode mode, I2cDevice i2cDevice) {
         Chip chip = this.getClass().getAnnotation(Chip.class);
         chipFilePath = "chips/" + chip.value().toLowerCase() + ".json";
         AssetManager manager = mode.hardwareMap.appContext.getAssets();
@@ -44,6 +45,10 @@ public abstract class I2cChip implements HardwareDevice {
             RobotLog.e(e.getMessage());
         }
         parseChipJson(contents);
+
+        this.device = new I2cDeviceSynchImpl(i2cDevice, getPrimaryAddress(), true);
+        System.out.println("chip: port " + getPrimaryAddress());
+        this.device.engage();
     }
 
     private void parseChipJson(String contents) {
@@ -102,6 +107,10 @@ public abstract class I2cChip implements HardwareDevice {
 
     public int getRegister(String name) {
         return registers.get(name);
+    }
+
+    public int getPrimaryAddress() {
+        return 2 * addresses[0];
     }
 
     public void delay(int ms) {

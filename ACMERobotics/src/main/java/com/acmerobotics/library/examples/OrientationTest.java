@@ -2,23 +2,22 @@ package com.acmerobotics.library.examples;
 
 import android.os.SystemClock;
 
-import com.acmerobotics.library.module.hardware.HardwareInjector;
-import com.acmerobotics.library.sensors.types.OrientationSensor;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.acmerobotics.library.robot.RobotOpMode;
+import com.acmerobotics.library.robot.RobotClass;
+import com.acmerobotics.library.vector.Vector;
 
-public class OrientationTest extends OpMode {
-
-    private OrientationSensor sensor;
-
-    @Override
-    public void init() {
-        HardwareInjector injector = new HardwareInjector(new OrientationTestModule(this), hardwareMap);
-        sensor = injector.create(OrientationSensor.class);
-    }
+@RobotClass(OrientationTestConfig.class)
+public class OrientationTest extends RobotOpMode<OrientationTestConfig> {
 
     @Override
     public void loop() {
-        telemetry.addData("orientation", sensor.getOrientation().toString());
-        SystemClock.sleep(250);
+        Vector orientation = robot.orientationSensor.getOrientation();
+        telemetry.addData("orientation", orientation.toString());
+        delay(250);
     }
+
+    public void delay(int ms) {
+        SystemClock.sleep(ms);
+    }
+
 }

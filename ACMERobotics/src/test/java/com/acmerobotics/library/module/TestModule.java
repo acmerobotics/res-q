@@ -9,7 +9,7 @@ public class TestModule extends BaseModule {
     public void configure() {
         bind(ComponentA.class).to(ComponentA.class);
         bind(ComponentB.class).to(ComponentB.class);
-        bind(int.class).withAnnotation(Inject.class).toInstance(5);
+        bindAll().withAnnotation(Inject.class).toInstance(5);
         bind(String.class).toInstance("Hello, world!");
     }
 

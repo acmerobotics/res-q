@@ -5,6 +5,9 @@ public class Vector {
     public double x, y, z;
     public long time;
 
+    private static final String NUMBER_FORMAT = "%+07.2f";
+    private static final String VECTOR_FORMAT = "(" + NUMBER_FORMAT + "," + NUMBER_FORMAT + "," + NUMBER_FORMAT + ")";
+
     public enum Axis {
         X, Y, Z
     }
@@ -25,7 +28,7 @@ public class Vector {
     }
 
     public String toString() {
-        return String.format("(%+7.2f,%+7.2f,%+7.2f)", x, y, z);
+        return String.format(VECTOR_FORMAT, x, y, z);
     }
 
 }

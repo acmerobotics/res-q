@@ -1,12 +1,14 @@
 package com.acmerobotics.library.sensors.drivers;
 
 import com.acmerobotics.library.module.core.Inject;
+import com.acmerobotics.library.module.hardware.Hardware;
 import com.acmerobotics.library.sensors.i2c.Chip;
 import com.acmerobotics.library.sensors.i2c.I2cChip;
 import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.acmerobotics.library.vector.Vector;
 import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -89,12 +91,12 @@ public class BNO055 extends I2cChip implements GyroSensor, OrientationSensor {
         NDOF
     }
 
-    public BNO055(OpMode mode, I2cDeviceSynch device) {
+    @Inject
+    public BNO055(OpMode mode, @Hardware("device") I2cDevice device) {
         this(mode, device, OperationMode.NDOF, AngleUnits.DEGREES, TemperatureUnits.FAHRENHEIT);
     }
 
-    @Inject
-    public BNO055(OpMode mode, I2cDeviceSynch device, OperationMode operationMode, AngleUnits angle, TemperatureUnits temp) {
+    public BNO055(OpMode mode, I2cDevice device, OperationMode operationMode, AngleUnits angle, TemperatureUnits temp) {
         super(mode, device);
 
         initialized = false;

@@ -3,7 +3,7 @@ package com.acmerobotics.library.module.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseModule {
+public class BaseModule {
 
     protected List<BindingBuilder> mapBuilders;
 
@@ -32,6 +32,8 @@ public abstract class BaseModule {
         return bindings;
     }
 
-    public abstract void configure();
+    public void configure() {
+        bindAll().withAnnotation(ResolveTo.class).toProvider(new ClassResolver());
+    }
 
 }

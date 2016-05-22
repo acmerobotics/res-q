@@ -4,6 +4,7 @@ import com.acmerobotics.library.sensors.types.ColorSensor;
 import com.acmerobotics.library.sensors.i2c.Chip;
 import com.acmerobotics.library.sensors.i2c.I2cChip;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -35,7 +36,7 @@ public class TCS34725 extends I2cChip implements ColorSensor {
         GAIN_60X
     }
 
-    public TCS34725(OpMode mode, I2cDeviceSynch device, IntegrationTime time, Gain g) {
+    public TCS34725(OpMode mode, I2cDevice device, IntegrationTime time, Gain g) {
         super(mode, device);
 
         initialized = false;
@@ -43,7 +44,7 @@ public class TCS34725 extends I2cChip implements ColorSensor {
         gain = g;
     }
 
-    public TCS34725(OpMode mode, I2cDeviceSynch device) {
+    public TCS34725(OpMode mode, I2cDevice device) {
         this(mode, device, IntegrationTime.INTEGRATIONTIME_50MS, Gain.GAIN_1X);
     }
 

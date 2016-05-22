@@ -11,6 +11,10 @@ public class HardwareProvider<T> implements Provider<T> {
 
     private String name = null;
 
+    public HardwareProvider() {
+
+    }
+
     public HardwareProvider(String n) {
         name = n;
     }
@@ -30,6 +34,7 @@ public class HardwareProvider<T> implements Provider<T> {
         for (Field field : HardwareMap.class.getFields()) {
             if (field.getName().toLowerCase().equals(typeName)) {
                 try {
+                    System.out.println("hardware: " + deviceName);
                     return ((HardwareMap.DeviceMapping<T>) field.get(hardwareInjector.getHardwareMap())).get(deviceName);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
