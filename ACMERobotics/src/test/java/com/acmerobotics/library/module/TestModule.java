@@ -7,9 +7,7 @@ public class TestModule extends BaseModule {
 
     @Override
     public void configure() {
-        bind(ComponentA.class).to(ComponentA.class);
-        bind(ComponentB.class).to(ComponentB.class);
-        bindAll().withAnnotation(Inject.class).toInstance(5);
+        bind(int.class).toInstance(5);
         bind(String.class).toInstance("Hello, world!");
     }
 

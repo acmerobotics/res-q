@@ -9,7 +9,7 @@ public class ComponentA {
     private int i;
 
     @Inject
-    public ComponentA(@Hardware("hi") ComponentB b, @Inject int i) {
+    public ComponentA(ComponentB b, int i) {
         this.b = b;
         this.i = i;
     }

@@ -92,7 +92,7 @@ public class BNO055 extends I2cChip implements GyroSensor, OrientationSensor {
     }
 
     @Inject
-    public BNO055(OpMode mode, @Hardware("device") I2cDevice device) {
+    public BNO055(OpMode mode, @Hardware I2cDevice device) {
         this(mode, device, OperationMode.NDOF, AngleUnits.DEGREES, TemperatureUnits.FAHRENHEIT);
     }
 

@@ -26,21 +26,24 @@ public class HardwareProvider<T> implements Provider<T> {
         String typeName = type.getSimpleName().toLowerCase();
         String deviceName;
         if (name == null) {
-            Hardware hardware = (Hardware) dependency.getAnnotation(Hardware.class);
+            NamedHardware hardware = (NamedHardware) dependency.getAnnotation(NamedHardware.class);
             deviceName = hardware.value();
         } else {
             deviceName = name;
         }
+        System.out.println("hardware provider:\t'" + deviceName + "'");
+        System.out.println("hardware provider:\ttype " + type.getCanonicalName());
         for (Field field : HardwareMap.class.getFields()) {
             if (field.getName().toLowerCase().equals(typeName)) {
+                System.out.println("hardware provider:\tmatch " + field.getName());
                 try {
-                    System.out.println("hardware: " + deviceName);
                     return ((HardwareMap.DeviceMapping<T>) field.get(hardwareInjector.getHardwareMap())).get(deviceName);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
         }
+        System.out.println("hardware provider:\tno match");
         return null;
     }
 }

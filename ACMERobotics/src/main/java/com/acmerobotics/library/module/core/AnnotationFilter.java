@@ -1,6 +1,7 @@
 package com.acmerobotics.library.module.core;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 public class AnnotationFilter implements Filter {
 
@@ -12,10 +13,10 @@ public class AnnotationFilter implements Filter {
 
     @Override
     public boolean apply(Dependency a) {
-        Annotation[] annotations = a.getAnnotations();
+        List<Annotation> annotations = a.getAllAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation.annotationType().equals(anno)) {
-                System.out.println("match: annotation " + annotation.annotationType().getSimpleName());
+                System.out.println("annotation filter:\tmatched " + anno.toString());
                 return true;
             }
         }
