@@ -4,7 +4,9 @@ import com.acmerobotics.library.sensors.types.ColorSensor;
 import com.acmerobotics.library.sensors.i2c.Chip;
 import com.acmerobotics.library.sensors.i2c.I2cChip;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -17,6 +19,34 @@ public class TCS34725 extends I2cChip implements ColorSensor {
 
     private Gain gain;
     private IntegrationTime integrationTime;
+
+    public enum IntegrationTime {
+        INTEGRATIONTIME_2_4_MS,
+        INTEGRATIONTIME_24MS,
+        INTEGRATIONTIME_50MS,
+        INTEGRATIONTIME_101MS,
+        INTEGRATIONTIME_154MS,
+        INTEGRATIONTIME_700MS
+    }
+
+    public enum Gain {
+        GAIN_1X,
+        GAIN_4X,
+        GAIN_16X,
+        GAIN_60X
+    }
+
+    public TCS34725(OpMode mode, I2cDevice device, IntegrationTime time, Gain g) {
+        super(mode, device);
+
+        initialized = false;
+        integrationTime = time;
+        gain = g;
+    }
+
+    public TCS34725(OpMode mode, I2cDevice device) {
+        this(mode, device, IntegrationTime.INTEGRATIONTIME_50MS, Gain.GAIN_1X);
+    }
 
     private byte[] read(int ireg, int creg) {
         return device.read(ireg | registers.get("TCS34725_COMMAND_BIT"), creg);
@@ -52,34 +82,6 @@ public class TCS34725 extends I2cChip implements ColorSensor {
         return readShort(registers.get("TCS34725_BDATAL"));
     }
 
-    public enum IntegrationTime {
-        INTEGRATIONTIME_2_4_MS,
-        INTEGRATIONTIME_24MS,
-        INTEGRATIONTIME_50MS,
-        INTEGRATIONTIME_101MS,
-        INTEGRATIONTIME_154MS,
-        INTEGRATIONTIME_700MS
-    }
-
-    public enum Gain {
-        GAIN_1X,
-        GAIN_4X,
-        GAIN_16X,
-        GAIN_60X
-    }
-
-    public TCS34725(OpMode mode, I2cDeviceSynch device, IntegrationTime time, Gain g) {
-        super(mode, device);
-
-        initialized = false;
-        integrationTime = time;
-        gain = g;
-    }
-
-    public TCS34725(OpMode mode, I2cDeviceSynch device) {
-        this(mode, device, IntegrationTime.INTEGRATIONTIME_50MS, Gain.GAIN_1X);
-    }
-
     public void enable() {
         device.write8(registers.get("TCS34725_ENABLE"), registers.get("TCS34725_ENABLE_PON"));
         delay(3);
@@ -107,12 +109,15 @@ public class TCS34725 extends I2cChip implements ColorSensor {
 //            RobotLog.e("Didn't initialize");
 //            return false;
 //        }
+        RobotLog.i("Begin");
         initialized = true;
 
         setIntegrationTime(integrationTime);
         setGain(gain);
 
         enable();
+
+        RobotLog.i("End");
 
         return true;
     }

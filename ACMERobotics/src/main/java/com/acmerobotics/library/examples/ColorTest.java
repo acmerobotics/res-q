@@ -18,8 +18,7 @@ public class ColorTest extends OpMode {
     @Override
     public void init() {
         I2cDevice device = hardwareMap.i2cDevice.get("device");
-        I2cDeviceSynch deviceSynch = new I2cDeviceSynchImpl(device, 0x29 * 2, true);
-        colorSensor = new TCS34725(this, deviceSynch);
+        colorSensor = new TCS34725(this, device);
         colorSensor.begin();
         colorSensor.setIntegrationTime(TCS34725.IntegrationTime.INTEGRATIONTIME_50MS);
     }

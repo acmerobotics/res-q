@@ -1,10 +1,14 @@
 package com.acmerobotics.library.sensors.drivers;
 
+import com.acmerobotics.library.module.core.Inject;
+import com.acmerobotics.library.module.hardware.Hardware;
 import com.acmerobotics.library.sensors.i2c.Chip;
 import com.acmerobotics.library.sensors.i2c.I2cChip;
+import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.acmerobotics.library.vector.Vector;
 import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -12,26 +16,47 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 @Chip("BNO055")
-public class BNO055 extends I2cChip implements GyroSensor {
+public class BNO055 extends I2cChip implements GyroSensor, OrientationSensor {
 
-    private AngleUnits angleUnits = null;
-    private TemperatureUnits tempUnits = null;
+    private boolean initialized;
 
+    private AngleUnits angleUnits;
+    private TemperatureUnits tempUnits;
     private OperationMode mode;
 
     @Override
-    public double getYaw() {
+    public double getAngularVelocityYaw() {
         return getAngularVelocity().z;
     }
 
     @Override
-    public double getPitch() {
+    public double getAngularVelocityPitch() {
         return getAngularVelocity().y;
     }
 
     @Override
-    public double getRoll() {
+    public double getAngularVelocityRoll() {
         return getAngularVelocity().x;
+    }
+
+    @Override
+    public double getOrientationYaw() {
+        return getOrientation().z;
+    }
+
+    @Override
+    public double getOrientationPitch() {
+        return getOrientation().y;
+    }
+
+    @Override
+    public double getOrientationRoll() {
+        return getOrientation().x;
+    }
+
+    @Override
+    public Vector getOrientation() {
+        return getEulerAngles();
     }
 
     public enum AngleUnits {
@@ -66,8 +91,21 @@ public class BNO055 extends I2cChip implements GyroSensor {
         NDOF
     }
 
-    public BNO055(OpMode mode, I2cDeviceSynch device) {
+    @Inject
+    public BNO055(OpMode mode, @Hardware I2cDevice device) {
+        this(mode, device, OperationMode.NDOF, AngleUnits.DEGREES, TemperatureUnits.FAHRENHEIT);
+    }
+
+    public BNO055(OpMode mode, I2cDevice device, OperationMode operationMode, AngleUnits angle, TemperatureUnits temp) {
         super(mode, device);
+
+        initialized = false;
+
+        begin();
+
+        setAngleUnits(angle);
+        setTemperatureUnits(temp);
+        setMode(operationMode);
     }
 
     public boolean chipIdMatches() {
@@ -76,6 +114,8 @@ public class BNO055 extends I2cChip implements GyroSensor {
     }
 
     public boolean begin() {
+        if (initialized) return false;
+
         RobotLog.i("Begin");
 
         /* Make sure we have the right device */
@@ -97,9 +137,6 @@ public class BNO055 extends I2cChip implements GyroSensor {
         setPowerMode(PowerMode.NORMAL);
 
         device.write8(registers.get("BNO055_PAGE_ID_ADDR"), (byte) 0);
-
-        setAngleUnits(AngleUnits.DEGREES);
-        setTemperatureUnits(TemperatureUnits.FAHRENHEIT);
 
         /* Set the output units */
         /*
@@ -123,13 +160,6 @@ public class BNO055 extends I2cChip implements GyroSensor {
         delay(10);
 
         RobotLog.i("End");
-
-        // read window
-//        device.ensureReadWindow(null, new I2cDeviceSynch.ReadWindow(
-//                registers.get("BNO055_ACC_DATA_X_LSB_ADDR"),
-//                26,
-//                I2cDeviceSynch.ReadMode.REPEAT
-//        ));
 
         return true;
     }
