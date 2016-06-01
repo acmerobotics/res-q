@@ -7,11 +7,11 @@ import com.acmerobotics.library.module.hardware.HardwareInjector;
 import com.acmerobotics.library.module.hardware.HardwareModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-public abstract class RobotOpMode<Config extends RobotConfig> extends OpMode {
+public abstract class RobotOpMode<T> extends OpMode {
 
     protected String loggingTag = "OpMode";
 
-    protected Config robot;
+    protected T robot;
     private HardwareInjector injector;
 
     public RobotOpMode() {
@@ -37,7 +37,7 @@ public abstract class RobotOpMode<Config extends RobotConfig> extends OpMode {
     @Override
     public void init() {
         injector = new HardwareInjector(new HardwareModule(this), hardwareMap);
-        Class<Config> configClass = (Class<Config>) this.getClass().getAnnotation(RobotClass.class).value();
+        Class<T> configClass = (Class<T>) this.getClass().getAnnotation(RobotClass.class).value();
         try {
             robot = configClass.newInstance();
         } catch (InstantiationException e) {

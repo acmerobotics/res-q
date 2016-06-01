@@ -6,6 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RobotClass {
 
-    public Class<? extends RobotConfig> value();
+    public Class value();
 
 }

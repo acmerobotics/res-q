@@ -12,6 +12,9 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 19
+
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true
     }
     compileSdkVersion 19
     buildToolsVersion '23.0.2'
@@ -48,5 +51,6 @@ dependencies {
     compile(name: 'ModernRobotics-release', ext: 'aar')
     compile(name: 'Analytics-release', ext: 'aar')
     compile(name: 'WirelessP2p-release', ext: 'aar')
+
     compile project(':ACMERobotics')
 }
