@@ -5,25 +5,44 @@ import java.util.List;
 
 public class BaseModule {
 
-    protected List<BindingBuilder> mapBuilders;
+    protected List<Binding.Builder> builders;
 
     public BaseModule() {
-        mapBuilders = new ArrayList<>();
+        builders = new ArrayList<>();
     }
 
-    public BindingBuilder bind(Class c) {
+    public Binding.Builder bind(Class c) {
         return bindAll().customFilter(new IdentityFilter(c));
     }
 
-    public BindingBuilder bindAll() {
-        BindingBuilder builder = new BindingBuilder<>();
-        mapBuilders.add(builder);
+    public Binding.Builder addBinding(int index, Binding binding) {
+        Binding.Builder builder = new Binding.Builder(binding);
+        builders.add(index, builder);
+        return builder;
+    }
+
+    public Binding.Builder addBinding(Binding binding) {
+        return addBinding(0, binding);
+    }
+
+    public void removeBinding(Binding binding) {
+        for (Binding.Builder builder : builders) {
+            if (builder.getBinding().equals(binding)) {
+                builders.remove(builder);
+                return;
+            }
+        }
+    }
+
+    public Binding.Builder bindAll() {
+        Binding.Builder builder = new Binding.Builder<>();
+        builders.add(builder);
         return builder;
     }
 
     public List<Binding> matchAll(Dependency arg) {
         List<Binding> bindings = new ArrayList<>();
-        for (BindingBuilder builder : mapBuilders) {
+        for (Binding.Builder builder : this.builders) {
             Binding binding = builder.getBinding();
             if (binding.applyFilters(arg)) {
                 bindings.add(binding);

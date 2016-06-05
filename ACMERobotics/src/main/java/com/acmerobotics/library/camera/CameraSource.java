@@ -1,12 +1,14 @@
 package com.acmerobotics.library.camera;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
+import android.renderscript.RenderScript;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -15,15 +17,24 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.acmerobotics.library.image.MirrorNode;
+import com.acmerobotics.library.image.MonoNode;
+import com.acmerobotics.library.module.core.BaseModule;
+import com.acmerobotics.library.module.core.Dependency;
 import com.acmerobotics.library.module.core.Inject;
-import com.acmerobotics.library.robot.RobotUILayout;
+import com.acmerobotics.library.module.core.Injector;
+import com.acmerobotics.library.module.core.Provider;
+import com.acmerobotics.library.module.hardware.HardwareModule;
+import com.acmerobotics.library.tree.Node;
+import com.acmerobotics.library.tree.Tree;
+import com.acmerobotics.library.ui.RobotUILayout;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class FtcCamera implements Camera.PreviewCallback, Camera.PictureCallback, RobotUILayout.Callback {
+public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallback, RobotUILayout.Callback {
 
     public enum CameraMode {
         MANUAL              (true),
@@ -55,42 +66,39 @@ public class FtcCamera implements Camera.PreviewCallback, Camera.PictureCallback
     private FrameLayout frameLayout;
     private Camera.Size previewSize;
     private YUVConverter converter;
-    private FrameProcessor processor;
     private Bitmap lastFrame;
+    private Tree tree;
 
     private int previewWidth;
     private int previewHeight;
 
-    public FtcCamera(OpMode opMode, CameraMode mode) {
+    public CameraSource(final Activity activity, CameraMode mode) {
         orientation = Orientation.PORTRAIT;
         cameraMode = mode;
-        this.opMode = opMode;
-
-        activity = (Activity) opMode.hardwareMap.appContext;
+        this.activity = activity;
 
         converter = new YUVConverter(activity);
-        processor = new FrameProcessor.Default();
+
+        Tree.Builder builder = new Tree.Builder();
+        builder.add(MirrorNode.class);
+        tree = builder.finish();
     }
 
     @Inject
-    public FtcCamera(OpMode opMode) {
-        this(opMode, CameraMode.CONTINUOUS);
+    public CameraSource(Activity activity) {
+        this(activity, CameraMode.CONTINUOUS);
     }
 
     public void begin() {
         openCamera();
 
-        if (cameraMode.preview) createLayout(opMode);
+        if (cameraMode.preview) createLayout();
     }
 
-    private void createLayout(OpMode opMode) {
-        robotUILayout = new RobotUILayout(opMode);
+    private void createLayout() {
+        robotUILayout = new RobotUILayout(activity);
         robotUILayout.setCallback(this);
         robotUILayout.start();
-    }
-
-    public void setFrameProcessor(FrameProcessor frameProcessor) {
-        processor = frameProcessor;
     }
 
     public void takePicture() {
@@ -187,7 +195,7 @@ public class FtcCamera implements Camera.PreviewCallback, Camera.PictureCallback
             correctedFrame = currentFrame;
         }
 
-        processor.process(correctedFrame);
+        tree.send(correctedFrame);
 
         lastFrame = correctedFrame;
 
@@ -260,10 +268,10 @@ public class FtcCamera implements Camera.PreviewCallback, Camera.PictureCallback
 
         public static final int MSG_SET_SURFACE_TEXTURE = 0;
 
-        private WeakReference<FtcCamera> weakCamera;
+        private WeakReference<CameraSource> weakCamera;
 
-        public CameraHandler(FtcCamera camera) {
-            weakCamera = new WeakReference<FtcCamera>(camera);
+        public CameraHandler(CameraSource camera) {
+            weakCamera = new WeakReference<CameraSource>(camera);
         }
 
         public void invalidateHandler() {
@@ -274,7 +282,7 @@ public class FtcCamera implements Camera.PreviewCallback, Camera.PictureCallback
         public void handleMessage(Message inputMessage) {
             int what = inputMessage.what;
 
-            FtcCamera camera = weakCamera.get();
+            CameraSource camera = weakCamera.get();
             if (camera == null) {
                 Log.i("CameraHandler", "internal camera is null");
                 return;

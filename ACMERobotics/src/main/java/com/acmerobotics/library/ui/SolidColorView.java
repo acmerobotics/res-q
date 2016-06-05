@@ -1,4 +1,4 @@
-package com.acmerobotics.library.prompt;
+package com.acmerobotics.library.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;

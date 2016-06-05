@@ -1,15 +1,14 @@
-package com.acmerobotics.library.prompt;
+package com.acmerobotics.library.robot;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import com.acmerobotics.library.R;
+import com.acmerobotics.library.ui.SolidColorView;
 
 public class AlliancePrompt {
 

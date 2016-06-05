@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Injector {
 
-    private BaseModule module;
+    public BaseModule module;
 
     public Injector(BaseModule baseModule) {
         module = baseModule;
@@ -45,7 +45,10 @@ public class Injector {
         Provider<? extends T> provider = binding.getProvider();
         System.out.println("injector provider:\tusing " + provider.getClass().getCanonicalName());
         T output = provider.provide(this, d);
-        System.out.println("injector output:\t" + output.toString());
+        if (!(provider instanceof InstanceProvider)) {
+            module.addBinding(new Binding(binding.getFilters(), new InstanceProvider(output)));
+        }
+        System.out.println("injector output:\t" + output);
         return output;
     }
 

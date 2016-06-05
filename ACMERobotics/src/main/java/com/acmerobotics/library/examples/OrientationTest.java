@@ -2,12 +2,22 @@ package com.acmerobotics.library.examples;
 
 import android.os.SystemClock;
 
+import com.acmerobotics.library.module.core.ResolveTo;
+import com.acmerobotics.library.module.hardware.Device;
 import com.acmerobotics.library.robot.RobotOpMode;
 import com.acmerobotics.library.robot.RobotClass;
+import com.acmerobotics.library.sensors.drivers.BNO055;
+import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.acmerobotics.library.vector.Vector;
 
-@RobotClass(OrientationTestConfig.class)
-public class OrientationTest extends RobotOpMode<OrientationTestConfig> {
+@RobotClass(OrientationTest.Config.class)
+public class OrientationTest extends RobotOpMode<OrientationTest.Config> {
+
+    public static class Config {
+        @Device("device")
+        @ResolveTo(BNO055.class)
+        OrientationSensor orientationSensor;
+    }
 
     @Override
     public void loop() {

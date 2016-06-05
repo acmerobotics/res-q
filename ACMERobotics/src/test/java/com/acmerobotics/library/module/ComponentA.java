@@ -10,6 +10,7 @@ public class ComponentA {
 
     @Inject
     public ComponentA(ComponentB b, int i) {
+        System.out.println("a: " + b.toString());
         this.b = b;
         this.i = i;
     }

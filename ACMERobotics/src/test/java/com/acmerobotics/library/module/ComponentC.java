@@ -1,5 +1,9 @@
 package com.acmerobotics.library.module;
 
 public class ComponentC {
-    public ComponentA componentA;
+
+    public ComponentC(ComponentB b) {
+        System.out.println("c: " + b.toString());
+    }
+
 }

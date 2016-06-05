@@ -1,4 +1,4 @@
-package com.acmerobotics.library.robot;
+package com.acmerobotics.library.ui;
 
 import android.app.Activity;
 import android.view.ViewGroup;
@@ -20,10 +20,8 @@ public class RobotUILayout {
     private RelativeLayout robotLayout;
     private Callback callback;
 
-    public RobotUILayout(OpMode mode) {
-        activity = (Activity) mode.hardwareMap.appContext;
-
-        callback = null;
+    public RobotUILayout(Activity activity) {
+        this.activity = activity;
     }
 
     public void setCallback(Callback callback) {

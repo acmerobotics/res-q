@@ -3,16 +3,15 @@ package com.acmerobotics.library.camera;
 import android.content.Context;
 import android.os.Message;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
-import com.acmerobotics.library.robot.AspectSurfaceView;
+import com.acmerobotics.library.ui.AspectSurfaceView;
 
 public class RawPreview extends AspectSurfaceView implements SurfaceHolder.Callback {
 
     private SurfaceHolder holder;
-    private FtcCamera.CameraHandler cameraHandler;
+    private CameraSource.CameraHandler cameraHandler;
 
-    public RawPreview(Context context, FtcCamera.CameraHandler handler) {
+    public RawPreview(Context context, CameraSource.CameraHandler handler) {
         super(context);
 
         cameraHandler = handler;
@@ -23,7 +22,7 @@ public class RawPreview extends AspectSurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        Message msg = Message.obtain(cameraHandler, FtcCamera.CameraHandler.MSG_SET_SURFACE_TEXTURE, surfaceHolder);
+        Message msg = Message.obtain(cameraHandler, CameraSource.CameraHandler.MSG_SET_SURFACE_TEXTURE, surfaceHolder);
         msg.sendToTarget();
     }
 

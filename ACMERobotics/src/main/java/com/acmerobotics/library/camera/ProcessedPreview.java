@@ -3,15 +3,9 @@ package com.acmerobotics.library.camera;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.renderscript.Allocation;
-import android.renderscript.RenderScript;
-import android.view.SurfaceView;
 
-import com.acmerobotics.library.R;
-import com.acmerobotics.library.robot.AspectSurfaceView;
+import com.acmerobotics.library.ui.AspectSurfaceView;
 
 public class ProcessedPreview extends AspectSurfaceView {
 

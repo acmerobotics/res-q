@@ -2,7 +2,7 @@ package com.acmerobotics.library.examples;
 
 import android.app.Activity;
 
-import com.acmerobotics.library.prompt.AlliancePrompt;
+import com.acmerobotics.library.robot.AlliancePrompt;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public class AllianceTest extends OpMode {

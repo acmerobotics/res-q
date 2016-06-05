@@ -24,6 +24,7 @@ public class ClassProvider<T> implements Provider<T> {
         int size = parameters.length;
         Object[] args = new Object[size];
         for (int i = 0; i < size; i++) {
+            System.out.println("class provider:\tfound arg " + parameters[i].getCanonicalName());
             List<Annotation> fullAnnotations = Arrays.asList(annotations[i]);
             fullAnnotations.addAll(scope.getAnnotations());
             args[i] = injector.fulfil(new Dependency<T>(
@@ -33,6 +34,7 @@ public class ClassProvider<T> implements Provider<T> {
             ));
             System.out.println("class provider:\targ " + args[i].toString());
         }
+        System.out.println("class provider:\targs finished");
         try {
             return constructor.newInstance(args);
         } catch (InstantiationException e) {
