@@ -3,8 +3,8 @@ package com.acmerobotics.library.robot;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.acmerobotics.library.module.hardware.HardwareInjector;
-import com.acmerobotics.library.module.hardware.HardwareModule;
+import com.acmerobotics.library.inject.hardware.HardwareInjector;
+import com.acmerobotics.library.inject.hardware.HardwareModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 public abstract class RobotOpMode<T> extends OpMode {
@@ -12,7 +12,7 @@ public abstract class RobotOpMode<T> extends OpMode {
     protected String loggingTag = "OpMode";
 
     protected T robot;
-    private HardwareInjector injector;
+    public HardwareInjector injector;
 
     public RobotOpMode() {
 

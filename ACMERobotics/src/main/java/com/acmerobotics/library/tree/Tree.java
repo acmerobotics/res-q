@@ -1,14 +1,13 @@
 package com.acmerobotics.library.tree;
 
-import com.acmerobotics.library.module.core.Binding;
-import com.acmerobotics.library.module.core.Filter;
-import com.acmerobotics.library.module.core.IdentityFilter;
-import com.acmerobotics.library.module.core.Injector;
-import com.acmerobotics.library.module.core.InstanceProvider;
+import com.acmerobotics.library.inject.core.Binding;
+import com.acmerobotics.library.inject.core.IdentityFilter;
+import com.acmerobotics.library.inject.core.Injector;
+import com.acmerobotics.library.inject.core.InstanceProvider;
+import com.acmerobotics.library.inject.core.Provider;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Tree {
@@ -29,10 +28,12 @@ public class Tree {
 
         public Builder add(Class<? extends Node> node) {
             Node construct = createNode(node);
+            System.out.println("tree:\t" + current + "\n\t\tto " + construct);
             if (tree == null) {
                 tree = new Tree(construct);
                 current = tree.getRoot();
             } else {
+                construct.setParentNode(current);
                 current.addChild(construct);
                 current = construct;
             }
@@ -41,28 +42,31 @@ public class Tree {
 
         public Builder and(Class<? extends Node> node) {
             Node construct = createNode(node);
-            current.getParentNode().addChild(construct);
+            Node parent = current.getParentNode();
+            parent.addChild(construct);
+            construct.setParentNode(parent);
             current = construct;
             return this;
         }
 
+        public Builder parent() {
+            current = current.getParentNode();
+            return this;
+        }
+
+        public Builder select(int i) {
+            current = (Node) current.getChildNodes().get(i);
+            return this;
+        }
+
         private Node createNode(Class<? extends Node> node) {
-            Node construct;
+            Node construct = null;
             if (injector == null) {
-                Constructor constructor = null;
-                construct = null;
                 try {
-                    constructor = node.getConstructor(Node.class);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    construct = (Node) constructor.newInstance(current);
+                    construct = node.newInstance();
                 } catch (InstantiationException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
             } else {
@@ -75,7 +79,7 @@ public class Tree {
             return current;
         }
 
-        public Tree finish() {
+        public Tree tree() {
             return tree;
         }
 
@@ -96,10 +100,12 @@ public class Tree {
     }
 
     private void sendHelper(Object data, Node source) {
+        System.out.println("node:\t" + source);
         Object output = source.process(data);
         List<Node> childNodes = source.getChildNodes();
         for (Node child : childNodes) {
-            sendHelper(output, source);
+            System.out.println("node:\tsending output " + output + "\n\t\tto " + child);
+            sendHelper(output, child);
         }
     }
 

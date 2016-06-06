@@ -12,8 +12,7 @@ public class MonoNode extends Node<Bitmap, Bitmap> {
     private Allocation in, out;
     private Matrix3f colorMatrix;
 
-    public MonoNode(Node parentNode, RenderScript renderScript) {
-        super(parentNode);
+    public MonoNode(RenderScript renderScript) {
         rs = renderScript;
         script = ScriptIntrinsicColorMatrix.create(rs, Element.U8_4(rs));
 
@@ -23,6 +22,12 @@ public class MonoNode extends Node<Bitmap, Bitmap> {
                 third, third, third,
                 third, third, third
         });
+
+//        colorMatrix = new Matrix3f(new float[] {
+//                0, 0, 0,
+//                0, 0, 0,
+//                1F, 1F, 1F,
+//        });
     }
 
     public Bitmap process(Bitmap bitmap) {

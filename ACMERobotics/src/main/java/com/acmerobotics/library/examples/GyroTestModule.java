@@ -1,7 +1,7 @@
 package com.acmerobotics.library.examples;
 
-import com.acmerobotics.library.module.core.BaseModule;
-import com.acmerobotics.library.module.hardware.HardwareProvider;
+import com.acmerobotics.library.inject.core.BaseModule;
+import com.acmerobotics.library.inject.hardware.HardwareProvider;
 import com.acmerobotics.library.sensors.drivers.BNO055;
 import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

@@ -1,6 +1,6 @@
 package com.acmerobotics.library.examples;
 
-import com.acmerobotics.library.module.hardware.HardwareInjector;
+import com.acmerobotics.library.inject.hardware.HardwareInjector;
 import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.acmerobotics.library.vector.Vector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;

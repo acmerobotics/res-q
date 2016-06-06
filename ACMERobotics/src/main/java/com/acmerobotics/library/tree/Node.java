@@ -1,7 +1,5 @@
 package com.acmerobotics.library.tree;
 
-import com.acmerobotics.library.module.core.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +8,12 @@ public abstract class Node<I, O> {
     private Node<?, I> parentNode;
     private List<Node<O, ?>> childNodes;
 
-    @Inject
-    public Node(@Parent Node<?, I> parent) {
-        parentNode = parent;
+    public Node() {
         childNodes = new ArrayList<>();
+    }
+
+    public void setParentNode(Node<?, I> parent) {
+        parentNode = parent;
     }
 
     public void addChild(Node<O, ?> child) {
@@ -30,6 +30,14 @@ public abstract class Node<I, O> {
 
     public Node<?, I> getParentNode() {
         return parentNode;
+    }
+
+    public boolean isRoot() {
+        return parentNode == null;
+    }
+
+    public boolean isLeaf() {
+        return childNodes.size() == 0;
     }
 
     public abstract O process(I input);

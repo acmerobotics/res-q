@@ -1,14 +1,13 @@
 package com.acmerobotics.library.camera;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
-import android.graphics.Matrix;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.renderscript.RenderScript;
+import android.support.v8.renderscript.*;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
@@ -17,24 +16,20 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.acmerobotics.library.image.MirrorNode;
+import com.acmerobotics.library.image.StreamNode;
 import com.acmerobotics.library.image.MonoNode;
-import com.acmerobotics.library.module.core.BaseModule;
-import com.acmerobotics.library.module.core.Dependency;
-import com.acmerobotics.library.module.core.Inject;
-import com.acmerobotics.library.module.core.Injector;
-import com.acmerobotics.library.module.core.Provider;
-import com.acmerobotics.library.module.hardware.HardwareModule;
-import com.acmerobotics.library.tree.Node;
+import com.acmerobotics.library.image.RotateNode;
+import com.acmerobotics.library.image.YUVNode;
+import com.acmerobotics.library.inject.core.Injector;
+import com.acmerobotics.library.robot.RobotOpMode;
 import com.acmerobotics.library.tree.Tree;
 import com.acmerobotics.library.ui.RobotUILayout;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallback, RobotUILayout.Callback {
+public class CameraSource implements StreamNode.StreamListener, Camera.PreviewCallback, Camera.PictureCallback, RobotUILayout.Callback {
 
     public enum CameraMode {
         MANUAL              (true),
@@ -49,14 +44,20 @@ public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallb
     }
 
     public enum Orientation {
-        PORTRAIT,
-        LANDSCAPE
+        PORTRAIT    (90),
+        LANDSCAPE   (0);
+
+        public int angle;
+
+        Orientation(int a) {
+            angle = a;
+        }
     }
 
     private CameraMode cameraMode;
     private Orientation orientation;
 
-    private OpMode opMode;
+    private RobotOpMode opMode;
     private Activity activity;
     private Camera camera;
     private RawPreview rawPreview;
@@ -65,37 +66,41 @@ public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallb
     private ProcessedPreview processedPreview;
     private FrameLayout frameLayout;
     private Camera.Size previewSize;
-    private YUVConverter converter;
-    private Bitmap lastFrame;
-    private Tree tree;
+    private RotateNode rotateNode;
+    private RenderScript rs;
+    private Bitmap latestFrame;
+    private Tree.Builder treeBuilder;
 
     private int previewWidth;
     private int previewHeight;
 
-    public CameraSource(final Activity activity, CameraMode mode) {
-        orientation = Orientation.PORTRAIT;
-        cameraMode = mode;
-        this.activity = activity;
+    public CameraSource(final RobotOpMode mode) {
+        cameraMode = CameraMode.CONTINUOUS;
+        activity = (Activity) mode.hardwareMap.appContext;
+        opMode = mode;
+        rs = RenderScript.create(activity);
 
-        converter = new YUVConverter(activity);
+        Injector injector = mode.injector;
+        injector.module.bind(RenderScript.class).toInstance(rs);
 
-        Tree.Builder builder = new Tree.Builder();
-        builder.add(MirrorNode.class);
-        tree = builder.finish();
-    }
+        treeBuilder = new Tree.Builder(injector);
+        treeBuilder.add(YUVNode.class);
+        rotateNode = (RotateNode) treeBuilder.add(RotateNode.class).getCurrent();
+        treeBuilder.add(MonoNode.class);
+        StreamNode node = (StreamNode) treeBuilder.add(StreamNode.class).getCurrent();
+        node.setCallback(this);
+        treeBuilder.parent();
 
-    @Inject
-    public CameraSource(Activity activity) {
-        this(activity, CameraMode.CONTINUOUS);
+        setOrientation(Orientation.PORTRAIT);
     }
 
     public void begin() {
         openCamera();
 
-        if (cameraMode.preview) createLayout();
+        if (cameraMode.preview) createPreview();
     }
 
-    private void createLayout() {
+    private void createPreview() {
         robotUILayout = new RobotUILayout(activity);
         robotUILayout.setCallback(this);
         robotUILayout.start();
@@ -132,7 +137,7 @@ public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallb
             throw new RuntimeException("camera already initialized");
         }
         camera = Camera.open(getCameraId());
-        camera.setDisplayOrientation(90);
+        camera.setDisplayOrientation(orientation.angle);
         Camera.Parameters parameters = camera.getParameters();
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         for (int i = 0; i < previewSizes.size(); i++) {
@@ -182,32 +187,33 @@ public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallb
         processFrame(bytes);
     }
 
+    @Override
+    public void onFrame(Bitmap bitmap) {
+        latestFrame = bitmap;
+        processedPreview.displayBitmap(bitmap);
+    }
+
     private void processFrame(byte[] bytes) {
         int width = getActualWidth();
         int height = getActualHeight();
 
-        Bitmap currentFrame = converter.convertYUV(width, height, bytes);
+        Tree tree = treeBuilder.tree();
 
-        Bitmap correctedFrame;
-        if (orientation == Orientation.PORTRAIT) {
-            correctedFrame = rotateBitmap(width, height, currentFrame);
-        } else {
-            correctedFrame = currentFrame;
-        }
+        YuvImage image = new YuvImage(bytes, ImageFormat.NV21, width, height, null);
 
-        tree.send(correctedFrame);
-
-        lastFrame = correctedFrame;
-
-        processedPreview.displayBitmap(correctedFrame);
+        tree.send(image);
     }
 
-    private Bitmap rotateBitmap(int width, int height, Bitmap currentFrame) {
-        Bitmap correctedFrame;
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        correctedFrame = Bitmap.createBitmap(currentFrame, 0, 0, width, height, matrix, true);
-        return correctedFrame;
+    public Tree.Builder getTreeBuilder() {
+        return treeBuilder;
+    }
+
+    public void setOrientation(Orientation orientation) {
+        this.orientation = orientation;
+        rotateNode.setAngle(orientation.angle);
+        if (camera != null) {
+            camera.setDisplayOrientation(orientation.angle);
+        }
     }
 
     public float getAspectRatio() {
@@ -254,14 +260,14 @@ public class CameraSource implements Camera.PreviewCallback, Camera.PictureCallb
             robotUILayout.stop();
             robotUILayout = null;
         }
-        if (converter != null) {
-            converter.release();
-            converter = null;
+        if (rs != null) {
+            rs.destroy();
+            rs = null;
         }
     }
 
-    public Bitmap getLastFrame() {
-        return lastFrame;
+    public Bitmap getLatestFrame() {
+        return latestFrame;
     }
 
     public static class CameraHandler extends Handler {

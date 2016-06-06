@@ -2,8 +2,8 @@ package com.acmerobotics.library.examples;
 
 import android.os.SystemClock;
 
-import com.acmerobotics.library.module.core.ResolveTo;
-import com.acmerobotics.library.module.hardware.Device;
+import com.acmerobotics.library.inject.core.ResolveTo;
+import com.acmerobotics.library.inject.hardware.Device;
 import com.acmerobotics.library.robot.RobotOpMode;
 import com.acmerobotics.library.robot.RobotClass;
 import com.acmerobotics.library.sensors.drivers.BNO055;
