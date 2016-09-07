@@ -1,0 +1,10 @@
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:2.6.2'
+
+    compile 'org.codehaus.groovy:groovy:2.4.4'
+    compile 'com.sun.codemodel:codemodel:2.6'
+}

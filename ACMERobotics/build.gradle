@@ -1,8 +1,27 @@
+import com.acmerobotics.library.gen.i2c.I2cDataGenerator
+
 apply plugin: 'com.android.library'
+
+def generatedSrcDir = new File(buildDir, "generated/chips/")
+def chipSrcDir = new File(projectDir, "src/main/assets/chips/")
+
+task generateChipData << {
+    I2cDataGenerator.generateI2cDataClasses(chipSrcDir, generatedSrcDir)
+}
+
+preBuild.dependsOn generateChipData
 
 android {
     compileSdkVersion 19
     buildToolsVersion "23.0.3"
+
+    sourceSets {
+        main {
+            java {
+                srcDirs += generatedSrcDir
+            }
+        }
+    }
 
     defaultConfig {
         minSdkVersion 16
@@ -48,7 +67,7 @@ dependencies {
     compile(name: 'Analytics-release', ext: 'aar')
     compile(name: 'WirelessP2p-release', ext: 'aar')
 
-    compile 'com.google.code.gson:gson:2.6.2+'
+    compile 'com.google.code.gson:gson:2.6.2'
 
     compile 'org.codehaus.groovy:groovy:2.4.4'
     compile 'com.sun.codemodel:codemodel:2.6'
