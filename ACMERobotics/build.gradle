@@ -26,6 +26,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 repositories {
@@ -43,7 +47,11 @@ dependencies {
     compile(name: 'ModernRobotics-release', ext: 'aar')
     compile(name: 'Analytics-release', ext: 'aar')
     compile(name: 'WirelessP2p-release', ext: 'aar')
+
     compile 'com.google.code.gson:gson:2.6.2+'
+
+    compile 'org.codehaus.groovy:groovy:2.4.4'
+    compile 'com.sun.codemodel:codemodel:2.6'
 
     testCompile 'junit:junit:4.11'
 

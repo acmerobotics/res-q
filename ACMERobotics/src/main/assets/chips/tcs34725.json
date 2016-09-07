@@ -1,6 +1,6 @@
 {
     "addresses": [41],
-    "chip": "TCS34725",
+    "name": "TCS34725",
     "extra": {},
     "manufacturer": "Texas Advanced Optoelectronic Solutions",
     "registers": {

@@ -115,16 +115,10 @@ public class CameraSource implements StreamNode.StreamListener, Camera.PreviewCa
         layout.setHorizontalGravity(Gravity.CENTER);
         cameraHandler = new CameraHandler(this);
         rawPreview = new RawPreview(activity, cameraHandler);
-        processedPreview = new ProcessedPreview(activity);
-        frameLayout = new FrameLayout(activity);
         LinearLayout.LayoutParams weightedParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0F);
         rawPreview.setLayoutParams(weightedParams);
-        processedPreview.setLayoutParams(weightedParams);
-        processedPreview.setZOrderOnTop(true);
-        frameLayout.addView(rawPreview);
-        frameLayout.addView(processedPreview);
-        layout.addView(frameLayout);
+        layout.addView(rawPreview);
     }
 
     @Override

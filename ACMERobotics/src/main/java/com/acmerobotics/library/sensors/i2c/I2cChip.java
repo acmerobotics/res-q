@@ -44,49 +44,21 @@ public abstract class I2cChip implements HardwareDevice {
         } catch (IOException e) {
             RobotLog.e(e.getMessage());
         }
-        parseChipJson(contents);
+
+        I2cChipData data = I2cChipJSONParser.parseJson(contents);
+        updateData(data);
 
         this.device = new I2cDeviceSynchImpl(i2cDevice, getPrimaryAddress(), true);
         System.out.println("chip: port " + getPrimaryAddress());
         this.device.engage();
     }
 
-    private void parseChipJson(String contents) {
-        JsonObject root = new JsonParser().parse(contents).getAsJsonObject();
-        name = root.get("chip").getAsString();
-        manufacturer = root.get("manufacturer").getAsString();
-        parseAddressList(root);
-        parseExtras(root);
-        parseRegisters(root);
-    }
-
-    private void parseRegisters(JsonObject root) {
-        JsonObject obj;
-        Set<Map.Entry<String, JsonElement>> entries;
-        registers = new HashMap<String, Integer>();
-        obj = root.get("registers").getAsJsonObject();
-        entries = obj.entrySet();
-        for (Map.Entry<String, JsonElement> entry : entries) {
-            registers.put(entry.getKey(), entry.getValue().getAsInt());
-        }
-    }
-
-    private void parseExtras(JsonObject root) {
-        extra = new HashMap<String, String>();
-        JsonObject obj = root.get("extra").getAsJsonObject();
-        Set<Map.Entry<String, JsonElement>> entries = obj.entrySet();
-        for (Map.Entry<String, JsonElement> entry : entries) {
-            extra.put(entry.getKey(), entry.getValue().getAsString());
-        }
-    }
-
-    private void parseAddressList(JsonObject root) {
-        JsonArray addrList = root.get("addresses").getAsJsonArray();
-        int addrSize = addrList.size();
-        addresses = new int[addrSize];
-        for (int i = 0; i < addrSize; i++) {
-            addresses[i] = addrList.get(i).getAsInt();
-        }
+    private void updateData(I2cChipData data) {
+        this.name = data.name;
+        this.manufacturer = data.manufacturer;
+        this.registers = data.registers;
+        this.extra = data.extra;
+        this.addresses = data.addresses;
     }
 
     public String getName() {
