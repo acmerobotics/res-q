@@ -14,7 +14,7 @@ android {
         targetSdkVersion 19
     }
     compileSdkVersion 19
-    buildToolsVersion '21.1.2'
+    buildToolsVersion '23.0.3'
 }
 
 buildscript {
@@ -22,7 +22,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
     }
 }
 
@@ -49,4 +49,6 @@ dependencies {
     compile(name: 'ModernRobotics-release', ext: 'aar')
     compile(name: 'Analytics-release', ext: 'aar')
     compile(name: 'WirelessP2p-release', ext: 'aar')
+
+    compile project(':ACMERobotics')
 }
