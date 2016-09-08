@@ -30,7 +30,7 @@ public class I2cChipJSONParser {
 
         // parse extras
         data.extra = new HashMap<String, String>();
-        obj = root.get("registers").getAsJsonObject();
+        obj = root.get("extra").getAsJsonObject();
         entries = obj.entrySet();
         for (Map.Entry<String, JsonElement> entry : entries) {
             data.extra.put(entry.getKey(), entry.getValue().getAsString());

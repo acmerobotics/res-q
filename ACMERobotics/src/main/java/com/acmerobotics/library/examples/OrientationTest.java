@@ -6,7 +6,7 @@ import com.acmerobotics.library.inject.core.ResolveTo;
 import com.acmerobotics.library.inject.hardware.Device;
 import com.acmerobotics.library.robot.RobotOpMode;
 import com.acmerobotics.library.robot.RobotClass;
-import com.acmerobotics.library.sensors.drivers.BNO055;
+import com.acmerobotics.library.sensors.drivers.BNO055Chip;
 import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.acmerobotics.library.vector.Vector;
 
@@ -15,7 +15,7 @@ public class OrientationTest extends RobotOpMode<OrientationTest.Config> {
 
     public static class Config {
         @Device("device")
-        @ResolveTo(BNO055.class)
+        @ResolveTo(BNO055Chip.class)
         OrientationSensor orientationSensor;
     }
 

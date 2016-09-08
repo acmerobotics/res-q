@@ -1,26 +1,21 @@
 package com.acmerobotics.library.examples;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.SystemClock;
 
-import com.acmerobotics.library.R;
-import com.acmerobotics.library.sensors.drivers.TCS34725;
+import com.acmerobotics.library.sensors.drivers.TCS34725Chip;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
-import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
 public class ColorTest extends OpMode {
 
-    private TCS34725 colorSensor;
+    private TCS34725Chip colorSensor;
 
     @Override
     public void init() {
         I2cDevice device = hardwareMap.i2cDevice.get("device");
-        colorSensor = new TCS34725(this, device);
+        colorSensor = new TCS34725Chip(this, device);
         colorSensor.begin();
-        colorSensor.setIntegrationTime(TCS34725.IntegrationTime.INTEGRATIONTIME_50MS);
+        colorSensor.setIntegrationTime(TCS34725Chip.IntegrationTime.INTEGRATIONTIME_50MS);
     }
 
     @Override

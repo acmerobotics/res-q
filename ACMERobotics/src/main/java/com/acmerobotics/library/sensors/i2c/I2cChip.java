@@ -45,20 +45,9 @@ public abstract class I2cChip implements HardwareDevice {
             RobotLog.e(e.getMessage());
         }
 
-        I2cChipData data = I2cChipJSONParser.parseJson(contents);
-        updateData(data);
-
         this.device = new I2cDeviceSynchImpl(i2cDevice, getPrimaryAddress(), true);
         System.out.println("chip: port " + getPrimaryAddress());
         this.device.engage();
-    }
-
-    private void updateData(I2cChipData data) {
-        this.name = data.name;
-        this.manufacturer = data.manufacturer;
-        this.registers = data.registers;
-        this.extra = data.extra;
-        this.addresses = data.addresses;
     }
 
     public String getName() {

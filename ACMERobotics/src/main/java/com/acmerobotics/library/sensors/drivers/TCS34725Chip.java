@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.RobotLog;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-@Chip("TCS34725")
-public class TCS34725 extends I2cChip implements ColorSensor {
+@Chip("TCS34725Chip")
+public class TCS34725Chip extends I2cChip implements ColorSensor {
 
     private I2cDeviceSynch device;
     private boolean initialized = false;
@@ -36,7 +36,7 @@ public class TCS34725 extends I2cChip implements ColorSensor {
         GAIN_60X
     }
 
-    public TCS34725(OpMode mode, I2cDevice device, IntegrationTime time, Gain g) {
+    public TCS34725Chip(OpMode mode, I2cDevice device, IntegrationTime time, Gain g) {
         super(mode, device);
 
         initialized = false;
@@ -44,7 +44,7 @@ public class TCS34725 extends I2cChip implements ColorSensor {
         gain = g;
     }
 
-    public TCS34725(OpMode mode, I2cDevice device) {
+    public TCS34725Chip(OpMode mode, I2cDevice device) {
         this(mode, device, IntegrationTime.INTEGRATIONTIME_50MS, Gain.GAIN_1X);
     }
 

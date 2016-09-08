@@ -1,15 +1,15 @@
-import com.acmerobotics.library.gen.i2c.I2cDataGenerator
+import com.acmerobotics.library.sensors.i2c.I2cDataGenerator
 
 apply plugin: 'com.android.library'
 
-def generatedSrcDir = new File(buildDir, "generated/chips/")
-def chipSrcDir = new File(projectDir, "src/main/assets/chips/")
+def generatedDir = new File(buildDir, "generated/chips/")
+def chipDir = new File(projectDir, "src/main/assets/chips/")
 
-task generateChipData << {
-    I2cDataGenerator.generateI2cDataClasses(chipSrcDir, generatedSrcDir)
+task genChipData << {
+    I2cDataGenerator.generateI2cData(generatedDir, chipDir)
 }
 
-preBuild.dependsOn generateChipData
+preBuild.dependsOn genChipData
 
 android {
     compileSdkVersion 19
@@ -18,7 +18,7 @@ android {
     sourceSets {
         main {
             java {
-                srcDirs += generatedSrcDir
+                srcDirs += generatedDir
             }
         }
     }
