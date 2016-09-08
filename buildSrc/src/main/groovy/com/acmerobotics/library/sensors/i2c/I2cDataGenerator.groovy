@@ -18,7 +18,7 @@ public class I2cDataGenerator {
 
         String[] files = chipDir.list();
         for (String file : files) {
-            String contents = FileUtils.getInputStreamContents(new FileInputStream(chipDir.getAbsolutePath() + "\\" + file));
+            String contents = FileUtils.getInputStreamContents(new FileInputStream(chipDir.getAbsolutePath() + "/" + file));
             I2cChipData chipData = I2cChipJSONParser.parseJson(contents);
 
             generateClass(chipData).build(generatedDir);
