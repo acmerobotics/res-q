@@ -13,9 +13,9 @@ android:
     - android-19
 
     # Android Support library (required for testing)
-    # - extra-android-support
-    # - extra-google-m2repository
-    # - extra-android-m2repository
+    - extra-android-support
+    - extra-google-m2repository
+    - extra-android-m2repository
 
 before_script:
   - chmod +x gradlew
