@@ -1,18 +1,19 @@
 package com.acmerobotics.library.sensors.drivers;
 
+import android.os.SystemClock;
+
+import com.acmerobotics.library.sensors.i2c.TCS34725;
 import com.acmerobotics.library.sensors.types.ColorSensor;
-import com.acmerobotics.library.sensors.i2c.Chip;
-import com.acmerobotics.library.sensors.i2c.I2cChip;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-@Chip("TCS34725Chip")
-public class TCS34725Chip extends I2cChip implements ColorSensor {
+public class TCS34725Chip implements ColorSensor {
 
     private I2cDeviceSynch device;
     private boolean initialized = false;
@@ -37,7 +38,8 @@ public class TCS34725Chip extends I2cChip implements ColorSensor {
     }
 
     public TCS34725Chip(OpMode mode, I2cDevice device, IntegrationTime time, Gain g) {
-        super(mode, device);
+        this.device = new I2cDeviceSynchImpl(device, TCS34725.ADDRESSES[0], true);
+        this.device.engage();
 
         initialized = false;
         integrationTime = time;
@@ -48,8 +50,12 @@ public class TCS34725Chip extends I2cChip implements ColorSensor {
         this(mode, device, IntegrationTime.INTEGRATIONTIME_50MS, Gain.GAIN_1X);
     }
 
+    public void delay(int ms) {
+        SystemClock.sleep(ms);
+    }
+
     private byte[] read(int ireg, int creg) {
-        return device.read(ireg | registers.get("TCS34725_COMMAND_BIT"), creg);
+        return device.read(ireg | TCS34725.Registers.TCS34725_COMMAND_BIT, creg);
     }
 
     private byte read8(int ireg) {
@@ -64,37 +70,37 @@ public class TCS34725Chip extends I2cChip implements ColorSensor {
     }
 
     public int getClear() {
-        return readShort(registers.get("TCS34725_CDATAL"));
+        return readShort(TCS34725.Registers.TCS34725_CDATAL);
     }
 
     @Override
     public int getRed() {
-        return readShort(registers.get("TCS34725_RDATAL"));
+        return readShort(TCS34725.Registers.TCS34725_RDATAL);
     }
 
     @Override
     public int getGreen() {
-        return readShort(registers.get("TCS34725_GDATAL"));
+        return readShort(TCS34725.Registers.TCS34725_GDATAL);
     }
 
     @Override
     public int getBlue() {
-        return readShort(registers.get("TCS34725_BDATAL"));
+        return readShort(TCS34725.Registers.TCS34725_BDATAL);
     }
 
     public void enable() {
-        device.write8(registers.get("TCS34725_ENABLE"), registers.get("TCS34725_ENABLE_PON"));
+        device.write8(TCS34725.Registers.TCS34725_ENABLE, TCS34725.Registers.TCS34725_ENABLE_PON);
         delay(3);
-        device.write8(registers.get("TCS34725_ENABLE"),
-                registers.get("TCS34725_ENABLE_PON") |
-                registers.get("TCS34725_ENABLE_AEN")
+        device.write8(TCS34725.Registers.TCS34725_ENABLE,
+                TCS34725.Registers.TCS34725_ENABLE_PON |
+                TCS34725.Registers.TCS34725_ENABLE_AEN
         );
     }
 
     public void disable() {
-        int reg = read8(registers.get("TCS34725_ENABLE"));
-        device.write8(registers.get("TCS34725_ENABLE"),
-                reg & ~(registers.get("TCS34725_ENABLE_PON") | registers.get("TCS34725_ENABLE_AEN"))
+        int reg = read8(TCS34725.Registers.TCS34725_ENABLE);
+        device.write8(TCS34725.Registers.TCS34725_ENABLE,
+                reg & ~(TCS34725.Registers.TCS34725_ENABLE_PON | TCS34725.Registers.TCS34725_ENABLE_AEN)
         );
     }
 
@@ -104,7 +110,7 @@ public class TCS34725Chip extends I2cChip implements ColorSensor {
 
     public boolean begin() {
         // FIXME: 4/22/2016
-//        int x = read8(registers.get("TCS34725_ID"));
+//        int x = read8(TCS34725.Registers.TCS34725_ID);
 //        if ((x != 0x44) && (x != 0x10)) {
 //            RobotLog.e("Didn't initialize");
 //            return false;
@@ -125,7 +131,7 @@ public class TCS34725Chip extends I2cChip implements ColorSensor {
     public void setIntegrationTime(IntegrationTime time) {
         if (!isInitialized()) begin();
 
-        device.write8(registers.get("TCS34725_ATIME"), registers.get("TCS34725_" + time.toString()));
+        device.write8(TCS34725.Registers.TCS34725_ATIME, TCS34725.Registers.get("TCS34725_" + time.toString()));
 
         integrationTime = time;
     }
@@ -133,7 +139,7 @@ public class TCS34725Chip extends I2cChip implements ColorSensor {
     public void setGain(Gain gain) {
         if (!isInitialized()) begin();
 
-        device.write8(registers.get("TCS34725_CONTROL"), registers.get("TCS34725_" + gain.toString()));
+        device.write8(TCS34725.Registers.TCS34725_CONTROL, TCS34725.Registers.get("TCS34725_" + gain.toString()));
 
         this.gain = gain;
     }

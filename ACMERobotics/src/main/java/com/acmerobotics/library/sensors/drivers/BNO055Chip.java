@@ -5,11 +5,9 @@ import android.os.SystemClock;
 import com.acmerobotics.library.inject.core.Inject;
 import com.acmerobotics.library.inject.hardware.Hardware;
 import com.acmerobotics.library.sensors.i2c.BNO055;
-import com.acmerobotics.library.sensors.i2c.Chip;
-import com.acmerobotics.library.sensors.i2c.I2cChip;
+import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.acmerobotics.library.vector.Vector;
-import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
@@ -182,14 +180,14 @@ public class BNO055Chip implements GyroSensor, OrientationSensor {
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
-        int byteVal = BNO055.Registers.getRegister("POWER_MODE_" + mode.toString());
+        int byteVal = BNO055.Registers.get("POWER_MODE_" + mode.toString());
         device.write8(BNO055.Registers.BNO055_PWR_MODE_ADDR, byteVal);
         delay(10);
     }
 
     public void setMode(OperationMode mode) {
         this.mode = mode;
-        int byteVal = BNO055.Registers.getRegister("OPERATION_MODE_" + mode.toString());
+        int byteVal = BNO055.Registers.get("OPERATION_MODE_" + mode.toString());
         device.write8(BNO055.Registers.BNO055_OPR_MODE_ADDR, byteVal);
         delay(30);
     }

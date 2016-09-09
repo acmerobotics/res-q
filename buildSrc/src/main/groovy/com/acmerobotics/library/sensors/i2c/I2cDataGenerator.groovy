@@ -45,7 +45,7 @@ public class I2cDataGenerator {
             registerClass.field(PUBLIC | STATIC | FINAL, codeModel.INT, register, JExpr.lit(data.registers.get(register)))
         }
 
-        def registerMethod = registerClass.method(PUBLIC | STATIC | FINAL, codeModel.INT, "getRegister")
+        def registerMethod = registerClass.method(PUBLIC | STATIC | FINAL, codeModel.INT, "get")
         def regArg = registerMethod.param(codeModel._ref(String.class), "reg")
         def tryBlock = new JTryBlock()
         def catchBlock = tryBlock._catch(codeModel.ref(Exception.class))
