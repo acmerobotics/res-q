@@ -8,7 +8,6 @@ import com.acmerobotics.library.sensors.i2c.BNO055;
 import com.acmerobotics.library.sensors.types.GyroSensor;
 import com.acmerobotics.library.sensors.types.OrientationSensor;
 import com.acmerobotics.library.vector.Vector;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.I2cDevice;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
@@ -60,11 +59,7 @@ public class BNO055Chip implements GyroSensor, OrientationSensor {
     }
 
     @Inject
-    public BNO055Chip(OpMode mode, @Hardware I2cDevice device) {
-        this(mode, device, OperationMode.NDOF, AngleUnits.DEGREES, TemperatureUnits.FAHRENHEIT);
-    }
-
-    public BNO055Chip(OpMode mode, I2cDevice device, OperationMode operationMode, AngleUnits angle, TemperatureUnits temp) {
+    public BNO055Chip(@Hardware I2cDevice device) {
         this.device = new I2cDeviceSynchImpl(device, BNO055.ADDRESSES[0], true);
         this.device.engage();
 
@@ -72,9 +67,9 @@ public class BNO055Chip implements GyroSensor, OrientationSensor {
 
         begin();
 
-        setAngleUnits(angle);
-        setTemperatureUnits(temp);
-        setMode(operationMode);
+        setAngleUnits(AngleUnits.DEGREES);
+        setTemperatureUnits(TemperatureUnits.FAHRENHEIT);
+        setMode(OperationMode.NDOF);
     }
 
     @Override
@@ -172,31 +167,37 @@ public class BNO055Chip implements GyroSensor, OrientationSensor {
         return true;
     }
 
-    public void setPowerMode(PowerMode mode) {
+    public BNO055Chip setPowerMode(PowerMode mode) {
         try {
-            BNO055.Registers.class.getField("POWER_MODE_" + mode.toString()).get(null);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            BNO055.Registers.get("POWER_MODE_" + mode.toString());
+            int byteVal = BNO055.Registers.get("POWER_MODE_" + mode.toString());
+            device.write8(BNO055.Registers.BNO055_PWR_MODE_ADDR, byteVal);
+            delay(10);
+        } catch (InvalidRegisterException e) {
+            RobotLog.e(e.getMessage());
         }
-        int byteVal = BNO055.Registers.get("POWER_MODE_" + mode.toString());
-        device.write8(BNO055.Registers.BNO055_PWR_MODE_ADDR, byteVal);
-        delay(10);
+        return this;
     }
 
-    public void setMode(OperationMode mode) {
+    public BNO055Chip setMode(OperationMode mode) {
         this.mode = mode;
-        int byteVal = BNO055.Registers.get("OPERATION_MODE_" + mode.toString());
+        int byteVal = 0;
+        try {
+            byteVal = BNO055.Registers.get("OPERATION_MODE_" + mode.toString());
+        } catch (InvalidRegisterException e) {
+            RobotLog.e(e.getMessage());
+        }
         device.write8(BNO055.Registers.BNO055_OPR_MODE_ADDR, byteVal);
         delay(30);
+        return this;
     }
 
-    public void setTemperatureUnits(TemperatureUnits tempUnits) {
+    public BNO055Chip setTemperatureUnits(TemperatureUnits tempUnits) {
         this.tempUnits = tempUnits;
         int val = device.read8(BNO055.Registers.BNO055_UNIT_SEL_ADDR);
         device.write8(BNO055.Registers.BNO055_UNIT_SEL_ADDR, (byte) ((val & 0b11101111) | (tempUnits.equals(TemperatureUnits.CELSIUS) ? 0 : 1) << 4));
         delay(10);
+        return this;
     }
 
     public TemperatureUnits getTemperatureUnits() {
@@ -213,7 +214,7 @@ public class BNO055Chip implements GyroSensor, OrientationSensor {
         return this.angleUnits;
     }
 
-    public void setExtCrystalUse(boolean usextal) {
+    public BNO055Chip setExtCrystalUse(boolean usextal) {
         OperationMode lastMode = this.mode;
 
         /* Switch to config mode (just in case since this is the default) */
@@ -229,6 +230,7 @@ public class BNO055Chip implements GyroSensor, OrientationSensor {
         /* Set the requested operating mode (see section 3.3) */
         setMode(lastMode);
         delay(20);
+        return this;
     }
 
     public int getTemperature() {

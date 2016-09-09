@@ -16,6 +16,7 @@ import java.nio.ByteOrder;
 public class TCS34725Chip implements ColorSensor {
 
     private I2cDeviceSynch device;
+
     private boolean initialized = false;
 
     private Gain gain;
@@ -131,7 +132,11 @@ public class TCS34725Chip implements ColorSensor {
     public void setIntegrationTime(IntegrationTime time) {
         if (!isInitialized()) begin();
 
-        device.write8(TCS34725.Registers.TCS34725_ATIME, TCS34725.Registers.get("TCS34725_" + time.toString()));
+        try {
+            device.write8(TCS34725.Registers.TCS34725_ATIME, TCS34725.Registers.get("TCS34725_" + time.toString()));
+        } catch (InvalidRegisterException e) {
+            RobotLog.e(e.getMessage());
+        }
 
         integrationTime = time;
     }
@@ -139,7 +144,11 @@ public class TCS34725Chip implements ColorSensor {
     public void setGain(Gain gain) {
         if (!isInitialized()) begin();
 
-        device.write8(TCS34725.Registers.TCS34725_CONTROL, TCS34725.Registers.get("TCS34725_" + gain.toString()));
+        try {
+            device.write8(TCS34725.Registers.TCS34725_CONTROL, TCS34725.Registers.get("TCS34725_" + gain.toString()));
+        } catch (InvalidRegisterException e) {
+            RobotLog.e(e.getMessage());
+        }
 
         this.gain = gain;
     }

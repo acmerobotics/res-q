@@ -3,8 +3,6 @@ package com.acmerobotics.library.sensors.i2c
 import com.sun.codemodel.ClassType
 import com.sun.codemodel.JCodeModel
 import com.sun.codemodel.JExpr
-import com.sun.codemodel.JExpression
-import com.sun.codemodel.JStatement
 import com.sun.codemodel.JTryBlock
 
 import static com.sun.codemodel.JMod.*;
@@ -45,13 +43,16 @@ public class I2cDataGenerator {
             registerClass.field(PUBLIC | STATIC | FINAL, codeModel.INT, register, JExpr.lit(data.registers.get(register)))
         }
 
-        def registerMethod = registerClass.method(PUBLIC | STATIC | FINAL, codeModel.INT, "get")
+        def invalidRegException = codeModel.ref("com.acmerobotics.library.sensors.drivers.InvalidRegisterException")
+        def registerMethod = registerClass.method(PUBLIC | STATIC | FINAL, codeModel.INT, "get")._throws(invalidRegException)
         def regArg = registerMethod.param(codeModel._ref(String.class), "reg")
         def tryBlock = new JTryBlock()
         def catchBlock = tryBlock._catch(codeModel.ref(Exception.class))
+        def invalidRegArg = JExpr.lit("invalid register for device " + data.name + ": ").plus(regArg)
+        catchBlock.body()._throw(JExpr._new(invalidRegException).arg(invalidRegArg))
         def getFieldInvocation = JExpr.invoke(registerClass.dotclass(), "getField").arg(regArg).invoke("get").arg(JExpr._null())
         tryBlock.body()._return(JExpr.cast(codeModel.INT, getFieldInvocation))
-        def registerMethodBody = registerMethod.body().add(tryBlock)._return(JExpr.lit(0))
+        def registerMethodBody = registerMethod.body().add(tryBlock)
 
 
         def extraClass = i2cDataClass._class(PUBLIC | STATIC | FINAL, 'Extra')
